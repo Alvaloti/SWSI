@@ -1,0 +1,6 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Apariencia compartida por los botones de eliminación de todas las tablas. */
+.deleteButton {
+    color: #f44336 !important;
+}

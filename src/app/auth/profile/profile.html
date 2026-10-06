@@ -1,0 +1,69 @@
+<button type="button" mat-button class="menu-button" (click)="openProfile()">
+    <mat-icon>person</mat-icon>
+    <span class="span">Perfil</span>
+</button>
+
+<ng-template #profileDialog>
+    <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="profile-form">
+        <h2 mat-dialog-title>Editar perfil</h2>
+        <mat-dialog-content>
+            <p>Actualiza la información de tu cuenta.</p>
+
+            @if (errorMessage) {
+                <p class="form-error" role="alert">{{ errorMessage }}</p>
+            }
+
+            @if (loading) {
+                <p>Cargando información...</p>
+            } @else {
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="profile-username">Usuario</label>
+                        <input id="profile-username" type="text" formControlName="username">
+                        <small *ngIf="profileForm.get('username')?.touched && profileForm.get('username')?.hasError('required')">El usuario es requerido.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-nomina">Nómina</label>
+                        <input id="profile-nomina" type="text" formControlName="nomina">
+                        <small *ngIf="profileForm.get('nomina')?.touched && profileForm.get('nomina')?.hasError('required')">La nómina es requerida.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-name">Nombre</label>
+                        <input id="profile-name" type="text" formControlName="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-last-name">Apellidos</label>
+                        <input id="profile-last-name" type="text" formControlName="last_name">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="profile-email">Correo electrónico</label>
+                        <input id="profile-email" type="email" formControlName="email">
+                        <small *ngIf="profileForm.get('email')?.touched && profileForm.get('email')?.invalid">Ingresa un correo electrónico válido.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-area">Área</label>
+                        <select id="profile-area" formControlName="area">
+                            <option value="" disabled>Seleccione una opción</option>
+                            <option *ngFor="let area of areas" [value]="area._id">{{ area.name }}</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-role">Rol</label>
+                        <input id="profile-role" type="text" [value]="roleName" disabled>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="profile-password">Nueva contraseña (opcional)</label>
+                        <input id="profile-password" type="password" formControlName="password" placeholder="Mínimo 8 caracteres">
+                        <small *ngIf="profileForm.get('password')?.touched && profileForm.get('password')?.hasError('minlength')">La contraseña debe tener al menos 8 caracteres.</small>
+                    </div>
+                </div>
+            }
+        </mat-dialog-content>
+        <mat-dialog-actions align="end">
+            <button type="button" mat-button class="cancel-btn" (click)="closeProfile()">Cancelar</button>
+            <button type="submit" mat-flat-button class="submit-btn" [disabled]="loading || saving || profileForm.invalid">
+                {{ saving ? 'Guardando...' : 'Guardar cambios' }}
+            </button>
+        </mat-dialog-actions>
+    </form>
+</ng-template>

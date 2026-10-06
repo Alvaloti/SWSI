@@ -1,0 +1,59 @@
+<div class="solicitud-container">
+    <form [formGroup]="solicitudForm" (ngSubmit)="onSubmit()" class="solicitud-form">
+        <h2>Solicitud de Soporte</h2>
+        <p>Por favor, completa los datos.</p>
+
+        <div class="form-group">
+            <label for="tipo">Tipo de Solicitud</label>
+            <input type="text" id="tipo" formControlName="tipo" placeholder="Tipo de Solicitud">
+            <small *ngIf="solicitudForm.get('tipo')?.hasError('required') && solicitudForm.get('tipo')?.touched">
+                Tipo de Solicitud es requerido.
+            </small>
+        </div>
+
+        <div class="form-group">
+            <label for="descripcion">Descripción</label>
+            <input type="text" id="descripcion" formControlName="descripcion" placeholder="Descripción">
+            <small
+                *ngIf="solicitudForm.get('descripcion')?.hasError('required') && solicitudForm.get('descripcion')?.touched">
+                Descripción es requerida.
+            </small>
+        </div>
+
+        <div class="form-group">
+            <label for="area">Área</label>
+            <select id="area" formControlName="area">
+                <option value="" disabled>Seleccionar área</option>
+                <option *ngFor="let area of areas" [value]="area._id">{{ area.name }}</option>
+            </select>
+            <small *ngIf="solicitudForm.get('area')?.hasError('required') && solicitudForm.get('area')?.touched">
+                Área es requerida.
+            </small>
+        </div>
+
+        <div class="form-group">
+            <label for="prioridad">Prioridad</label>
+            <select id="prioridad" formControlName="prioridad">
+                <option value="">Seleccionar Prioridad</option>
+                <option value="muy-baja">Muy Baja</option>
+                <option value="baja">Baja</option>
+                <option value="media">Media</option>
+                <option value="alta">Alta</option>
+                <option value="muy-alta">Muy Alta</option>
+            </select>
+            <small
+                *ngIf="solicitudForm.get('prioridad')?.hasError('required') && solicitudForm.get('prioridad')?.touched">
+                Prioridad es requerida.
+            </small>
+        </div>
+
+        <div class="form-group">
+            <label for="comentarios">Comentarios</label>
+            <input type="text" id="comentarios" formControlName="comentarios" placeholder="Comentarios">
+        </div>
+
+        <button type="submit" mat-raised-button color="primary" class="submit-btn" [disabled]="solicitudForm.invalid">
+            Enviar Solicitud</button>
+        <button type="button" mat-raised-button color="accent" class="cancel-btn" (click)="loadChildren('homesol')">Cancelar</button>
+    </form>
+</div>

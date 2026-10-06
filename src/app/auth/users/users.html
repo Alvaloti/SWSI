@@ -1,0 +1,174 @@
+<div class="table-container">
+    <!-- Filtro de Búsqueda -->
+    <h2>{{ titulo }}</h2>
+    <mat-form-field appearance="outline">
+        <mat-label>Buscar por nombre</mat-label>
+        <input matInput (keyup)="onFiltrar($event)" placeholder="Ej. Juan">
+    </mat-form-field>
+    <div>
+        <span class="espaciador-flexible"></span>
+        <button mat-flat-button class="my_button" (click)="abrirFormulario(userDialog)">
+            <mat-icon>add_circle</mat-icon>
+            <span> Agregar</span>
+        </button>
+    </div>
+
+    <!-- Spinner de Carga -->
+    @if (cargando) {
+    <div class="loading-spinner">
+        <mat-spinner></mat-spinner>
+    </div>
+    }
+
+    <!-- Tabla Angular Material -->
+    <table mat-table [dataSource]="datos" class="mat-elevation-z8">
+
+        <!-- Columna ID -->
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef> ID </th>
+            <td mat-cell *matCellDef="let elemento"> {{elemento.id ?? elemento._id}} </td>
+        </ng-container>
+
+        <!-- Columna Nombre -->
+        <ng-container matColumnDef="usuario">
+            <th mat-header-cell *matHeaderCellDef> Usuario </th>
+            <td mat-cell *matCellDef="let elemento"> {{elemento.username}} </td>
+        </ng-container>
+
+        <!-- Columna Email -->
+        <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef> Email </th>
+            <td mat-cell *matCellDef="let elemento"> {{elemento.email}} </td>
+        </ng-container>
+
+        <!-- Columna Nombre -->
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> Nombre </th>
+            <td mat-cell *matCellDef="let elemento"> {{elemento.name}} </td>
+        </ng-container>
+
+        <!-- Columna Apellido -->
+        <ng-container matColumnDef="last_name">
+            <th mat-header-cell *matHeaderCellDef> Apellido </th>
+            <td mat-cell *matCellDef="let elemento"> {{elemento.last_name}} </td>
+        </ng-container>
+
+        <!-- Columna Rol -->
+        <ng-container matColumnDef="rol">
+            <th mat-header-cell *matHeaderCellDef> Rol </th>
+            <td mat-cell *matCellDef="let elemento">
+                {{ elemento.rolId?.name ?? 'Sin rol' }}
+            </td>
+        </ng-container>
+
+        <!-- Columna Acciones -->
+        <ng-container matColumnDef="acciones">
+            <th mat-header-cell *matHeaderCellDef> Acciones </th>
+            <td mat-cell *matCellDef="let elemento">
+                <button mat-icon-button color="primary"  (click)="editarUsuario(elemento)">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button class="deleteButton" (click)="eliminarUsuario(elemento)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columnasVisibles"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnasVisibles;"></tr>
+    </table>
+
+    <!-- Paginador -->
+    <mat-paginator [length]="totalRegistros" [pageSize]="tamanoPagina" [pageSizeOptions]="[5, 10, 25, 100]"
+        (page)="onCambiarPagina($event)" aria-label="Seleccionar página">
+    </mat-paginator>
+</div>
+
+<ng-template #userDialog>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+        <h2 mat-dialog-title>{{ editingId ? 'Editar usuario' : 'Nuevo usuario' }}</h2>
+        <mat-dialog-content>
+            <p>Por favor, completa los datos.</p>
+
+        <div class="form-group">
+            <label for="username">Usuario</label>
+            <input type="text" id="username" formControlName="username" placeholder="Usuario">
+            <small *ngIf="registerForm.get('username')?.hasError('required') && registerForm.get('username')?.touched">
+                Usuario es requerido.
+            </small>
+        </div>
+
+        <div class="form-group">
+            <label for="nomina" >Nómina</label>
+            <input type="text" id="nomina" formControlName="nomina" placeholder="Nómina">
+            <small *ngIf="registerForm.get('nomina')?.hasError('required') && registerForm.get('nomina')?.touched">
+                Nómina es requerida.
+            </small>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Correo Electrónico</label>
+            <input type="email" id="email" formControlName="email" placeholder="correo@ejemplo.com">
+            <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+                <div *ngIf="registerForm.get('email')?.errors?.['required']">Email es requerido.</div>
+                <div *ngIf="registerForm.get('email')?.errors?.['email']">Formato de email inválido.</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Contraseña{{ editingId ? ' (opcional)' : '' }}</label>
+            <input type="password" id="password" formControlName="password"
+                [placeholder]="editingId ? 'Dejar vacía para conservarla' : 'Mínimo 8 caracteres'">
+            <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+                <div *ngIf="registerForm.get('password')?.errors?.['required']">Contraseña es requerida.</div>
+                <div *ngIf="registerForm.get('password')?.errors?.['minlength']">
+                    Contraseña debe tener al menos 8 caracteres.
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="name">Nombre</label>
+            <input type="text" id="name" formControlName="name" placeholder="Nombre">
+            <small *ngIf="registerForm.get('name')?.hasError('required') && registerForm.get('name')?.touched">
+                El nombre es requerido.
+            </small>
+        </div>
+
+        <div class="form-group">
+            <label for="last_name">Apellidos</label>
+            <input type="text" id="last_name" formControlName="last_name" placeholder="Apellidos">
+        </div>
+
+        <div class="form-group">
+            <label for="rol">Rol de la Cuenta</label>
+            <select id="rol" formControlName="rolId">
+                <option value="" disabled>Seleccione una opción</option>
+                <option *ngFor="let item of elementos" [value]="item._id ?? item.id">
+                    {{ item.name ?? item.nombre }}
+                </option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="area">Área</label>
+            <select id="area" formControlName="area">
+                <option value="" disabled>Seleccione una opción</option>
+                <option *ngFor="let area of areas" [value]="area._id">{{ area.name }}</option>
+            </select>
+        </div>
+        <label class="checkbox-row" *ngIf="editingId">
+            <input type="checkbox" formControlName="active">
+            Usuario activo
+        </label>
+
+       </mat-dialog-content>
+
+        <mat-dialog-actions align="end">
+            <button type="button" mat-button class="cancel-btn" (click)="cerrarFormulario()">Cancelar</button>
+            <button type="submit" mat-flat-button [disabled]="registerForm.invalid" class="submit-btn">
+                {{ editingId ? 'Guardar cambios' : 'Registrar usuario' }}
+            </button>
+        </mat-dialog-actions>
+    </form>
+</ng-template>

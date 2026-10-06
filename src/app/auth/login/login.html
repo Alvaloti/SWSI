@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Inicio de Sesión</title>
+    <link rel="stylesheet" type="text/css" href="login.css">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+        integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <div class="media-funcion">
+        <a class="tel" href="#">477 98765 43210</a>
+        <a class="mail" href="#">soporte@leon.gob.mx</a>
+        <a class="preguntas" href="preguntas-frecuentes.html">preguntas frecuentes</a>
+    </div><!--cintilla-->
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <img class="mpio" src="https://imagenes.leon.gob.mx/logo-leon-sin-borde.svg" alt="Municipio de León">
+                <img class="dependencia"
+                    src="https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion.svg"
+                    alt="Dirección de Tecnologías y Gobierno Digital">
+                    <h3></h3>
+            </div><!--identidad institucional--->
+        </header><!--encabezado-->
+
+        <div id="contenido">
+
+            <div id="content-login">
+                <div id="catalogo-servicios-cintilla">
+                    <h1>Catálogo de Servicios</h1>
+                </div><!--encabezado de sección-->
+                <div class="sesion">
+                    <div class="enc-login">
+                        <img class="img-login"
+                            src="https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg"
+                            alt="Dirección General de Tecnologías de la Información y Gobierno Digital">
+                    </div><!--dependencia servicios-->
+
+                    <div class="info-login">
+                        <h1>Iniciar sesión</h1>
+                        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+                            <div class="input-usuario">
+                                <input type="email" name="email" formControlName="email" placeholder="Usuario" required
+                                    email>
+                            </div><!--usuario-->
+                            <div class="caja-input"></div>
+                            <div class="input-password">
+                                <input type="password" name="password" formControlName="password" placeholder="Password"
+                                    required minlength="8">
+                            </div><!--input-password-->
+
+                            <div class="casilla-recordar">
+                                <label class="container-casilla">Recuerdame
+                                    <input type="checkbox">
+                                    <span class="checkmark"></span>
+                                </label><!--casilla-verificación-->
+                            </div><!--campo-verificar-->
+
+                            <div class="caja-input">
+                                <a href="#">Olvidaste tu contraseña</a>
+                            </div><!--recuperar contraseña--->
+
+                            <div class="centrar-boton-sesion">
+                                <input class="boton-sesion" type="submit" [value]="submitting ? 'Ingresando…' : 'Entrar'"
+                                    [disabled]="loginForm.invalid || submitting">
+                            </div><!--botón enviar-->
+
+                            <p class="login-error" *ngIf="loginError" role="alert">{{ loginError }}</p>
+
+                            <a class="crear-cuenta" routerLink="/register">Crear cuenta</a>
+                        </form><!--formulario-->
+                    </div><!--campos sesión-->
+                </div><!--logeo-->
+            </div><!--inicio de sesión-->
+        </div><!--info-login-->
+        <script src="js-dependencias-v3/script.js"></script>
+
+        <footer>
+            <div id="contenedor-pagina">
+                <div class="conten-page dato-page">
+                    <div class="date-pie">
+                        <img class="img-dependencia"
+                            src="https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg"
+                            alt="Dirección General de Tecnologías de la Información y Gobierno Digital">
+                    </div><!--social-media-logotipo-->
+                </div><!--social-media-identidad-->
+
+                <div class="conten-page dato-page">
+                    <h1>Contactános</h1>
+                    <div class="direccion">
+                        <a class="ico-footer" href="#">Blvd. Mariano Escobedo Pte. 4502, San Isidro, 37530 León de los Aldama, Gto. </a>
+                    </div><!--dirección física-->
+
+                    <a class="comentarios" href="#">Tus comentarios <span>nos ayudan a mejorar</span>. Compártenos tu
+                        experiencia y sugerencias.</a>
+
+                    <a class="telefono" href="#"> 477 000 000 </a>
+                </div><!--contacto-->
+            </div><!--datos de contacto y social media-->
+
+            <div class="municipio">
+                <img src="https://imagenes.leon.gob.mx/logo-leon-bco.svg" alt="H. Ayuntamiento de León">
+            </div><!--municipio de León-->
+        </footer><!--pie de página-->
+
+        <div id="copy">
+            Copyright © 2026 <span class="nota-copy">H. Ayuntamiento de León </span>
+
+            <a href="#" target="_blank">Aviso de privacidad</a>
+        </div><!--derechos reservados-->
+    </div><!--contenedor principal-->
+
+    <a href="" class="scrollup">
+        <img src="img-dependencias-v3/up.svg" alt="">
+    </a>
+
+    <script>
+        $(window).scroll(function () {
+            if ($(this).scrollTop() > 500) {
+                $(".scrollup").fadeIn();
+            } else {
+                $(".scrollup").fadeOut();
+            }
+        })
+
+        $(".scrollup").click(function () {
+            $("html, body").animate({
+                scrollTop: 0
+            }, 500);
+            return false;
+        })
+    </script>
+
+</body>
+
+</html>

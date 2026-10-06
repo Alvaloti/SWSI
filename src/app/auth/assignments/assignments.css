@@ -1,0 +1,48 @@
+mat-icon {
+    margin-right: 8px;
+    color: white;
+}
+
+.my_button {
+    background-color: #0194fe;
+}
+
+.table-container {
+    margin: 16px;
+    padding: 16px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.header-row, .filters {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.header-row p { color: #666; margin-top: 0; }
+.filters mat-form-field { min-width: 280px; }
+.status-filter { display: grid; gap: 6px; color: #444; }
+.status-filter select, .form-group select, .form-group textarea {
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: #fff;
+    font: inherit;
+}
+
+.table-scroll { overflow-x: auto; }
+table { width: 100%; }
+.loading-spinner { display: flex; justify-content: center; padding: 24px; }
+.status { color: #666; }
+.status.active { color: #087f23; font-weight: 600; }
+.assignment-form { width: 100%; box-sizing: border-box; }
+.form-group { display: grid; gap: 6px; margin-bottom: 16px; }
+.form-group small { color: #b3261e; }
+
+@media (max-width: 700px) {
+    .header-row > button, .filters mat-form-field { width: 100%; }
+}

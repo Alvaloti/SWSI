@@ -1,0 +1,266 @@
+.my_button {
+    background-color: #0194fe;
+}
+
+.deleteButton {
+    color: #f44336;
+}
+
+.table-container {
+    margin: 16px;
+    padding: 16px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.solicitud-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f7f6;
+}
+
+.solicitud-form {
+    background: #ffffff;
+    padding: 1rem;
+    border-radius: 10px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.solicitud-form h2 {
+    margin-bottom: 0.5rem;
+    color: #333333;
+}
+
+.solicitud-form p {
+    color: #666666;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.2rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.4rem;
+    color: #444444;
+    font-weight: 500;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.form-group select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    background-color: white; /* Asegura fondo blanco en select */
+}
+
+.form-group input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.form-group select:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 0.8rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
+.submit-btn:disabled {
+    background-color: #b0c4de;
+    cursor: not-allowed;
+}
+
+.submit-btn:hover:not(:disabled) {
+    background-color: #0056b3;
+}
+
+.cancel-btn {
+    color: #555555;
+}
+
+mat-dialog-actions {
+    gap: 0.75rem;
+}
+
+mat-dialog-actions .submit-btn,
+mat-dialog-actions .cancel-btn {
+    width: auto;
+    margin-top: 0;
+}
+
+.form-group small {
+    display: block;
+    margin-top: 0.35rem;
+    color: #b3261e;
+}
+
+.checkbox-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; }
+
+#filosofia-cintilla h1 {
+    color: #fff;
+    text-align: center;
+    font-size: 55px;
+    font-weight: 900;
+    margin: 10px 0px;
+}
+
+header .logo img {
+    float: left;
+    margin: 15px 10px 0px 0px;
+}
+
+.espaciador-flexible {
+    flex: 1 1 auto;
+    justify-content: right;
+}
+
+@media (max-width: 930px) {
+    .media-funcion {
+        height: 85px;
+        padding: 10px 15px;
+    }
+
+    .social-media {
+        float: left;
+        padding: 10px 5px 10px 10px;
+    }
+
+    header nav {
+        top: 185px;
+    }
+
+    .opcion-destacados {
+        height: 210px;
+    }
+
+    .opcion-destacados a {
+        width: 100%;
+        float: none;
+        clear: both;
+        margin-bottom: 25px;
+    }
+
+    .modulo {
+        height: 680px;
+    }
+
+    footer {
+        padding: 100px 0px 40px 0px;
+        margin: 10px 10px 0px 10px;
+    }
+
+    #copy {
+        margin: 0px 10px;
+    }
+
+    #articulo-cintilla h1 {
+        font-size: 16px;
+        line-height: 16px;
+    }
+
+    .dato-que a {
+        height: 400px;
+    }
+
+    .box-menu-lateral {
+        flex-basis: 220px;
+    }
+
+    .box-textos {
+        flex-basis: 500px;
+    }
+
+    .box-datos-contacto {
+        flex-basis: 250px;
+    }
+
+    .box-formulario-contacto {
+        flex-basis: 380px;
+    }
+
+    .campo {
+        float: none;
+        width: 100%;
+        margin-right: 0px;
+    }
+
+    .intro-directorio {
+        width: 95%;
+    }
+
+    .img-carrusel {
+        width: 95%;
+    }
+
+    .container-cat {
+        height: 290px;
+    }
+
+    .sesion {
+        width: 85%;
+    }
+
+    #content-login {
+        margin-top: -50px;
+    }
+
+    .info-login {
+        width: 99%;
+    }
+
+    .img-login {
+        width: 200px;
+    }
+
+    .box-descrip-destacado h1 {
+        font-size: 22px;
+        line-height: 25px;
+    }
+
+    .box-img-secc {
+        flex-basis: 200px;
+    }
+
+    .box-descrip-destacado {
+        flex-basis: 410px;
+    }
+
+    .ilustra-img-secc {
+        width: 99%;
+    }
+
+    .ruta-temas {
+        width: 98%;
+        font-size: 15px;
+        line-height: 18px;
+    }
+}

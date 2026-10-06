@@ -1,0 +1,109 @@
+<div class="table-container">
+    <!-- Filtro de Búsqueda -->
+    <h2>Áreas</h2>
+    <mat-form-field appearance="outline">
+        <mat-label>Buscar por nombre</mat-label>
+        <input matInput (keyup)="onFiltrar($event)" placeholder="Ej. Sistemas">
+    </mat-form-field>
+    <div>
+        <span class="espaciador-flexible"></span>
+        <button mat-flat-button class="my_button" type="button" (click)="abrirFormulario(areaDialog)">
+            <mat-icon>add_circle</mat-icon>
+            <span> Agregar</span>
+        </button>
+    </div>
+
+
+    <!-- Spinner de Carga -->
+    @if (cargando) {
+    <div class="loading-spinner">
+        <mat-spinner></mat-spinner>
+    </div>
+    }
+
+    <!-- Tabla Angular Material -->
+    <table mat-table [dataSource]="datos" class="mat-elevation-z8">
+
+        <!-- Columna ID -->
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef> ID </th>
+            <td mat-cell *matCellDef="let elemento"> {{elemento._id ?? elemento.id}} </td>
+        </ng-container>
+
+        <!-- Columna Nombre -->
+        <ng-container matColumnDef="nombre">
+            <th mat-header-cell *matHeaderCellDef> Nombre </th>
+            <td mat-cell *matCellDef="let elemento"> {{elemento.name}} </td>
+        </ng-container>
+
+        <!-- Columna Descripción -->
+        <ng-container matColumnDef="descripción">
+            <th mat-header-cell *matHeaderCellDef> Descripción </th>
+            <td mat-cell *matCellDef="let elemento"> {{elemento.description}} </td>
+        </ng-container>
+
+        <!-- Columna Rol -->
+        <ng-container matColumnDef="activa">
+            <th mat-header-cell *matHeaderCellDef> Activa </th>
+            <td mat-cell *matCellDef="let elemento"> {{elemento.active}} </td>
+        </ng-container>
+
+        <!-- Columna Acciones -->
+        <ng-container matColumnDef="acciones">
+            <th mat-header-cell *matHeaderCellDef> Acciones </th>
+            <td mat-cell *matCellDef="let elemento">
+                <button mat-icon-button (click)="editarArea(elemento)">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button class="deleteButton" (click)="eliminarArea(elemento)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columnasVisibles"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnasVisibles;"></tr>
+    </table>
+
+    <!-- Paginador -->
+    <mat-paginator [length]="totalRegistros" [pageSize]="tamanoPagina" [pageSizeOptions]="[5, 10, 25, 100]"
+        (page)="onCambiarPagina($event)" aria-label="Seleccionar página">
+    </mat-paginator>
+</div>
+
+<ng-template #areaDialog>
+    <form [formGroup]="areaForm" (ngSubmit)="onSubmit()" class="solicitud-form">
+        <h2 mat-dialog-title>{{ editingId ? 'Editar área' : 'Nueva área' }}</h2>
+        <mat-dialog-content>
+            <p>Por favor, completa los datos.</p>
+
+            <div class="form-group">
+                <label for="name">Nombre</label>
+                <input type="text" id="name" formControlName="name" placeholder="Área">
+                <small *ngIf="areaForm.get('name')?.hasError('required') && areaForm.get('name')?.touched">
+                    Nombre del área a crear.
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Descripción</label>
+                <input type="text" id="description" formControlName="description" placeholder="Descripción">
+                <small
+                    *ngIf="areaForm.get('description')?.hasError('required') && areaForm.get('description')?.touched">
+                    Descripción es requerida.
+                </small>
+            </div>
+            <label class="checkbox-row" *ngIf="editingId">
+                <input type="checkbox" formControlName="active">
+                Área activa
+            </label>
+        </mat-dialog-content>
+
+        <mat-dialog-actions align="end">
+            <button type="button" mat-button class="cancel-btn" (click)="cerrarFormulario()">Cancelar</button>
+            <button type="submit" mat-flat-button [disabled]="areaForm.invalid" class="submit-btn">
+                {{ editingId ? 'Guardar cambios' : 'Registrar área' }}
+            </button>
+        </mat-dialog-actions>
+    </form>
+</ng-template>

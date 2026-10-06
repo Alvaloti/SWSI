@@ -1,0 +1,53 @@
+{
+    "name": "swsi",
+    "version": "1.0.0-alpha.1",
+    "description": "Sistema Web para la Gestión de Soporte e Incidencias",
+    "private": true,
+    "type": "module",
+    "license": "MIT",
+    "author": "Lot Alvarez",
+    "workspaces": [
+        "apps/backend",
+        "apps/frontend",
+        "packages/*"
+    ],
+    "engines": {
+        "node": ">=22.0.0",
+        "npm": ">=10.0.0"
+    },
+    "scripts": {
+        "ng": "ng",
+        "start": "ng serve",
+        "watch": "ng build --watch --configuration development",
+        "bootstrap": "node scripts/bootstrap.js",
+        "dev": "echo \"Workspace initialized\"",
+        "build": "ng build",
+        "lint": "echo \"Lint workspace\"",
+        "test": "ng test --watch=false",
+        "format": "echo \"Format workspace\"",
+        "clean": "echo \"Clean workspace\""
+    },
+    "packageManager": "npm@11.4.2",
+    "dependencies": {
+        "@angular/cdk": "^21.2.14",
+        "@angular/common": "^21.2.0",
+        "@angular/compiler": "^21.2.0",
+        "@angular/core": "^21.2.0",
+        "@angular/forms": "^21.2.0",
+        "@angular/material": "^21.2.14",
+        "@angular/platform-browser": "^21.2.0",
+        "@angular/router": "^21.2.0",
+        "bootstrap": "^5.3.8",
+        "rxjs": "~7.8.0",
+        "tslib": "^2.3.0"
+    },
+    "devDependencies": {
+        "@angular/build": "^21.2.16",
+        "@angular/cli": "^21.2.16",
+        "@angular/compiler-cli": "^21.2.0",
+        "jsdom": "^28.0.0",
+        "prettier": "^3.8.1",
+        "typescript": "~5.9.2",
+        "vitest": "^4.0.8"
+    }
+}

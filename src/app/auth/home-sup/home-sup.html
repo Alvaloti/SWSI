@@ -1,0 +1,225 @@
+<mat-toolbar>
+    <button (click)="toggleMenu()">
+        <mat-icon>menu</mat-icon>
+        <span> Menú </span>
+    </button>
+    <img class="img-login" src="https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg"
+        alt="Dirección General de Tecnologías de la Información y Gobierno Digital">
+    <span class="espaciador-flexible"></span>
+    <span> Bienvenido {{ user?.username}} </span>
+    <span>
+        <button mat-button class="menu-button">
+            <mat-icon>notifications_none</mat-icon>
+        </button>
+    </span>
+
+</mat-toolbar>
+
+<mat-sidenav-container>
+    <mat-sidenav #drawer [mode]="isMobile ? 'over' : 'side'" [(opened)]="menuAbierto" class="mat-elevation-z8">
+        <img class="avatar mat-elevation-z8" src="../../../../public/Lot.png" />
+
+        <h4 class="name">{{user?.username}}</h4>
+        <p class="designation">Software Engineer</p>
+
+        <mat-divider></mat-divider>
+        <app-profile (profileUpdated)="user = $event"></app-profile>
+        <button mat-button class="menu-button" (click)="cambiarVista('users')">
+            <mat-icon>person</mat-icon>
+            <span class="span">Técnicos</span>
+        </button>
+        <button mat-button class="menu-button" (click)="cambiarVista('solicitud')">
+            <mat-icon>assignment</mat-icon>
+            <span class="span">Solicitudes</span>
+        </button>
+        <button mat-button class="menu-button" (click)="cambiarVista('tickets')">
+            <mat-icon>assignment</mat-icon>
+            <span class="span">Tickets</span>
+        </button>
+        <button mat-button class="menu-button" (click)="cambiarVista('reportes')">
+            <mat-icon>inbox</mat-icon>
+            <span class="span">Reportes</span>
+        </button>
+
+        <mat-divider></mat-divider>
+
+        <button mat-button class="menu-button">
+            <mat-icon>help</mat-icon>
+            <span class="span">Ayuda</span>
+        </button>
+        <button mat-button class="menu-button" (click)="logout()">
+            <mat-icon>exit_to_app</mat-icon>
+            <span class="span">Salir</span>
+        </button>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="main-container">
+        <div class="contenido-dinamico">
+        @if (vistaActiva === 'users') {
+            <app-users roleFilter="tecnico" titulo="Técnicos"></app-users>
+        } @else if (vistaActiva === 'solicitud') {
+            <div class="table-container">
+                <h2>Solicitudes</h2>
+                <mat-form-field appearance="outline">
+                    <mat-label>Buscar solicitud</mat-label>
+                    <input matInput (keyup)="onFiltrar($event)" placeholder="Folio, tipo o descripción">
+                </mat-form-field>
+
+                @if (cargando) {
+                <div class="loading-spinner"><mat-spinner></mat-spinner></div>
+                } @else if (errorCarga) {
+                <p class="load-error" role="alert">{{ errorCarga }}</p>
+                } @else {
+                <table mat-table [dataSource]="datos" class="mat-elevation-z8">
+                    <ng-container matColumnDef="folio">
+                        <th mat-header-cell *matHeaderCellDef>Folio</th>
+                        <td mat-cell *matCellDef="let solicitud">{{ solicitud.folio }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="tipo">
+                        <th mat-header-cell *matHeaderCellDef>Tipo</th>
+                        <td mat-cell *matCellDef="let solicitud">{{ solicitud.tipo }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="descripcion">
+                        <th mat-header-cell *matHeaderCellDef>Descripción</th>
+                        <td mat-cell *matCellDef="let solicitud">{{ solicitud.descripcion }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="prioridad">
+                        <th mat-header-cell *matHeaderCellDef>Prioridad</th>
+                        <td mat-cell *matCellDef="let solicitud">{{ solicitud.prioridad }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="estado">
+                        <th mat-header-cell *matHeaderCellDef>Estado</th>
+                        <td mat-cell *matCellDef="let solicitud">{{ solicitud.estado }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="comentarios">
+                        <th mat-header-cell *matHeaderCellDef>Comentarios</th>
+                        <td mat-cell *matCellDef="let solicitud">{{ solicitud.comentarios || 'Sin comentarios' }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="acciones">
+                        <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                        <td mat-cell *matCellDef="let solicitud">
+                            <button type="button" mat-icon-button color="primary"
+                                (click)="editarSolicitud(solicitud)" aria-label="Editar solicitud">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button type="button" mat-icon-button class="deleteButton"
+                                (click)="eliminarSolicitud(solicitud)" aria-label="Eliminar solicitud">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="columnasVisibles"></tr>
+                    <tr mat-row *matRowDef="let row; columns: columnasVisibles;"></tr>
+                    <tr class="mat-row" *matNoDataRow>
+                        <td class="mat-cell" [attr.colspan]="columnasVisibles.length">No hay solicitudes disponibles.</td>
+                    </tr>
+                </table>
+                }
+
+                <mat-paginator [length]="totalRegistros" [pageSize]="tamanoPagina" [pageIndex]="paginaActual"
+                    [pageSizeOptions]="[5, 10, 25, 100]" (page)="onCambiarPagina($event)"
+                    aria-label="Seleccionar página de solicitudes">
+                </mat-paginator>
+            </div>
+        } @else if (vistaActiva === 'tickets') {
+            <div class="table-container">
+                <h2>Tickets</h2>
+                <mat-form-field appearance="outline">
+                    <mat-label>Buscar ticket</mat-label>
+                    <input matInput (keyup)="onFiltrar($event)" placeholder="Folio, título o descripción">
+                </mat-form-field>
+
+                @if (cargando) {
+                <div class="loading-spinner"><mat-spinner></mat-spinner></div>
+                } @else if (errorCarga) {
+                <p class="load-error" role="alert">{{ errorCarga }}</p>
+                } @else {
+                <table mat-table [dataSource]="datos" class="mat-elevation-z8">
+                    <ng-container matColumnDef="folio">
+                        <th mat-header-cell *matHeaderCellDef>Folio</th>
+                        <td mat-cell *matCellDef="let ticket">{{ ticket.folio }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="titulo">
+                        <th mat-header-cell *matHeaderCellDef>Título</th>
+                        <td mat-cell *matCellDef="let ticket">{{ ticket.titulo }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="descripcion">
+                        <th mat-header-cell *matHeaderCellDef>Descripción</th>
+                        <td mat-cell *matCellDef="let ticket">{{ ticket.descripcion }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="prioridad">
+                        <th mat-header-cell *matHeaderCellDef>Prioridad</th>
+                        <td mat-cell *matCellDef="let ticket">{{ ticket.prioridad }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="estado">
+                        <th mat-header-cell *matHeaderCellDef>Estado</th>
+                        <td mat-cell *matCellDef="let ticket">{{ ticket.estado }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="comentarios">
+                        <th mat-header-cell *matHeaderCellDef>Comentarios</th>
+                        <td mat-cell *matCellDef="let ticket">{{ ticket.comentarios || 'Sin comentarios' }}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="acciones">
+                        <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                        <td mat-cell *matCellDef="let ticket">
+                            <button type="button" mat-icon-button color="primary"
+                                (click)="editarTicket(ticket)" aria-label="Editar ticket">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+                            <button type="button" mat-icon-button class="deleteButton"
+                                (click)="eliminarTicket(ticket)" aria-label="Eliminar ticket">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="columnasTickets"></tr>
+                    <tr mat-row *matRowDef="let row; columns: columnasTickets;"></tr>
+                    <tr class="mat-row" *matNoDataRow>
+                        <td class="mat-cell" [attr.colspan]="columnasTickets.length">No hay tickets disponibles.</td>
+                    </tr>
+                </table>
+                }
+
+                <mat-paginator [length]="totalRegistros" [pageSize]="tamanoPagina" [pageIndex]="paginaActual"
+                    [pageSizeOptions]="[5, 10, 25, 100]" (page)="onCambiarPagina($event)"
+                    aria-label="Seleccionar página de tickets">
+                </mat-paginator>
+            </div>
+        }
+
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>
+
+<ng-template #assignmentDialog>
+    <h2 mat-dialog-title>
+        Editar {{ tipoEditando === 'ticket' ? 'ticket' : 'solicitud' }}
+        {{ registroEditando?.folio }}
+    </h2>
+    <mat-dialog-content>
+        <div class="assignment-form">
+            <label for="tecnico">Técnico asignado</label>
+            <select id="tecnico" [(ngModel)]="tecnicoSeleccionado" required>
+                <option value="" disabled>Selecciona un técnico</option>
+                <option *ngFor="let tecnico of tecnicos" [value]="tecnico._id ?? tecnico.id">
+                    {{ tecnico.name }} {{ tecnico.last_name }} ({{ tecnico.username }})
+                </option>
+            </select>
+
+            <label for="comentariosEdicion">Comentarios</label>
+            <textarea id="comentariosEdicion" [(ngModel)]="comentariosEditando" rows="4"
+                placeholder="Comentarios para el técnico"></textarea>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button type="button" mat-button (click)="cerrarEditor()" [disabled]="guardandoAsignacion">
+            Cancelar
+        </button>
+        <button type="button" mat-flat-button color="primary" (click)="guardarAsignacion()"
+            [disabled]="!tecnicoSeleccionado || guardandoAsignacion">
+            {{ guardandoAsignacion ? 'Guardando...' : 'Asignar técnico' }}
+        </button>
+    </mat-dialog-actions>
+</ng-template>

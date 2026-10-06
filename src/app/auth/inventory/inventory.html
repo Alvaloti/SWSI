@@ -1,0 +1,136 @@
+<div class="table-container">
+    <!-- Filtro de Búsqueda -->
+    <h2>Inventario</h2>
+    <mat-form-field appearance="outline">
+        <mat-label>Buscar por nombre</mat-label>
+        <input matInput (keyup)="onFiltrar($event)" placeholder="Ej. Sistemas">
+    </mat-form-field>
+    <div>
+        <span class="espaciador-flexible"></span>
+        <button mat-flat-button class="my_button" type="button" (click)="abrirFormulario(inventoryDialog)">
+            <mat-icon>add_circle</mat-icon>
+            <span> Agregar</span>
+        </button>
+    </div>
+
+
+    <!-- Spinner de Carga -->
+    @if (cargando) {
+    <div class="loading-spinner">
+        <mat-spinner></mat-spinner>
+    </div>
+    }
+
+    <!-- Tabla Angular Material -->
+    <table mat-table [dataSource]="datos" class="mat-elevation-z8">
+
+        <!-- Columna ID -->
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef> ID </th>
+            <td mat-cell *matCellDef="let elemento"> {{ elemento.id}} </td>
+        </ng-container>
+
+        <!-- Columna Nombre -->
+        <ng-container matColumnDef="tipo">
+            <th mat-header-cell *matHeaderCellDef> Nombre </th>
+            <td mat-cell *matCellDef="let elemento"> {{elemento.type}} </td>
+        </ng-container>
+
+        <!-- Columna Descripción -->
+        <ng-container matColumnDef="marca">
+            <th mat-header-cell *matHeaderCellDef> Marca </th>
+            <td mat-cell *matCellDef="let elemento"> {{elemento.brand}} </td>
+        </ng-container>
+
+        <!-- Columna Rol -->
+        <ng-container matColumnDef="asignado">
+            <th mat-header-cell *matHeaderCellDef> Asignado a </th>
+            <td mat-cell *matCellDef="let elemento"> {{elemento.assigned_to?.username ?? elemento.assigned_to}} </td>
+        </ng-container>
+
+        <!-- Columna Acciones -->
+        <ng-container matColumnDef="acciones">
+            <th mat-header-cell *matHeaderCellDef> Acciones </th>
+            <td mat-cell *matCellDef="let elemento">
+                <button mat-icon-button (click)="editarItem(elemento)">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button class="deleteButton" (click)="eliminarItem(elemento)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columnasVisibles"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnasVisibles;"></tr>
+    </table>
+
+    <!-- Paginador -->
+    <mat-paginator [length]="totalRegistros" [pageSize]="tamanoPagina" [pageSizeOptions]="[5, 10, 25, 100]"
+        (page)="onCambiarPagina($event)" aria-label="Seleccionar página">
+    </mat-paginator>
+</div>
+
+<ng-template #inventoryDialog>
+    <form [formGroup]="inventoryForm" (ngSubmit)="onSubmit()" class="solicitud-form">
+        <h2 mat-dialog-title>{{ editingId ? 'Editar equipo' : 'Nuevo equipo' }}</h2>
+        <mat-dialog-content>
+            <p>Por favor, completa los datos.</p>
+
+            <div class="form-group">
+                <label for="type">Tipo de dispositivo</label>
+                <input type="text" id="type" formControlName="type" placeholder="Tipo dispositivo">
+                <small *ngIf="inventoryForm.get('type')?.hasError('required') && inventoryForm.get('type')?.touched">
+                    El tipo de dispositivo es requerido.
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="brand">Marca</label>
+                <input type="text" id="brand" formControlName="brand" placeholder="Descripción">
+                <small *ngIf="inventoryForm.get('brand')?.hasError('required') && inventoryForm.get('brand')?.touched">
+                    Marca es requerida.
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="model">Modelo</label>
+                <input type="text" id="model" formControlName="model" placeholder="Modelo">
+                <small *ngIf="inventoryForm.get('model')?.hasError('required') && inventoryForm.get('model')?.touched">
+                    Modelo es requerida.
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="serial_number">Número de serie</label>
+                <input type="text" id="serial_number" formControlName="serial_number" placeholder="N/Serie">
+                <small
+                    *ngIf="inventoryForm.get('serial_number')?.hasError('required') && inventoryForm.get('serial_number')?.touched">
+                    Número de serie es requerida.
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="status">Estado</label>
+                <select id="status" formControlName="status">
+                    <option value="" disabled>Seleccionar opción</option>
+                    <option value="activo">Activo</option>
+                    <option value="baja">Baja</option>
+                    <option value="mantenimiento">Mantenimiento</option>
+                </select>
+                <small
+                    *ngIf="inventoryForm.get('status')?.hasError('required') && inventoryForm.get('status')?.touched">
+                    El estado es requerido.
+                </small>
+            </div>
+
+        </mat-dialog-content>
+
+        <mat-dialog-actions align="end">
+            <button type="button" mat-button class="cancel-btn" (click)="cerrarFormulario()">Cancelar</button>
+            <button type="submit" mat-flat-button [disabled]="inventoryForm.invalid" class="submit-btn">
+                {{ editingId ? 'Guardar cambios' : 'Registrar equipo' }}
+            </button>
+        </mat-dialog-actions>
+    </form>
+</ng-template>

@@ -1,0 +1,54 @@
+.example-card {
+    max-width: 200px;
+    height: 200px;
+    background: lightblue;
+}
+
+.example-card-footer {
+    padding: 16px;
+}
+
+.main-content {
+    margin: 16px;
+    padding: 16px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+section-heading {
+    align-content: center;
+}
+
+mat-mdc-card-title {
+    text-align: center;
+}
+
+main-content{
+    margin: 16px;
+    padding: 16px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px;
+    padding: 16px;
+}
+
+.cancel-btn {
+    width: 30%;
+    padding: 0.8rem;
+    background: #0194fe;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 1rem;
+    align-content: center;
+}

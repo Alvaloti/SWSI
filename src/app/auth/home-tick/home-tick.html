@@ -1,0 +1,97 @@
+<mat-toolbar>
+    <button (click)="toggleMenu()">
+        <mat-icon>menu</mat-icon>
+        <span> Menú </span>
+    </button>
+    <img class="img-login" src="https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg"
+        alt="Dirección General de Tecnologías de la Información y Gobierno Digital">
+
+    <span class="espaciador-flexible"></span>
+    <span> Bienvenido {{ user?.username}} </span>
+    <span>
+        <button mat-button class="menu-button">
+            <mat-icon>notifications_none</mat-icon>
+        </button>
+    </span>
+
+</mat-toolbar>
+
+<mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #drawer [mode]="isMobile ? 'over' : 'side'" [(opened)]="menuAbierto" class="mat-elevation-z8">
+        <img class="avatar mat-elevation-z8" src="../../../../public/Lot.png" alt="Foto de perfil">
+        <h4 class="name">{{ user?.username }}</h4>
+        <p class="designation">Software Engineer</p>
+
+        <mat-divider></mat-divider>
+        <app-profile (profileUpdated)="user = $event"></app-profile>
+        <button type="button" mat-button class="menu-button" routerLink="/ticket">
+            <mat-icon>assignment</mat-icon>
+            <span class="span">Crear ticket</span>
+        </button>
+
+        <mat-divider></mat-divider>
+        <button type="button" mat-button class="menu-button">
+            <mat-icon>help</mat-icon>
+            <span class="span">Ayuda</span>
+        </button>
+        <button type="button" mat-button class="menu-button" (click)="logout()">
+            <mat-icon>exit_to_app</mat-icon>
+            <span class="span">Salir</span>
+        </button>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+        <div class="table-container">
+            <mat-form-field appearance="outline">
+                <mat-label>Buscar ticket</mat-label>
+                <input matInput (keyup)="onFiltrar($event)" placeholder="Folio o título">
+            </mat-form-field>
+
+            @if (cargando) {
+            <div class="loading-spinner">
+                <mat-spinner></mat-spinner>
+            </div>
+            }
+
+            <table mat-table [dataSource]="datos" class="mat-elevation-z8">
+                <ng-container matColumnDef="folio">
+                    <th mat-header-cell *matHeaderCellDef>Folio</th>
+                    <td mat-cell *matCellDef="let elemento">{{ elemento.folio }}</td>
+                </ng-container>
+                <ng-container matColumnDef="titulo">
+                    <th mat-header-cell *matHeaderCellDef>Título</th>
+                    <td mat-cell *matCellDef="let elemento">{{ elemento.titulo }}</td>
+                </ng-container>
+                <ng-container matColumnDef="descripcion">
+                    <th mat-header-cell *matHeaderCellDef>Descripción</th>
+                    <td mat-cell *matCellDef="let elemento">{{ elemento.descripcion }}</td>
+                </ng-container>
+                <ng-container matColumnDef="estado">
+                    <th mat-header-cell *matHeaderCellDef>Estado</th>
+                    <td mat-cell *matCellDef="let elemento">{{ elemento.estado }}</td>
+                </ng-container>
+                <ng-container matColumnDef="comentarios">
+                    <th mat-header-cell *matHeaderCellDef>Comentarios</th>
+                    <td mat-cell *matCellDef="let elemento">{{ elemento.comentarios }}</td>
+                </ng-container>
+                <ng-container matColumnDef="acciones">
+                    <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                    <td mat-cell *matCellDef="let elemento">
+                        <button type="button" mat-icon-button color="primary" (click)="editarTicket(elemento)"
+                            aria-label="Editar ticket"><mat-icon>edit</mat-icon></button>
+                        <button type="button" mat-icon-button class="deleteButton" (click)="eliminarTicket(elemento)"
+                            aria-label="Eliminar ticket"><mat-icon>delete</mat-icon></button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="columnasVisibles"></tr>
+                <tr mat-row *matRowDef="let row; columns: columnasVisibles;"></tr>
+            </table>
+
+            <mat-paginator [length]="totalRegistros" [pageSize]="tamanoPagina" [pageIndex]="paginaActual"
+                [pageSizeOptions]="[5, 10, 25, 100]" (page)="onCambiarPagina($event)"
+                aria-label="Seleccionar página de tickets">
+            </mat-paginator>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

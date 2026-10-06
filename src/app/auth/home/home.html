@@ -1,0 +1,105 @@
+<mat-toolbar>
+    <button (click)="toggleMenu()">
+        <mat-icon>menu</mat-icon>
+        <span> Menú </span>
+    </button>
+    <img class="img-login" src="https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg"
+        alt="Dirección General de Tecnologías de la Información y Gobierno Digital">
+
+    <span class="espaciador-flexible"></span>
+    <span> Bienvenido {{ user?.username}} </span>
+    <span>
+        <button mat-button class="menu-button">
+            <mat-icon>notifications_none</mat-icon>
+        </button>
+    </span>
+
+</mat-toolbar>
+
+<mat-sidenav-container>
+    <mat-sidenav #drawer [mode]="isMobile ? 'over' : 'side'" [(opened)]="menuAbierto" class="mat-elevation-z8">
+        <img class="avatar mat-elevation-z8" src="../../../../public/Lot.png" />
+
+        <h4 class="name">{{user?.username}}</h4>
+        <p class="designation">Software Engineer</p>
+
+        <mat-divider></mat-divider>
+        <app-profile (profileUpdated)="user = $event"></app-profile>
+        <button mat-button class="menu-button" (click)="cambiarVista('users')">
+            <mat-icon>person</mat-icon>
+            <span class="span">Usuarios</span>
+        </button>
+        <button mat-button class="menu-button" (click)="cambiarVista('register')">
+            <mat-icon>assignment</mat-icon>
+            <span class="span">Nuevo usuario</span>
+        </button>
+        <button mat-button class="menu-button" (click)="cambiarVista('reportes')">
+            <mat-icon>inbox</mat-icon>
+            <span class="span">Reportes</span>
+        </button>
+        <mat-nav-list>
+            <!-- Opción con menú flotante -->
+            <button mat-button class="menu-button" [matMenuTriggerFor]="administracion">
+                <mat-icon matListItemMeta>settings</mat-icon>
+                <span class="span">Administración</span>
+            </button>
+            <!-- Definición del menú flotante (fuera del flujo del sidenav) -->
+            <mat-menu #administracion="matMenu" xPosition="after" panelClass="menu-personalizado">
+                <button mat-button class="menu-button" (click)="cambiarVista('area')">
+                    <mat-icon>settings</mat-icon>
+                    <span class="span">Áreas</span>
+                </button>
+                <button mat-button class="menu-button"  (click)="cambiarVista('categoria')">
+                    <mat-icon>settings</mat-icon>
+                    <span class="span">Categorías</span>
+                </button>
+                <button mat-button class="menu-button"  (click)="cambiarVista('role')">
+                    <mat-icon>settings</mat-icon>
+                    <span class="span">Roles</span>
+                </button>
+                <button mat-button class="menu-button"  (click)="cambiarVista('inventario')">
+                    <mat-icon>settings</mat-icon>
+                    <span class="span">Inventario</span>
+                </button>
+                <button mat-button class="menu-button" (click)="cambiarVista('asignaciones')">
+                    <mat-icon>assignment_ind</mat-icon>
+                    <span class="span">Asignaciones</span>
+                </button>
+
+            </mat-menu>
+            <mat-divider></mat-divider>
+
+            <button mat-button class="menu-button">
+                <mat-icon>help</mat-icon>
+                <span class="span">Ayuda</span>
+            </button>
+            <button mat-button class="menu-button" (click)="logout()">
+                <mat-icon>exit_to_app</mat-icon>
+                <span class="span">Salir</span>
+            </button>
+        </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="main-container">
+        <div class="contenido-dinamico">
+            @if (vistaActiva === '') {
+            <app-home-sol></app-home-sol>
+            } @else if (vistaActiva === 'register') {
+            <app-register></app-register>
+            } @else if (vistaActiva === 'area') {
+            <app-area></app-area>
+            }@else if (vistaActiva === 'categoria') {
+            <app-category></app-category>
+            }@else if (vistaActiva === 'role') {
+            <app-role></app-role>
+            }@else if (vistaActiva === 'inventario') {
+            <app-inventory></app-inventory>
+            }@else if (vistaActiva === 'asignaciones') {
+            <app-assignments></app-assignments>
+            } @else {
+            <app-users></app-users>
+            }
+
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

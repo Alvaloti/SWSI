@@ -1,0 +1,121 @@
+<mat-toolbar>
+    <button (click)="toggleMenu()">
+        <mat-icon>menu</mat-icon>
+        <span> Menú </span>
+    </button>
+    <img class="img-login" src="https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg"
+        alt="Dirección General de Tecnologías de la Información y Gobierno Digital">
+    <span class="espaciador-flexible"></span>
+    <span> Bienvenido {{ user?.username}} </span>
+    <span>
+        <button mat-button class="menu-button">
+            <mat-icon>notifications_none</mat-icon>
+        </button>
+    </span>
+
+</mat-toolbar>
+
+<mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #drawer [mode]="isMobile ? 'over' : 'side'" [(opened)]="menuAbierto" class="mat-elevation-z8">
+        <img class="avatar mat-elevation-z8" src="../../../../public/Lot.png" />
+
+        <h4 class="name">{{user?.username}}</h4>
+        <p class="designation">Software Engineer</p>
+
+        <mat-divider></mat-divider>
+        <app-profile (profileUpdated)="user = $event"></app-profile>
+        <button mat-button class="menu-button" routerLink="/solicitud">
+            <mat-icon>assignment</mat-icon>
+            <span class="span">Crea solicitud</span>
+        </button>
+
+        <mat-divider></mat-divider>
+
+        <button mat-button class="menu-button">
+            <mat-icon>help</mat-icon>
+            <span class="span">Help</span>
+        </button>
+        <button mat-button class="menu-button" (click)="logout()">
+            <mat-icon>exit_to_app</mat-icon>
+            <span class="span">Salir</span>
+        </button>
+    </mat-sidenav>
+
+    <div class="content">
+        <router-outlet></router-outlet>
+        <router-outlet name="Solicitudes"></router-outlet>
+    </div>
+    <mat-sidenav-content>
+        <div class="table-container">
+            <!-- Filtro de Búsqueda -->
+            <mat-form-field appearance="outline">
+                <mat-label>Buscar por nombre</mat-label>
+                <input matInput (keyup)="onFiltrar($event)" placeholder="Ej. Juan">
+            </mat-form-field>
+
+
+            <!-- Spinner de Carga -->
+            @if (cargando) {
+            <div class="loading-spinner">
+                <mat-spinner></mat-spinner>
+            </div>
+            }
+
+            <!-- Tabla Angular Material -->
+            <table mat-table [dataSource]="datos" class="mat-elevation-z8">
+
+                <!-- Columna ID -->
+                <ng-container matColumnDef="folio">
+                    <th mat-header-cell *matHeaderCellDef> Folio </th>
+                    <td mat-cell *matCellDef="let elemento"> {{elemento.folio}} </td>
+                </ng-container>
+
+                <!-- Columna Nombre -->
+                <ng-container matColumnDef="tipo">
+                    <th mat-header-cell *matHeaderCellDef> Tipo </th>
+                    <td mat-cell *matCellDef="let elemento"> {{elemento.tipo}} </td>
+                </ng-container>
+
+                <!-- Columna Email -->
+                <ng-container matColumnDef="descripcion">
+                    <th mat-header-cell *matHeaderCellDef> Descripción </th>
+                    <td mat-cell *matCellDef="let elemento"> {{elemento.descripcion}} </td>
+                </ng-container>
+
+                <!-- Columna Estatus -->
+                <ng-container matColumnDef="estado">
+                    <th mat-header-cell *matHeaderCellDef> estado </th>
+                    <td mat-cell *matCellDef="let elemento"> {{elemento.estado}} </td>
+                </ng-container>
+
+                <!-- Columna Rol -->
+                <ng-container matColumnDef="comentarios">
+                    <th mat-header-cell *matHeaderCellDef> Comentarios </th>
+                    <td mat-cell *matCellDef="let elemento"> {{elemento.comentarios}} </td>
+                </ng-container>
+
+                <!-- Columna Acciones -->
+                <ng-container matColumnDef="acciones">
+                    <th mat-header-cell *matHeaderCellDef> Acciones </th>
+                    <td mat-cell *matCellDef="let elemento">
+                        <button mat-icon-button color="primary" (click)="editarSolicitud(elemento)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button mat-icon-button class="deleteButton" (click)="eliminarSolicitud(elemento)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="columnasVisibles"></tr>
+                <tr mat-row *matRowDef="let row; columns: columnasVisibles;"></tr>
+            </table>
+
+            <!-- Paginador -->
+            <mat-paginator [length]="totalRegistros" [pageSize]="tamanoPagina" [pageSizeOptions]="[5, 10, 25, 100]"
+                (page)="onCambiarPagina($event)" aria-label="Seleccionar página">
+            </mat-paginator>
+        </div>
+
+    </mat-sidenav-content>
+</mat-sidenav-container>
