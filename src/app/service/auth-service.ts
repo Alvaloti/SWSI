@@ -14,7 +14,7 @@ export class AuthService {
     updateUser(id: string, user: any): Observable<any> {
         return this.http.put(`${this.baseUrl}/users/${id}`, user, { withCredentials: true });
     }
-    baseUrl = 'http://138.68.20.40:5001/api';
+    baseUrl = 'https://138.68.20.40:5001/api';
 
     constructor(private http: HttpClient) {}
 
