@@ -63,10 +63,6 @@
                                 </label><!--casilla-verificación-->
                             </div><!--campo-verificar-->
 
-                            <div class="caja-input">
-                                <a href="#">Olvidaste tu contraseña</a>
-                            </div><!--recuperar contraseña--->
-
                             <div class="centrar-boton-sesion">
                                 <input class="boton-sesion" type="submit" [value]="submitting ? 'Ingresando…' : 'Entrar'"
                                     [disabled]="loginForm.invalid || submitting">
@@ -74,7 +70,6 @@
 
                             <p class="login-error" *ngIf="loginError" role="alert">{{ loginError }}</p>
 
-                            <a class="crear-cuenta" routerLink="/register">Crear cuenta</a>
                         </form><!--formulario-->
                     </div><!--campos sesión-->
                 </div><!--logeo-->

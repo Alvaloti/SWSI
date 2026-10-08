@@ -7,13 +7,6 @@ import { tap } from 'rxjs/operators';
     providedIn: 'root',
 })
 export class AuthService {
-    deleteUser(id: string): Observable<any> {
-        return this.http.delete(`${this.baseUrl}/users/${id}`, { withCredentials: true });
-    }
-
-    updateUser(id: string, user: any): Observable<any> {
-        return this.http.put(`${this.baseUrl}/users/${id}`, user, { withCredentials: true });
-    }
     baseUrl = 'https://apiswsi.onrender.com/api';
 
     constructor(private http: HttpClient) {}
@@ -39,15 +32,12 @@ export class AuthService {
         return this.http.get(`${this.baseUrl}/users`, { params, withCredentials: true });
     }
 
-    logout(): Observable<any> {
-        return this.http
-            .post(`${this.baseUrl}/logout`, {}, { withCredentials: true })
-            .pipe(tap(() => this.clearClientSession()));
+    deleteUser(id: string): Observable<any> {
+        return this.http.delete(`${this.baseUrl}/users/${id}`, { withCredentials: true });
     }
 
-    clearClientSession(): void {
-        sessionStorage.clear();
-        localStorage.removeItem('token');
+    updateUser(id: string, user: any): Observable<any> {
+        return this.http.put(`${this.baseUrl}/users/${id}`, user, { withCredentials: true });
     }
 
     getSolicitudes(params?: any): Observable<any> {
@@ -179,5 +169,16 @@ export class AuthService {
             { return_notes },
             { withCredentials: true },
         );
+    }
+
+    logout(): Observable<any> {
+        return this.http
+            .post(`${this.baseUrl}/logout`, {}, { withCredentials: true })
+            .pipe(tap(() => this.clearClientSession()));
+    }
+
+    clearClientSession(): void {
+        sessionStorage.clear();
+        localStorage.removeItem('token');
     }
 }
