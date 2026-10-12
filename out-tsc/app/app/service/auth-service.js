@@ -4,13 +4,7 @@ import * as i0 from "@angular/core";
 import * as i1 from "@angular/common/http";
 export class AuthService {
     http;
-    deleteUser(id) {
-        return this.http.delete(`${this.baseUrl}/users/${id}`, { withCredentials: true });
-    }
-    updateUser(id, user) {
-        return this.http.put(`${this.baseUrl}/users/${id}`, user, { withCredentials: true });
-    }
-    baseUrl = 'http://localhost:5001/api';
+    baseUrl = 'https://apiswsi.onrender.com/api';
     constructor(http) {
         this.http = http;
     }
@@ -30,14 +24,11 @@ export class AuthService {
     getUsers(params) {
         return this.http.get(`${this.baseUrl}/users`, { params, withCredentials: true });
     }
-    logout() {
-        return this.http
-            .post(`${this.baseUrl}/logout`, {}, { withCredentials: true })
-            .pipe(tap(() => this.clearClientSession()));
+    deleteUser(id) {
+        return this.http.delete(`${this.baseUrl}/users/${id}`, { withCredentials: true });
     }
-    clearClientSession() {
-        sessionStorage.clear();
-        localStorage.removeItem('token');
+    updateUser(id, user) {
+        return this.http.put(`${this.baseUrl}/users/${id}`, user, { withCredentials: true });
     }
     getSolicitudes(params) {
         return this.http.get(`${this.baseUrl}/getSolicitudes`, { params, withCredentials: true });
@@ -119,6 +110,30 @@ export class AuthService {
     deleteTicket(id) {
         return this.http.delete(`${this.baseUrl}/tickets/${id}`, { withCredentials: true });
     }
+    uploadAttachment(file, parent) {
+        const formData = new FormData();
+        formData.append('file', file);
+        if (parent.solicitud_id)
+            formData.append('solicitud_id', parent.solicitud_id);
+        if (parent.ticket_id)
+            formData.append('ticket_id', parent.ticket_id);
+        return this.http.post(`${this.baseUrl}/attachments`, formData, { withCredentials: true });
+    }
+    getAttachments(parent) {
+        return this.http.get(`${this.baseUrl}/attachments`, {
+            params: parent,
+            withCredentials: true,
+        });
+    }
+    downloadAttachment(id) {
+        return this.http.get(`${this.baseUrl}/attachments/${id}/file`, {
+            responseType: 'blob',
+            withCredentials: true,
+        });
+    }
+    deleteAttachment(id) {
+        return this.http.delete(`${this.baseUrl}/attachments/${id}`, { withCredentials: true });
+    }
     getAssignments(params) {
         return this.http.get(`${this.baseUrl}/assignments`, { params, withCredentials: true });
     }
@@ -133,6 +148,15 @@ export class AuthService {
     }
     returnAssignment(id, return_notes) {
         return this.http.patch(`${this.baseUrl}/assignments/${id}/return`, { return_notes }, { withCredentials: true });
+    }
+    logout() {
+        return this.http
+            .post(`${this.baseUrl}/logout`, {}, { withCredentials: true })
+            .pipe(tap(() => this.clearClientSession()));
+    }
+    clearClientSession() {
+        sessionStorage.clear();
+        localStorage.removeItem('token');
     }
     static ɵfac = function AuthService_Factory(__ngFactoryType__) { return new (__ngFactoryType__ || AuthService)(i0.ɵɵinject(i1.HttpClient)); };
     static ɵprov = /*@__PURE__*/ i0.ɵɵdefineInjectable({ token: AuthService, factory: AuthService.ɵfac, providedIn: 'root' });

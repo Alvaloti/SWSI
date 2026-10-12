@@ -582,12 +582,12 @@ var config = {
 
 // node_modules/rxjs/dist/esm/internal/scheduler/timeoutProvider.js
 var timeoutProvider = {
-  setTimeout(handler, timeout, ...args) {
+  setTimeout(handler, timeout2, ...args) {
     const { delegate } = timeoutProvider;
     if (delegate === null || delegate === void 0 ? void 0 : delegate.setTimeout) {
-      return delegate.setTimeout(handler, timeout, ...args);
+      return delegate.setTimeout(handler, timeout2, ...args);
     }
-    return setTimeout(handler, timeout, ...args);
+    return setTimeout(handler, timeout2, ...args);
   },
   clearTimeout(handle) {
     const { delegate } = timeoutProvider;
@@ -1312,12 +1312,12 @@ var Action = class extends Subscription {
 
 // node_modules/rxjs/dist/esm/internal/scheduler/intervalProvider.js
 var intervalProvider = {
-  setInterval(handler, timeout, ...args) {
+  setInterval(handler, timeout2, ...args) {
     const { delegate } = intervalProvider;
     if (delegate === null || delegate === void 0 ? void 0 : delegate.setInterval) {
-      return delegate.setInterval(handler, timeout, ...args);
+      return delegate.setInterval(handler, timeout2, ...args);
     }
-    return setInterval(handler, timeout, ...args);
+    return setInterval(handler, timeout2, ...args);
   },
   clearInterval(handle) {
     const { delegate } = intervalProvider;
@@ -2055,6 +2055,55 @@ var EmptyError = createErrorClass((_super) => function EmptyErrorImpl() {
 // node_modules/rxjs/dist/esm/internal/util/isDate.js
 function isValidDate(value) {
   return value instanceof Date && !isNaN(value);
+}
+
+// node_modules/rxjs/dist/esm/internal/operators/timeout.js
+var TimeoutError = createErrorClass((_super) => function TimeoutErrorImpl(info = null) {
+  _super(this);
+  this.message = "Timeout has occurred";
+  this.name = "TimeoutError";
+  this.info = info;
+});
+function timeout(config2, schedulerArg) {
+  const { first: first2, each, with: _with = timeoutErrorFactory, scheduler = schedulerArg !== null && schedulerArg !== void 0 ? schedulerArg : asyncScheduler, meta = null } = isValidDate(config2) ? { first: config2 } : typeof config2 === "number" ? { each: config2 } : config2;
+  if (first2 == null && each == null) {
+    throw new TypeError("No timeout provided.");
+  }
+  return operate((source, subscriber) => {
+    let originalSourceSubscription;
+    let timerSubscription;
+    let lastValue = null;
+    let seen = 0;
+    const startTimer = (delay) => {
+      timerSubscription = executeSchedule(subscriber, scheduler, () => {
+        try {
+          originalSourceSubscription.unsubscribe();
+          innerFrom(_with({
+            meta,
+            lastValue,
+            seen
+          })).subscribe(subscriber);
+        } catch (err) {
+          subscriber.error(err);
+        }
+      }, delay);
+    };
+    originalSourceSubscription = source.subscribe(createOperatorSubscriber(subscriber, (value) => {
+      timerSubscription === null || timerSubscription === void 0 ? void 0 : timerSubscription.unsubscribe();
+      seen++;
+      subscriber.next(lastValue = value);
+      each > 0 && startTimer(each);
+    }, void 0, void 0, () => {
+      if (!(timerSubscription === null || timerSubscription === void 0 ? void 0 : timerSubscription.closed)) {
+        timerSubscription === null || timerSubscription === void 0 ? void 0 : timerSubscription.unsubscribe();
+      }
+      lastValue = null;
+    }));
+    !seen && startTimer(first2 != null ? typeof first2 === "number" ? first2 : +first2 - scheduler.now() : each);
+  });
+}
+function timeoutErrorFactory(info) {
+  throw new TimeoutError(info);
 }
 
 // node_modules/rxjs/dist/esm/internal/operators/map.js
@@ -14998,10 +15047,10 @@ var TimerScheduler = class _TimerScheduler {
       const invokeAt = this.current[0];
       if (this.timeoutId === null || this.invokeTimerAt && this.invokeTimerAt - invokeAt > FRAME_DURATION_MS) {
         this.clearTimeout();
-        const timeout = Math.max(invokeAt - now, FRAME_DURATION_MS);
+        const timeout2 = Math.max(invokeAt - now, FRAME_DURATION_MS);
         this.invokeTimerAt = invokeAt;
         this.timeoutId = ngZone.runOutsideAngular(() => {
-          return setTimeout(() => ngZone.run(callback), timeout);
+          return setTimeout(() => ngZone.run(callback), timeout2);
         });
       }
     }
@@ -15171,7 +15220,7 @@ function applyDeferBlockStateWithScheduling(newState, lDetails, lContainer, tNod
     lDetails[NEXT_DEFER_BLOCK_STATE] = newState;
   }
 }
-function scheduleDeferBlockUpdate(timeout, lDetails, tNode, lContainer, hostLView) {
+function scheduleDeferBlockUpdate(timeout2, lDetails, tNode, lContainer, hostLView) {
   const callback = () => {
     const nextState = lDetails[NEXT_DEFER_BLOCK_STATE];
     lDetails[STATE_IS_FROZEN_UNTIL] = null;
@@ -15180,7 +15229,7 @@ function scheduleDeferBlockUpdate(timeout, lDetails, tNode, lContainer, hostLVie
       renderDeferBlockState(nextState, tNode, lContainer);
     }
   };
-  return scheduleTimerTrigger(timeout, callback, hostLView[INJECTOR]);
+  return scheduleTimerTrigger(timeout2, callback, hostLView[INJECTOR]);
 }
 function isValidStateChange(currentState, newState) {
   return currentState < newState;
@@ -16255,13 +16304,13 @@ var Testability = class _Testability {
       };
     });
   }
-  addCallback(cb, timeout, updateCb) {
+  addCallback(cb, timeout2, updateCb) {
     let timeoutId = -1;
-    if (timeout && timeout > 0) {
+    if (timeout2 && timeout2 > 0) {
       timeoutId = setTimeout(() => {
         this._callbacks = this._callbacks.filter((cb2) => cb2.timeoutId !== timeoutId);
         cb();
-      }, timeout);
+      }, timeout2);
     }
     this._callbacks.push({
       doneCb: cb,
@@ -16269,11 +16318,11 @@ var Testability = class _Testability {
       updateCb
     });
   }
-  whenStable(doneCb, timeout, updateCb) {
+  whenStable(doneCb, timeout2, updateCb) {
     if (updateCb && !this._taskTrackingZone) {
       throw new Error('Task tracking zone is required when passing an update callback to whenStable(). Is "zone.js/plugins/task-tracking" loaded?');
     }
-    this.addCallback(doneCb, timeout, updateCb);
+    this.addCallback(doneCb, timeout2, updateCb);
     this._runCallbacksIfReady();
   }
   registerApplication(token) {
@@ -30642,7 +30691,7 @@ var HttpRequest = class _HttpRequest {
     const integrity = update.integrity || this.integrity;
     const referrerPolicy = update.referrerPolicy || this.referrerPolicy;
     const transferCache = update.transferCache ?? this.transferCache;
-    const timeout = update.timeout ?? this.timeout;
+    const timeout2 = update.timeout ?? this.timeout;
     const body = update.body !== void 0 ? update.body : this.body;
     const withCredentials = update.withCredentials ?? this.withCredentials;
     const reportProgress = update.reportProgress ?? this.reportProgress;
@@ -30666,7 +30715,7 @@ var HttpRequest = class _HttpRequest {
       keepalive,
       cache,
       priority,
-      timeout,
+      timeout: timeout2,
       mode,
       redirect,
       credentials,
@@ -43352,13 +43401,8 @@ var ReactiveFormsModule = class _ReactiveFormsModule {
 // src/app/service/auth-service.ts
 var AuthService = class _AuthService {
   http;
-  deleteUser(id) {
-    return this.http.delete(`${this.baseUrl}/users/${id}`, { withCredentials: true });
-  }
-  updateUser(id, user) {
-    return this.http.put(`${this.baseUrl}/users/${id}`, user, { withCredentials: true });
-  }
-  baseUrl = "http://localhost:5001/api";
+  //baseUrl = 'https://apiswsi.onrender.com/api';
+  baseUrl = "http://localhost/5001/api";
   constructor(http) {
     this.http = http;
   }
@@ -43372,15 +43416,17 @@ var AuthService = class _AuthService {
   getUser() {
     return this.http.get(`${this.baseUrl}/user`, { withCredentials: true });
   }
+  updateProfile(profile) {
+    return this.http.put(`${this.baseUrl}/profile`, profile, { withCredentials: true });
+  }
   getUsers(params) {
     return this.http.get(`${this.baseUrl}/users`, { params, withCredentials: true });
   }
-  logout() {
-    return this.http.post(`${this.baseUrl}/logout`, {}, { withCredentials: true }).pipe(tap(() => this.clearClientSession()));
+  deleteUser(id) {
+    return this.http.delete(`${this.baseUrl}/users/${id}`, { withCredentials: true });
   }
-  clearClientSession() {
-    sessionStorage.clear();
-    localStorage.removeItem("token");
+  updateUser(id, user) {
+    return this.http.put(`${this.baseUrl}/users/${id}`, user, { withCredentials: true });
   }
   getSolicitudes(params) {
     return this.http.get(`${this.baseUrl}/getSolicitudes`, { params, withCredentials: true });
@@ -43462,6 +43508,30 @@ var AuthService = class _AuthService {
   deleteTicket(id) {
     return this.http.delete(`${this.baseUrl}/tickets/${id}`, { withCredentials: true });
   }
+  uploadAttachment(file, parent) {
+    const formData = new FormData();
+    formData.append("file", file);
+    if (parent.solicitud_id)
+      formData.append("solicitud_id", parent.solicitud_id);
+    if (parent.ticket_id)
+      formData.append("ticket_id", parent.ticket_id);
+    return this.http.post(`${this.baseUrl}/attachments`, formData, { withCredentials: true });
+  }
+  getAttachments(parent) {
+    return this.http.get(`${this.baseUrl}/attachments`, {
+      params: parent,
+      withCredentials: true
+    });
+  }
+  downloadAttachment(id) {
+    return this.http.get(`${this.baseUrl}/attachments/${id}/file`, {
+      responseType: "blob",
+      withCredentials: true
+    });
+  }
+  deleteAttachment(id) {
+    return this.http.delete(`${this.baseUrl}/attachments/${id}`, { withCredentials: true });
+  }
   getAssignments(params) {
     return this.http.get(`${this.baseUrl}/assignments`, { params, withCredentials: true });
   }
@@ -43476,6 +43546,16 @@ var AuthService = class _AuthService {
   }
   returnAssignment(id, return_notes) {
     return this.http.patch(`${this.baseUrl}/assignments/${id}/return`, { return_notes }, { withCredentials: true });
+  }
+  uploadFile(file) {
+    return this.http.post(`${this.baseUrl}/createAttached`, file, { withCredentials: true });
+  }
+  logout() {
+    return this.http.post(`${this.baseUrl}/logout`, {}, { withCredentials: true }).pipe(tap(() => this.clearClientSession()));
+  }
+  clearClientSession() {
+    sessionStorage.clear();
+    localStorage.removeItem("token");
   }
   static \u0275fac = function AuthService_Factory(__ngFactoryType__) {
     return new (__ngFactoryType__ || _AuthService)(\u0275\u0275inject(HttpClient));
@@ -43492,9 +43572,9 @@ var AuthService = class _AuthService {
 })();
 
 // src/app/auth/login/login.ts
-function Login_p_49_Template(rf, ctx) {
+function Login_p_46_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "p", 50);
+    \u0275\u0275elementStart(0, "p", 48);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -43536,7 +43616,7 @@ var Login = class _Login {
           this.loginError = response.message ?? "No fue posible iniciar sesi\xF3n.";
           return;
         }
-        const roleName = String(response.user?.rolId?.name ?? response.user?.rol?.name ?? response.user?.rol ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+        const roleName = String(response.user?.rolId?.name ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
         const routesByRole = {
           admin: "/home",
           administrador: "/home",
@@ -43562,7 +43642,7 @@ var Login = class _Login {
   static \u0275fac = function Login_Factory(__ngFactoryType__) {
     return new (__ngFactoryType__ || _Login)(\u0275\u0275directiveInject(FormBuilder), \u0275\u0275directiveInject(AuthService), \u0275\u0275directiveInject(Router));
   };
-  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _Login, selectors: [["app-login"]], decls: 80, vars: 4, consts: [["lang", "es"], ["charset", "UTF-8"], ["http-equiv", "X-UA-Compatible", "content", "IE=edge,chrome=1"], ["name", "viewport", "content", "width=device-width, initial-scale=1.0, user-scalable=no"], ["href", \u0275\u0275trustConstantResourceUrl`https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css`, "rel", "stylesheet", "integrity", "sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN", "crossorigin", "anonymous"], [1, "media-funcion"], ["href", "#", 1, "tel"], ["href", "#", 1, "mail"], ["href", "preguntas-frecuentes.html", 1, "preguntas"], [1, "container"], [1, "logo"], ["src", "https://imagenes.leon.gob.mx/logo-leon-sin-borde.svg", "alt", "Municipio de Le\xF3n", 1, "mpio"], ["src", "https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion.svg", "alt", "Direcci\xF3n de Tecnolog\xEDas y Gobierno Digital", 1, "dependencia"], ["id", "contenido"], ["id", "content-login"], ["id", "catalogo-servicios-cintilla"], [1, "sesion"], [1, "enc-login"], ["src", "https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg", "alt", "Direcci\xF3n General de Tecnolog\xEDas de la Informaci\xF3n y Gobierno Digital", 1, "img-login"], [1, "info-login"], [3, "ngSubmit", "formGroup"], [1, "input-usuario"], ["type", "email", "name", "email", "formControlName", "email", "placeholder", "Usuario", "required", "", "email", ""], [1, "caja-input"], [1, "input-password"], ["type", "password", "name", "password", "formControlName", "password", "placeholder", "Password", "required", "", "minlength", "8"], [1, "casilla-recordar"], [1, "container-casilla"], ["type", "checkbox"], [1, "checkmark"], ["href", "#"], [1, "centrar-boton-sesion"], ["type", "submit", 1, "boton-sesion", 3, "value", "disabled"], ["class", "login-error", "role", "alert", 4, "ngIf"], ["routerLink", "/register", 1, "crear-cuenta"], ["id", "contenedor-pagina"], [1, "conten-page", "dato-page"], [1, "date-pie"], ["src", "https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg", "alt", "Direcci\xF3n General de Tecnolog\xEDas de la Informaci\xF3n y Gobierno Digital", 1, "img-dependencia"], [1, "direccion"], ["href", "#", 1, "ico-footer"], ["href", "#", 1, "comentarios"], ["href", "#", 1, "telefono"], [1, "municipio"], ["src", "https://imagenes.leon.gob.mx/logo-leon-bco.svg", "alt", "H. Ayuntamiento de Le\xF3n"], ["id", "copy"], [1, "nota-copy"], ["href", "#", "target", "_blank"], ["href", "", 1, "scrollup"], ["src", "img-dependencias-v3/up.svg", "alt", ""], ["role", "alert", 1, "login-error"]], template: function Login_Template(rf, ctx) {
+  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _Login, selectors: [["app-login"]], decls: 75, vars: 4, consts: [["lang", "es"], ["charset", "UTF-8"], ["http-equiv", "X-UA-Compatible", "content", "IE=edge,chrome=1"], ["name", "viewport", "content", "width=device-width, initial-scale=1.0, user-scalable=no"], ["href", \u0275\u0275trustConstantResourceUrl`https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css`, "rel", "stylesheet", "integrity", "sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN", "crossorigin", "anonymous"], [1, "media-funcion"], ["href", "#", 1, "tel"], ["href", "#", 1, "mail"], ["href", "preguntas-frecuentes.html", 1, "preguntas"], [1, "container"], [1, "logo"], ["src", "https://imagenes.leon.gob.mx/logo-leon-sin-borde.svg", "alt", "Municipio de Le\xF3n", 1, "mpio"], ["src", "https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion.svg", "alt", "Direcci\xF3n de Tecnolog\xEDas y Gobierno Digital", 1, "dependencia"], ["id", "contenido"], ["id", "content-login"], ["id", "catalogo-servicios-cintilla"], [1, "sesion"], [1, "enc-login"], ["src", "https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg", "alt", "Direcci\xF3n General de Tecnolog\xEDas de la Informaci\xF3n y Gobierno Digital", 1, "img-login"], [1, "info-login"], [3, "ngSubmit", "formGroup"], [1, "input-usuario"], ["type", "email", "name", "email", "formControlName", "email", "placeholder", "Usuario", "required", "", "email", ""], [1, "caja-input"], [1, "input-password"], ["type", "password", "name", "password", "formControlName", "password", "placeholder", "Password", "required", "", "minlength", "8"], [1, "casilla-recordar"], [1, "container-casilla"], ["type", "checkbox"], [1, "checkmark"], [1, "centrar-boton-sesion"], ["type", "submit", 1, "boton-sesion", 3, "value", "disabled"], ["class", "login-error", "role", "alert", 4, "ngIf"], ["id", "contenedor-pagina"], [1, "conten-page", "dato-page"], [1, "date-pie"], ["src", "https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg", "alt", "Direcci\xF3n General de Tecnolog\xEDas de la Informaci\xF3n y Gobierno Digital", 1, "img-dependencia"], [1, "direccion"], ["href", "#", 1, "ico-footer"], ["href", "#", 1, "comentarios"], ["href", "#", 1, "telefono"], [1, "municipio"], ["src", "https://imagenes.leon.gob.mx/logo-leon-bco.svg", "alt", "H. Ayuntamiento de Le\xF3n"], ["id", "copy"], [1, "nota-copy"], ["href", "#", "target", "_blank"], ["href", "", 1, "scrollup"], ["src", "img-dependencias-v3/up.svg", "alt", ""], ["role", "alert", 1, "login-error"]], template: function Login_Template(rf, ctx) {
     if (rf & 1) {
       \u0275\u0275elementStart(0, "html", 0)(1, "head");
       \u0275\u0275element(2, "meta", 1)(3, "meta", 2)(4, "meta", 3);
@@ -43607,59 +43687,54 @@ var Login = class _Login {
       \u0275\u0275text(41, "Recuerdame ");
       \u0275\u0275element(42, "input", 28)(43, "span", 29);
       \u0275\u0275elementEnd()();
-      \u0275\u0275elementStart(44, "div", 23)(45, "a", 30);
-      \u0275\u0275text(46, "Olvidaste tu contrase\xF1a");
+      \u0275\u0275elementStart(44, "div", 30);
+      \u0275\u0275element(45, "input", 31);
+      \u0275\u0275elementEnd();
+      \u0275\u0275template(46, Login_p_46_Template, 2, 1, "p", 32);
+      \u0275\u0275elementEnd()()()()();
+      \u0275\u0275elementStart(47, "footer")(48, "div", 33)(49, "div", 34)(50, "div", 35);
+      \u0275\u0275element(51, "img", 36);
       \u0275\u0275elementEnd()();
-      \u0275\u0275elementStart(47, "div", 31);
-      \u0275\u0275element(48, "input", 32);
+      \u0275\u0275elementStart(52, "div", 34)(53, "h1");
+      \u0275\u0275text(54, "Contact\xE1nos");
       \u0275\u0275elementEnd();
-      \u0275\u0275template(49, Login_p_49_Template, 2, 1, "p", 33);
-      \u0275\u0275elementStart(50, "a", 34);
-      \u0275\u0275text(51, "Crear cuenta");
-      \u0275\u0275elementEnd()()()()()();
-      \u0275\u0275elementStart(52, "footer")(53, "div", 35)(54, "div", 36)(55, "div", 37);
-      \u0275\u0275element(56, "img", 38);
+      \u0275\u0275elementStart(55, "div", 37)(56, "a", 38);
+      \u0275\u0275text(57, "Blvd. Mariano Escobedo Pte. 4502, San Isidro, 37530 Le\xF3n de los Aldama, Gto. ");
       \u0275\u0275elementEnd()();
-      \u0275\u0275elementStart(57, "div", 36)(58, "h1");
-      \u0275\u0275text(59, "Contact\xE1nos");
+      \u0275\u0275elementStart(58, "a", 39);
+      \u0275\u0275text(59, "Tus comentarios ");
+      \u0275\u0275elementStart(60, "span");
+      \u0275\u0275text(61, "nos ayudan a mejorar");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(60, "div", 39)(61, "a", 40);
-      \u0275\u0275text(62, "Blvd. Mariano Escobedo Pte. 4502, San Isidro, 37530 Le\xF3n de los Aldama, Gto. ");
-      \u0275\u0275elementEnd()();
-      \u0275\u0275elementStart(63, "a", 41);
-      \u0275\u0275text(64, "Tus comentarios ");
-      \u0275\u0275elementStart(65, "span");
-      \u0275\u0275text(66, "nos ayudan a mejorar");
+      \u0275\u0275text(62, ". Comp\xE1rtenos tu experiencia y sugerencias.");
       \u0275\u0275elementEnd();
-      \u0275\u0275text(67, ". Comp\xE1rtenos tu experiencia y sugerencias.");
-      \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(68, "a", 42);
-      \u0275\u0275text(69, " 477 000 000 ");
+      \u0275\u0275elementStart(63, "a", 40);
+      \u0275\u0275text(64, " 477 000 000 ");
       \u0275\u0275elementEnd()()();
-      \u0275\u0275elementStart(70, "div", 43);
-      \u0275\u0275element(71, "img", 44);
+      \u0275\u0275elementStart(65, "div", 41);
+      \u0275\u0275element(66, "img", 42);
       \u0275\u0275elementEnd()();
-      \u0275\u0275elementStart(72, "div", 45);
-      \u0275\u0275text(73, " Copyright \xA9 2026 ");
-      \u0275\u0275elementStart(74, "span", 46);
-      \u0275\u0275text(75, "H. Ayuntamiento de Le\xF3n ");
+      \u0275\u0275elementStart(67, "div", 43);
+      \u0275\u0275text(68, " Copyright \xA9 2026 ");
+      \u0275\u0275elementStart(69, "span", 44);
+      \u0275\u0275text(70, "H. Ayuntamiento de Le\xF3n ");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(76, "a", 47);
-      \u0275\u0275text(77, "Aviso de privacidad");
+      \u0275\u0275elementStart(71, "a", 45);
+      \u0275\u0275text(72, "Aviso de privacidad");
       \u0275\u0275elementEnd()()();
-      \u0275\u0275elementStart(78, "a", 48);
-      \u0275\u0275element(79, "img", 49);
+      \u0275\u0275elementStart(73, "a", 46);
+      \u0275\u0275element(74, "img", 47);
       \u0275\u0275elementEnd()()();
     }
     if (rf & 2) {
       \u0275\u0275advance(33);
       \u0275\u0275property("formGroup", ctx.loginForm);
-      \u0275\u0275advance(15);
+      \u0275\u0275advance(12);
       \u0275\u0275property("value", ctx.submitting ? "Ingresando\u2026" : "Entrar")("disabled", ctx.loginForm.invalid || ctx.submitting);
       \u0275\u0275advance();
       \u0275\u0275property("ngIf", ctx.loginError);
     }
-  }, dependencies: [CommonModule, NgIf, ReactiveFormsModule, \u0275NgNoValidate, DefaultValueAccessor, NgControlStatus, NgControlStatusGroup, RequiredValidator, MinLengthValidator, EmailValidator, FormGroupDirective, FormControlName, RouterModule, RouterLink], styles: [_c0, _c0] });
+  }, dependencies: [CommonModule, NgIf, ReactiveFormsModule, \u0275NgNoValidate, DefaultValueAccessor, NgControlStatus, NgControlStatusGroup, RequiredValidator, MinLengthValidator, EmailValidator, FormGroupDirective, FormControlName, RouterModule], styles: [_c0, _c0] });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(Login, [{
@@ -43729,10 +43804,6 @@ var Login = class _Login {
                                 </label><!--casilla-verificaci\xF3n-->
                             </div><!--campo-verificar-->
 
-                            <div class="caja-input">
-                                <a href="#">Olvidaste tu contrase\xF1a</a>
-                            </div><!--recuperar contrase\xF1a--->
-
                             <div class="centrar-boton-sesion">
                                 <input class="boton-sesion" type="submit" [value]="submitting ? 'Ingresando\u2026' : 'Entrar'"
                                     [disabled]="loginForm.invalid || submitting">
@@ -43740,7 +43811,6 @@ var Login = class _Login {
 
                             <p class="login-error" *ngIf="loginError" role="alert">{{ loginError }}</p>
 
-                            <a class="crear-cuenta" routerLink="/register">Crear cuenta</a>
                         </form><!--formulario-->
                     </div><!--campos sesi\xF3n-->
                 </div><!--logeo-->
@@ -67537,615 +67607,6 @@ var MatExpansionModule = class _MatExpansionModule {
   }], null, null);
 })();
 
-// src/app/auth/home-sol/home-sol.ts
-var _c018 = () => [5, 10, 25, 100];
-function HomeSol_Conditional_53_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 18);
-    \u0275\u0275element(1, "mat-spinner");
-    \u0275\u0275elementEnd();
-  }
-}
-function HomeSol_th_56_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 31);
-    \u0275\u0275text(1, " Folio ");
-    \u0275\u0275elementEnd();
-  }
-}
-function HomeSol_td_57_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 32);
-    \u0275\u0275text(1);
-    \u0275\u0275elementEnd();
-  }
-  if (rf & 2) {
-    const elemento_r2 = ctx.$implicit;
-    \u0275\u0275advance();
-    \u0275\u0275textInterpolate1(" ", elemento_r2.folio, " ");
-  }
-}
-function HomeSol_th_59_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 31);
-    \u0275\u0275text(1, " Tipo ");
-    \u0275\u0275elementEnd();
-  }
-}
-function HomeSol_td_60_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 32);
-    \u0275\u0275text(1);
-    \u0275\u0275elementEnd();
-  }
-  if (rf & 2) {
-    const elemento_r3 = ctx.$implicit;
-    \u0275\u0275advance();
-    \u0275\u0275textInterpolate1(" ", elemento_r3.tipo, " ");
-  }
-}
-function HomeSol_th_62_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 31);
-    \u0275\u0275text(1, " Descripci\xF3n ");
-    \u0275\u0275elementEnd();
-  }
-}
-function HomeSol_td_63_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 32);
-    \u0275\u0275text(1);
-    \u0275\u0275elementEnd();
-  }
-  if (rf & 2) {
-    const elemento_r4 = ctx.$implicit;
-    \u0275\u0275advance();
-    \u0275\u0275textInterpolate1(" ", elemento_r4.descripcion, " ");
-  }
-}
-function HomeSol_th_65_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 31);
-    \u0275\u0275text(1, " estado ");
-    \u0275\u0275elementEnd();
-  }
-}
-function HomeSol_td_66_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 32);
-    \u0275\u0275text(1);
-    \u0275\u0275elementEnd();
-  }
-  if (rf & 2) {
-    const elemento_r5 = ctx.$implicit;
-    \u0275\u0275advance();
-    \u0275\u0275textInterpolate1(" ", elemento_r5.estado, " ");
-  }
-}
-function HomeSol_th_68_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 31);
-    \u0275\u0275text(1, " Comentarios ");
-    \u0275\u0275elementEnd();
-  }
-}
-function HomeSol_td_69_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 32);
-    \u0275\u0275text(1);
-    \u0275\u0275elementEnd();
-  }
-  if (rf & 2) {
-    const elemento_r6 = ctx.$implicit;
-    \u0275\u0275advance();
-    \u0275\u0275textInterpolate1(" ", elemento_r6.comentarios, " ");
-  }
-}
-function HomeSol_th_71_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 31);
-    \u0275\u0275text(1, " Acciones ");
-    \u0275\u0275elementEnd();
-  }
-}
-function HomeSol_td_72_Template(rf, ctx) {
-  if (rf & 1) {
-    const _r7 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "td", 32)(1, "button", 33);
-    \u0275\u0275listener("click", function HomeSol_td_72_Template_button_click_1_listener() {
-      const elemento_r8 = \u0275\u0275restoreView(_r7).$implicit;
-      const ctx_r8 = \u0275\u0275nextContext();
-      return \u0275\u0275resetView(ctx_r8.editarSolicitud(elemento_r8));
-    });
-    \u0275\u0275elementStart(2, "mat-icon");
-    \u0275\u0275text(3, "edit");
-    \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(4, "button", 34);
-    \u0275\u0275listener("click", function HomeSol_td_72_Template_button_click_4_listener() {
-      const elemento_r8 = \u0275\u0275restoreView(_r7).$implicit;
-      const ctx_r8 = \u0275\u0275nextContext();
-      return \u0275\u0275resetView(ctx_r8.eliminarSolicitud(elemento_r8));
-    });
-    \u0275\u0275elementStart(5, "mat-icon");
-    \u0275\u0275text(6, "delete");
-    \u0275\u0275elementEnd()()();
-  }
-}
-function HomeSol_tr_73_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275element(0, "tr", 35);
-  }
-}
-function HomeSol_tr_74_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275element(0, "tr", 36);
-  }
-}
-var HomeSol = class _HomeSol {
-  authService;
-  router;
-  breakpointObserver;
-  eliminarSolicitud(solicitud) {
-    const id = solicitud._id ?? solicitud.id;
-    if (!id || !window.confirm(`\xBFEliminar la solicitud "${solicitud.folio ?? id}"?`))
-      return;
-    this.authService.deleteSolicitud(id).subscribe({
-      next: () => this.cargarDatos(),
-      error: (error) => window.alert(error.error?.message ?? "No fue posible eliminar la solicitud.")
-    });
-  }
-  editarSolicitud(solicitud) {
-    const id = solicitud._id ?? solicitud.id;
-    if (!id)
-      return;
-    const comentarios = window.prompt("Comentarios:", solicitud.comentarios ?? "");
-    if (comentarios === null)
-      return;
-    this.authService.updateSolicitud(id, { comentarios }).subscribe({
-      next: () => this.cargarDatos(),
-      error: (error) => window.alert(error.error?.message ?? "No fue posible actualizar la solicitud.")
-    });
-  }
-  sidenav;
-  user;
-  isMobile = true;
-  menuAbierto = true;
-  constructor(authService, router, breakpointObserver) {
-    this.authService = authService;
-    this.router = router;
-    this.breakpointObserver = breakpointObserver;
-  }
-  http = inject2(HttpClient);
-  // Configuración de Tabla
-  columnasVisibles = ["folio", "tipo", "descripcion", "estado", "comentarios", "acciones"];
-  datos = new MatTableDataSource([]);
-  cargando = false;
-  // Estado de Paginación y Filtros (Servidor)
-  totalRegistros = 0;
-  tamanoPagina = 10;
-  paginaActual = 0;
-  filtroBusqueda = "";
-  ngOnInit() {
-    this.observarTamanoPantalla();
-    this.cargarDatos();
-    this.authService.getUser().subscribe({
-      next: (response) => {
-        if (response.status === "success")
-          this.user = response.user;
-      },
-      error: (error) => console.error("No se pudo cargar el usuario:", error)
-    });
-  }
-  observarTamanoPantalla() {
-    this.breakpointObserver.observe(["(max-width: 800px)"]).subscribe((res) => {
-      this.isMobile = res.matches;
-      this.menuAbierto = !res.matches;
-    });
-  }
-  cargarDatos() {
-    console.log("Se ejecuta la funci\xF3n de carga de datos");
-    this.cargando = true;
-    const params = new HttpParams().set("page", (this.paginaActual + 1).toString()).set("limit", this.tamanoPagina.toString()).set("search", this.filtroBusqueda);
-    this.authService.getSolicitudes(params).subscribe({
-      next: (respuesta) => {
-        const solicitudes = respuesta.solicitudes ?? respuesta;
-        this.datos.data = Array.isArray(solicitudes) ? solicitudes : [];
-        this.totalRegistros = respuesta.total ?? this.datos.data.length;
-        this.cargando = false;
-      },
-      error: () => this.cargando = false
-    });
-  }
-  onFiltrar(evento) {
-    const valorFiltro = evento.target.value;
-    this.filtroBusqueda = valorFiltro.trim().toLowerCase();
-    this.paginaActual = 0;
-    this.cargarDatos();
-  }
-  onCambiarPagina(evento) {
-    this.paginaActual = evento.pageIndex;
-    this.tamanoPagina = evento.pageSize;
-    this.cargarDatos();
-  }
-  toggleMenu() {
-    this.menuAbierto = !this.menuAbierto;
-  }
-  logout() {
-    this.authService.logout().subscribe({
-      next: (response) => {
-        window.alert(response.message);
-        this.router.navigateByUrl("/login", { replaceUrl: true });
-      },
-      error: () => {
-        console.log("err");
-        window.alert("Falla en salida del sistema, intenta de nuevo");
-      }
-    });
-  }
-  static \u0275fac = function HomeSol_Factory(__ngFactoryType__) {
-    return new (__ngFactoryType__ || _HomeSol)(\u0275\u0275directiveInject(AuthService), \u0275\u0275directiveInject(Router), \u0275\u0275directiveInject(BreakpointObserver));
-  };
-  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _HomeSol, selectors: [["app-home-sol"]], viewQuery: function HomeSol_Query(rf, ctx) {
-    if (rf & 1) {
-      \u0275\u0275viewQuery(MatSidenav, 5);
-    }
-    if (rf & 2) {
-      let _t;
-      \u0275\u0275queryRefresh(_t = \u0275\u0275loadQuery()) && (ctx.sidenav = _t.first);
-    }
-  }, decls: 76, vars: 12, consts: [["drawer", ""], [3, "click"], ["src", "https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg", "alt", "Direcci\xF3n General de Tecnolog\xEDas de la Informaci\xF3n y Gobierno Digital", 1, "img-login"], [1, "espaciador-flexible"], ["mat-button", "", 1, "menu-button"], [1, "sidenav-container"], [1, "mat-elevation-z8", 3, "openedChange", "mode", "opened"], ["src", "../../../../public/Lot.png", 1, "avatar", "mat-elevation-z8"], [1, "name"], [1, "designation"], ["mat-button", "", 1, "menu-button", 3, "click"], [1, "span"], ["mat-button", "", "routerLink", "/solicitud", 1, "menu-button"], [1, "content"], ["name", "Solicitudes"], [1, "table-container"], ["appearance", "outline"], ["matInput", "", "placeholder", "Ej. Juan", 3, "keyup"], [1, "loading-spinner"], ["mat-table", "", 1, "mat-elevation-z8", 3, "dataSource"], ["matColumnDef", "folio"], ["mat-header-cell", "", 4, "matHeaderCellDef"], ["mat-cell", "", 4, "matCellDef"], ["matColumnDef", "tipo"], ["matColumnDef", "descripcion"], ["matColumnDef", "estado"], ["matColumnDef", "comentarios"], ["matColumnDef", "acciones"], ["mat-header-row", "", 4, "matHeaderRowDef"], ["mat-row", "", 4, "matRowDef", "matRowDefColumns"], ["aria-label", "Seleccionar p\xE1gina", 3, "page", "length", "pageSize", "pageSizeOptions"], ["mat-header-cell", ""], ["mat-cell", ""], ["mat-icon-button", "", "color", "primary", 3, "click"], ["mat-icon-button", "", 1, "deleteButton", 3, "click"], ["mat-header-row", ""], ["mat-row", ""]], template: function HomeSol_Template(rf, ctx) {
-    if (rf & 1) {
-      const _r1 = \u0275\u0275getCurrentView();
-      \u0275\u0275elementStart(0, "mat-toolbar")(1, "button", 1);
-      \u0275\u0275listener("click", function HomeSol_Template_button_click_1_listener() {
-        return ctx.toggleMenu();
-      });
-      \u0275\u0275elementStart(2, "mat-icon");
-      \u0275\u0275text(3, "menu");
-      \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(4, "span");
-      \u0275\u0275text(5, " Men\xFA ");
-      \u0275\u0275elementEnd()();
-      \u0275\u0275element(6, "img", 2)(7, "span", 3);
-      \u0275\u0275elementStart(8, "span");
-      \u0275\u0275text(9);
-      \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(10, "span")(11, "button", 4)(12, "mat-icon");
-      \u0275\u0275text(13, "notifications_none");
-      \u0275\u0275elementEnd()()()();
-      \u0275\u0275elementStart(14, "mat-sidenav-container", 5)(15, "mat-sidenav", 6, 0);
-      \u0275\u0275twoWayListener("openedChange", function HomeSol_Template_mat_sidenav_openedChange_15_listener($event) {
-        \u0275\u0275restoreView(_r1);
-        \u0275\u0275twoWayBindingSet(ctx.menuAbierto, $event) || (ctx.menuAbierto = $event);
-        return \u0275\u0275resetView($event);
-      });
-      \u0275\u0275element(17, "img", 7);
-      \u0275\u0275elementStart(18, "h4", 8);
-      \u0275\u0275text(19);
-      \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(20, "p", 9);
-      \u0275\u0275text(21, "Software Engineer");
-      \u0275\u0275elementEnd();
-      \u0275\u0275element(22, "mat-divider");
-      \u0275\u0275elementStart(23, "button", 10);
-      \u0275\u0275listener("click", function HomeSol_Template_button_click_23_listener() {
-        return ctx.toggleMenu();
-      });
-      \u0275\u0275elementStart(24, "mat-icon");
-      \u0275\u0275text(25, "person");
-      \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(26, "span", 11);
-      \u0275\u0275text(27, "Perfil");
-      \u0275\u0275elementEnd()();
-      \u0275\u0275elementStart(28, "button", 12)(29, "mat-icon");
-      \u0275\u0275text(30, "assignment");
-      \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(31, "span", 11);
-      \u0275\u0275text(32, "Crea solicitud");
-      \u0275\u0275elementEnd()();
-      \u0275\u0275element(33, "mat-divider");
-      \u0275\u0275elementStart(34, "button", 4)(35, "mat-icon");
-      \u0275\u0275text(36, "help");
-      \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(37, "span", 11);
-      \u0275\u0275text(38, "Help");
-      \u0275\u0275elementEnd()();
-      \u0275\u0275elementStart(39, "button", 10);
-      \u0275\u0275listener("click", function HomeSol_Template_button_click_39_listener() {
-        return ctx.logout();
-      });
-      \u0275\u0275elementStart(40, "mat-icon");
-      \u0275\u0275text(41, "exit_to_app");
-      \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(42, "span", 11);
-      \u0275\u0275text(43, "Salir");
-      \u0275\u0275elementEnd()()();
-      \u0275\u0275elementStart(44, "div", 13);
-      \u0275\u0275element(45, "router-outlet")(46, "router-outlet", 14);
-      \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(47, "mat-sidenav-content")(48, "div", 15)(49, "mat-form-field", 16)(50, "mat-label");
-      \u0275\u0275text(51, "Buscar por nombre");
-      \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(52, "input", 17);
-      \u0275\u0275listener("keyup", function HomeSol_Template_input_keyup_52_listener($event) {
-        return ctx.onFiltrar($event);
-      });
-      \u0275\u0275elementEnd()();
-      \u0275\u0275conditionalCreate(53, HomeSol_Conditional_53_Template, 2, 0, "div", 18);
-      \u0275\u0275elementStart(54, "table", 19);
-      \u0275\u0275elementContainerStart(55, 20);
-      \u0275\u0275template(56, HomeSol_th_56_Template, 2, 0, "th", 21)(57, HomeSol_td_57_Template, 2, 1, "td", 22);
-      \u0275\u0275elementContainerEnd();
-      \u0275\u0275elementContainerStart(58, 23);
-      \u0275\u0275template(59, HomeSol_th_59_Template, 2, 0, "th", 21)(60, HomeSol_td_60_Template, 2, 1, "td", 22);
-      \u0275\u0275elementContainerEnd();
-      \u0275\u0275elementContainerStart(61, 24);
-      \u0275\u0275template(62, HomeSol_th_62_Template, 2, 0, "th", 21)(63, HomeSol_td_63_Template, 2, 1, "td", 22);
-      \u0275\u0275elementContainerEnd();
-      \u0275\u0275elementContainerStart(64, 25);
-      \u0275\u0275template(65, HomeSol_th_65_Template, 2, 0, "th", 21)(66, HomeSol_td_66_Template, 2, 1, "td", 22);
-      \u0275\u0275elementContainerEnd();
-      \u0275\u0275elementContainerStart(67, 26);
-      \u0275\u0275template(68, HomeSol_th_68_Template, 2, 0, "th", 21)(69, HomeSol_td_69_Template, 2, 1, "td", 22);
-      \u0275\u0275elementContainerEnd();
-      \u0275\u0275elementContainerStart(70, 27);
-      \u0275\u0275template(71, HomeSol_th_71_Template, 2, 0, "th", 21)(72, HomeSol_td_72_Template, 7, 0, "td", 22);
-      \u0275\u0275elementContainerEnd();
-      \u0275\u0275template(73, HomeSol_tr_73_Template, 1, 0, "tr", 28)(74, HomeSol_tr_74_Template, 1, 0, "tr", 29);
-      \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(75, "mat-paginator", 30);
-      \u0275\u0275listener("page", function HomeSol_Template_mat_paginator_page_75_listener($event) {
-        return ctx.onCambiarPagina($event);
-      });
-      \u0275\u0275elementEnd()()()();
-    }
-    if (rf & 2) {
-      \u0275\u0275advance(9);
-      \u0275\u0275textInterpolate1(" Bienvenido ", ctx.user == null ? null : ctx.user.username, " ");
-      \u0275\u0275advance(6);
-      \u0275\u0275property("mode", ctx.isMobile ? "over" : "side");
-      \u0275\u0275twoWayProperty("opened", ctx.menuAbierto);
-      \u0275\u0275advance(4);
-      \u0275\u0275textInterpolate(ctx.user == null ? null : ctx.user.username);
-      \u0275\u0275advance(34);
-      \u0275\u0275conditional(ctx.cargando ? 53 : -1);
-      \u0275\u0275advance();
-      \u0275\u0275property("dataSource", ctx.datos);
-      \u0275\u0275advance(19);
-      \u0275\u0275property("matHeaderRowDef", ctx.columnasVisibles);
-      \u0275\u0275advance();
-      \u0275\u0275property("matRowDefColumns", ctx.columnasVisibles);
-      \u0275\u0275advance();
-      \u0275\u0275property("length", ctx.totalRegistros)("pageSize", ctx.tamanoPagina)("pageSizeOptions", \u0275\u0275pureFunction0(11, _c018));
-    }
-  }, dependencies: [
-    CommonModule,
-    MatToolbarModule,
-    MatToolbar,
-    MatSidenavModule,
-    MatSidenav,
-    MatSidenavContainer,
-    MatSidenavContent,
-    MatListModule,
-    MatDivider,
-    MatMenuModule,
-    MatButtonModule,
-    MatButton,
-    MatIconButton,
-    MatIconModule,
-    MatIcon,
-    MatExpansionModule,
-    MatDividerModule,
-    RouterModule,
-    RouterOutlet,
-    RouterLink,
-    MatTableModule,
-    MatTable,
-    MatHeaderCellDef,
-    MatHeaderRowDef,
-    MatColumnDef,
-    MatCellDef,
-    MatRowDef,
-    MatHeaderCell,
-    MatCell,
-    MatHeaderRow,
-    MatRow,
-    MatPaginatorModule,
-    MatPaginator,
-    MatInputModule,
-    MatInput,
-    MatFormField,
-    MatLabel,
-    MatFormFieldModule,
-    MatProgressSpinnerModule,
-    MatProgressSpinner
-  ], styles: ["\nmat-toolbar[_ngcontent-%COMP%] {\n  background: #0194fe;\n  color: white;\n  top: 0;\n  z-index: 2;\n}\nmat-sidenav[_ngcontent-%COMP%] {\n  margin: 16px;\n  width: 200px;\n  border-right: none;\n  background: #0194fe;\n  color: white;\n  border-radius: 10px;\n  padding: 16px;\n  text-align: center;\n}\n.content[_ngcontent-%COMP%] {\n  height: calc(100vh - 98px);\n  border-radius: 10px;\n  margin: 16px;\n  margin-left: 32px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  font-size: 2rem;\n  color: lightgray;\n}\nmat-sidenav-container[_ngcontent-%COMP%] {\n  height: calc(100vh - 65px);\n  margin-right: 10;\n}\nmat-sidenav-container.oculto[_ngcontent-%COMP%] {\n  transform: translateX(-250px);\n}\n.span[_ngcontent-%COMP%] {\n  color: white;\n  font-size: 1rem;\n  margin-left: 8px;\n}\n.menu-button[_ngcontent-%COMP%] {\n  width: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: flex-start;\n  font-size: 1rem;\n}\n.menu-button[_ngcontent-%COMP%]   mat-icon[_ngcontent-%COMP%] {\n  margin-right: 8px;\n  color: white;\n}\n.avatar[_ngcontent-%COMP%] {\n  margin-top: 16px;\n  width: 100px;\n  height: 100px;\n  border-radius: 50%;\n}\n.name[_ngcontent-%COMP%] {\n  margin-top: 8px;\n  font-weight: normal;\n}\n.designation[_ngcontent-%COMP%] {\n  margin-top: 2px;\n  font-size: 0.7rem;\n  color: lightgrey;\n}\n.img-login[_ngcontent-%COMP%] {\n  width: auto;\n  height: 40px;\n  margin: 20px 5px;\n}\nmat-divider[_ngcontent-%COMP%] {\n  margin-top: 16px;\n  margin-bottom: 16px;\n  background-color: white;\n}\n.sidebar[_ngcontent-%COMP%] {\n  position: fixed;\n  left: 0;\n  top: 0;\n  width: 250px;\n  height: 100vh;\n  background-color: #2c3e50;\n  color: white;\n  transition: transform 0.3s ease;\n  transform: translateX(0);\n}\n.sidebar.oculto[_ngcontent-%COMP%] {\n  transform: translateX(-250px);\n}\n.table-container[_ngcontent-%COMP%] {\n  margin: 16px;\n  padding: 16px;\n  background-color: #ffffff;\n  border-radius: 10px;\n  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);\n}\n.mat-mdc-row[_ngcontent-%COMP%]:hover {\n  background-color: #f5f5f5;\n}\n.contenido[_ngcontent-%COMP%] {\n  margin-left: 250px;\n  transition: margin-left 0.3s ease;\n  padding: 20px;\n}\n.contenido.expandido[_ngcontent-%COMP%] {\n  margin-left: 0;\n}\n.media-funcion[_ngcontent-%COMP%] {\n  float: left;\n  margin: 0 auto;\n  max-width: 100%;\n  height: 30px;\n  padding: 15px 15px;\n  font-size: 14px;\n  background: #0194fe;\n}\n.espaciador-flexible[_ngcontent-%COMP%] {\n  flex: 1 1 auto;\n}\n/*# sourceMappingURL=home-sol.css.map */"] });
-};
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(HomeSol, [{
-    type: Component,
-    args: [{ selector: "app-home-sol", imports: [
-      CommonModule,
-      MatToolbarModule,
-      MatSidenavModule,
-      MatListModule,
-      MatMenuModule,
-      MatButtonModule,
-      MatIconModule,
-      MatExpansionModule,
-      MatDividerModule,
-      RouterModule,
-      MatTableModule,
-      MatPaginatorModule,
-      MatInputModule,
-      MatFormFieldModule,
-      MatProgressSpinnerModule,
-      MatIcon,
-      MatSidenavContainer,
-      MatSidenav,
-      MatTable,
-      MatTableModule,
-      MatDivider,
-      MatIcon,
-      MatToolbar,
-      MatSidenavModule,
-      MatPaginator,
-      RouterOutlet,
-      MatFormField,
-      MatLabel,
-      MatProgressSpinner,
-      MatToolbarModule,
-      MatSidenavModule,
-      MatButtonModule,
-      MatIconModule,
-      MatDividerModule,
-      RouterModule,
-      MatFormField,
-      MatLabel,
-      MatProgressSpinner,
-      MatPaginator,
-      MatTable,
-      MatTableModule,
-      MatPaginatorModule,
-      MatInputModule,
-      MatFormFieldModule,
-      MatProgressSpinnerModule,
-      MatIcon,
-      RouterLink
-    ], template: `<mat-toolbar>
-    <button (click)="toggleMenu()">
-        <mat-icon>menu</mat-icon>
-        <span> Men\xFA </span>
-    </button>
-    <img class="img-login" src="https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg"
-        alt="Direcci\xF3n General de Tecnolog\xEDas de la Informaci\xF3n y Gobierno Digital">
-    <span class="espaciador-flexible"></span>
-    <span> Bienvenido {{ user?.username}} </span>
-    <span>
-        <button mat-button class="menu-button">
-            <mat-icon>notifications_none</mat-icon>
-        </button>
-    </span>
-
-</mat-toolbar>
-
-<mat-sidenav-container class="sidenav-container">
-    <mat-sidenav #drawer [mode]="isMobile ? 'over' : 'side'" [(opened)]="menuAbierto" class="mat-elevation-z8">
-        <img class="avatar mat-elevation-z8" src="../../../../public/Lot.png" />
-
-        <h4 class="name">{{user?.username}}</h4>
-        <p class="designation">Software Engineer</p>
-
-        <mat-divider></mat-divider>
-        <button mat-button class="menu-button" (click)="toggleMenu()">
-            <mat-icon>person</mat-icon>
-            <span class="span">Perfil</span>
-        </button>
-        <button mat-button class="menu-button" routerLink="/solicitud">
-            <mat-icon>assignment</mat-icon>
-            <span class="span">Crea solicitud</span>
-        </button>
-
-        <mat-divider></mat-divider>
-
-        <button mat-button class="menu-button">
-            <mat-icon>help</mat-icon>
-            <span class="span">Help</span>
-        </button>
-        <button mat-button class="menu-button" (click)="logout()">
-            <mat-icon>exit_to_app</mat-icon>
-            <span class="span">Salir</span>
-        </button>
-    </mat-sidenav>
-
-    <div class="content">
-        <router-outlet></router-outlet>
-        <router-outlet name="Solicitudes"></router-outlet>
-    </div>
-    <mat-sidenav-content>
-        <div class="table-container">
-            <!-- Filtro de B\xFAsqueda -->
-            <mat-form-field appearance="outline">
-                <mat-label>Buscar por nombre</mat-label>
-                <input matInput (keyup)="onFiltrar($event)" placeholder="Ej. Juan">
-            </mat-form-field>
-
-
-            <!-- Spinner de Carga -->
-            @if (cargando) {
-            <div class="loading-spinner">
-                <mat-spinner></mat-spinner>
-            </div>
-            }
-
-            <!-- Tabla Angular Material -->
-            <table mat-table [dataSource]="datos" class="mat-elevation-z8">
-
-                <!-- Columna ID -->
-                <ng-container matColumnDef="folio">
-                    <th mat-header-cell *matHeaderCellDef> Folio </th>
-                    <td mat-cell *matCellDef="let elemento"> {{elemento.folio}} </td>
-                </ng-container>
-
-                <!-- Columna Nombre -->
-                <ng-container matColumnDef="tipo">
-                    <th mat-header-cell *matHeaderCellDef> Tipo </th>
-                    <td mat-cell *matCellDef="let elemento"> {{elemento.tipo}} </td>
-                </ng-container>
-
-                <!-- Columna Email -->
-                <ng-container matColumnDef="descripcion">
-                    <th mat-header-cell *matHeaderCellDef> Descripci\xF3n </th>
-                    <td mat-cell *matCellDef="let elemento"> {{elemento.descripcion}} </td>
-                </ng-container>
-
-                <!-- Columna Estatus -->
-                <ng-container matColumnDef="estado">
-                    <th mat-header-cell *matHeaderCellDef> estado </th>
-                    <td mat-cell *matCellDef="let elemento"> {{elemento.estado}} </td>
-                </ng-container>
-
-                <!-- Columna Rol -->
-                <ng-container matColumnDef="comentarios">
-                    <th mat-header-cell *matHeaderCellDef> Comentarios </th>
-                    <td mat-cell *matCellDef="let elemento"> {{elemento.comentarios}} </td>
-                </ng-container>
-
-                <!-- Columna Acciones -->
-                <ng-container matColumnDef="acciones">
-                    <th mat-header-cell *matHeaderCellDef> Acciones </th>
-                    <td mat-cell *matCellDef="let elemento">
-                        <button mat-icon-button color="primary" (click)="editarSolicitud(elemento)">
-                            <mat-icon>edit</mat-icon>
-                        </button>
-                        <button mat-icon-button class="deleteButton" (click)="eliminarSolicitud(elemento)">
-                            <mat-icon>delete</mat-icon>
-                        </button>
-                    </td>
-                </ng-container>
-
-                <tr mat-header-row *matHeaderRowDef="columnasVisibles"></tr>
-                <tr mat-row *matRowDef="let row; columns: columnasVisibles;"></tr>
-            </table>
-
-            <!-- Paginador -->
-            <mat-paginator [length]="totalRegistros" [pageSize]="tamanoPagina" [pageSizeOptions]="[5, 10, 25, 100]"
-                (page)="onCambiarPagina($event)" aria-label="Seleccionar p\xE1gina">
-            </mat-paginator>
-        </div>
-
-    </mat-sidenav-content>
-</mat-sidenav-container>
-`, styles: ["/* src/app/auth/home-sol/home-sol.css */\nmat-toolbar {\n  background: #0194fe;\n  color: white;\n  top: 0;\n  z-index: 2;\n}\nmat-sidenav {\n  margin: 16px;\n  width: 200px;\n  border-right: none;\n  background: #0194fe;\n  color: white;\n  border-radius: 10px;\n  padding: 16px;\n  text-align: center;\n}\n.content {\n  height: calc(100vh - 98px);\n  border-radius: 10px;\n  margin: 16px;\n  margin-left: 32px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  font-size: 2rem;\n  color: lightgray;\n}\nmat-sidenav-container {\n  height: calc(100vh - 65px);\n  margin-right: 10;\n}\nmat-sidenav-container.oculto {\n  transform: translateX(-250px);\n}\n.span {\n  color: white;\n  font-size: 1rem;\n  margin-left: 8px;\n}\n.menu-button {\n  width: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: flex-start;\n  font-size: 1rem;\n}\n.menu-button mat-icon {\n  margin-right: 8px;\n  color: white;\n}\n.avatar {\n  margin-top: 16px;\n  width: 100px;\n  height: 100px;\n  border-radius: 50%;\n}\n.name {\n  margin-top: 8px;\n  font-weight: normal;\n}\n.designation {\n  margin-top: 2px;\n  font-size: 0.7rem;\n  color: lightgrey;\n}\n.img-login {\n  width: auto;\n  height: 40px;\n  margin: 20px 5px;\n}\nmat-divider {\n  margin-top: 16px;\n  margin-bottom: 16px;\n  background-color: white;\n}\n.sidebar {\n  position: fixed;\n  left: 0;\n  top: 0;\n  width: 250px;\n  height: 100vh;\n  background-color: #2c3e50;\n  color: white;\n  transition: transform 0.3s ease;\n  transform: translateX(0);\n}\n.sidebar.oculto {\n  transform: translateX(-250px);\n}\n.table-container {\n  margin: 16px;\n  padding: 16px;\n  background-color: #ffffff;\n  border-radius: 10px;\n  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);\n}\n.mat-mdc-row:hover {\n  background-color: #f5f5f5;\n}\n.contenido {\n  margin-left: 250px;\n  transition: margin-left 0.3s ease;\n  padding: 20px;\n}\n.contenido.expandido {\n  margin-left: 0;\n}\n.media-funcion {\n  float: left;\n  margin: 0 auto;\n  max-width: 100%;\n  height: 30px;\n  padding: 15px 15px;\n  font-size: 14px;\n  background: #0194fe;\n}\n.espaciador-flexible {\n  flex: 1 1 auto;\n}\n/*# sourceMappingURL=home-sol.css.map */\n"] }]
-  }], () => [{ type: AuthService }, { type: Router }, { type: BreakpointObserver }], { sidenav: [{
-    type: ViewChild,
-    args: [MatSidenav]
-  }] });
-})();
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(HomeSol, { className: "HomeSol", filePath: "app/auth/home-sol/home-sol.ts", lineNumber: 77 });
-})();
-
 // node_modules/@angular/cdk/fesm2022/dialog.mjs
 function CdkDialogContainer_ng_template_0_Template(rf, ctx) {
 }
@@ -69523,8 +68984,979 @@ var MatDialogModule = class _MatDialogModule {
   }], null, null);
 })();
 
+// src/app/auth/profile/profile.ts
+var _c018 = ["profileDialog"];
+function Profile_ng_template_5_Conditional_6_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "p", 5);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const ctx_r1 = \u0275\u0275nextContext(2);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(ctx_r1.errorMessage);
+  }
+}
+function Profile_ng_template_5_Conditional_7_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "p");
+    \u0275\u0275text(1, "Cargando informaci\xF3n...");
+    \u0275\u0275elementEnd();
+  }
+}
+function Profile_ng_template_5_Conditional_8_small_5_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "small");
+    \u0275\u0275text(1, "El usuario es requerido.");
+    \u0275\u0275elementEnd();
+  }
+}
+function Profile_ng_template_5_Conditional_8_small_10_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "small");
+    \u0275\u0275text(1, "La n\xF3mina es requerida.");
+    \u0275\u0275elementEnd();
+  }
+}
+function Profile_ng_template_5_Conditional_8_small_23_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "small");
+    \u0275\u0275text(1, "Ingresa un correo electr\xF3nico v\xE1lido.");
+    \u0275\u0275elementEnd();
+  }
+}
+function Profile_ng_template_5_Conditional_8_option_30_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "option", 31);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const area_r3 = ctx.$implicit;
+    \u0275\u0275property("value", area_r3._id);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(area_r3.name);
+  }
+}
+function Profile_ng_template_5_Conditional_8_small_39_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "small");
+    \u0275\u0275text(1, "La contrase\xF1a debe tener al menos 8 caracteres.");
+    \u0275\u0275elementEnd();
+  }
+}
+function Profile_ng_template_5_Conditional_8_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 6)(1, "div", 10)(2, "label", 11);
+    \u0275\u0275text(3, "Usuario");
+    \u0275\u0275elementEnd();
+    \u0275\u0275element(4, "input", 12);
+    \u0275\u0275template(5, Profile_ng_template_5_Conditional_8_small_5_Template, 2, 0, "small", 13);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(6, "div", 10)(7, "label", 14);
+    \u0275\u0275text(8, "N\xF3mina");
+    \u0275\u0275elementEnd();
+    \u0275\u0275element(9, "input", 15);
+    \u0275\u0275template(10, Profile_ng_template_5_Conditional_8_small_10_Template, 2, 0, "small", 13);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(11, "div", 10)(12, "label", 16);
+    \u0275\u0275text(13, "Nombre");
+    \u0275\u0275elementEnd();
+    \u0275\u0275element(14, "input", 17);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(15, "div", 10)(16, "label", 18);
+    \u0275\u0275text(17, "Apellidos");
+    \u0275\u0275elementEnd();
+    \u0275\u0275element(18, "input", 19);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(19, "div", 20)(20, "label", 21);
+    \u0275\u0275text(21, "Correo electr\xF3nico");
+    \u0275\u0275elementEnd();
+    \u0275\u0275element(22, "input", 22);
+    \u0275\u0275template(23, Profile_ng_template_5_Conditional_8_small_23_Template, 2, 0, "small", 13);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(24, "div", 10)(25, "label", 23);
+    \u0275\u0275text(26, "\xC1rea");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(27, "select", 24)(28, "option", 25);
+    \u0275\u0275text(29, "Seleccione una opci\xF3n");
+    \u0275\u0275elementEnd();
+    \u0275\u0275template(30, Profile_ng_template_5_Conditional_8_option_30_Template, 2, 2, "option", 26);
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(31, "div", 10)(32, "label", 27);
+    \u0275\u0275text(33, "Rol");
+    \u0275\u0275elementEnd();
+    \u0275\u0275element(34, "input", 28);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(35, "div", 20)(36, "label", 29);
+    \u0275\u0275text(37, "Nueva contrase\xF1a (opcional)");
+    \u0275\u0275elementEnd();
+    \u0275\u0275element(38, "input", 30);
+    \u0275\u0275template(39, Profile_ng_template_5_Conditional_8_small_39_Template, 2, 0, "small", 13);
+    \u0275\u0275elementEnd()();
+  }
+  if (rf & 2) {
+    let tmp_3_0;
+    let tmp_4_0;
+    let tmp_5_0;
+    let tmp_8_0;
+    const ctx_r1 = \u0275\u0275nextContext(2);
+    \u0275\u0275advance(5);
+    \u0275\u0275property("ngIf", ((tmp_3_0 = ctx_r1.profileForm.get("username")) == null ? null : tmp_3_0.touched) && ((tmp_3_0 = ctx_r1.profileForm.get("username")) == null ? null : tmp_3_0.hasError("required")));
+    \u0275\u0275advance(5);
+    \u0275\u0275property("ngIf", ((tmp_4_0 = ctx_r1.profileForm.get("nomina")) == null ? null : tmp_4_0.touched) && ((tmp_4_0 = ctx_r1.profileForm.get("nomina")) == null ? null : tmp_4_0.hasError("required")));
+    \u0275\u0275advance(13);
+    \u0275\u0275property("ngIf", ((tmp_5_0 = ctx_r1.profileForm.get("email")) == null ? null : tmp_5_0.touched) && ((tmp_5_0 = ctx_r1.profileForm.get("email")) == null ? null : tmp_5_0.invalid));
+    \u0275\u0275advance(7);
+    \u0275\u0275property("ngForOf", ctx_r1.areas);
+    \u0275\u0275advance(4);
+    \u0275\u0275property("value", ctx_r1.roleName);
+    \u0275\u0275advance(5);
+    \u0275\u0275property("ngIf", ((tmp_8_0 = ctx_r1.profileForm.get("password")) == null ? null : tmp_8_0.touched) && ((tmp_8_0 = ctx_r1.profileForm.get("password")) == null ? null : tmp_8_0.hasError("minlength")));
+  }
+}
+function Profile_ng_template_5_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r1 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "form", 3);
+    \u0275\u0275listener("ngSubmit", function Profile_ng_template_5_Template_form_ngSubmit_0_listener() {
+      \u0275\u0275restoreView(_r1);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.saveProfile());
+    });
+    \u0275\u0275elementStart(1, "h2", 4);
+    \u0275\u0275text(2, "Editar perfil");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(3, "mat-dialog-content")(4, "p");
+    \u0275\u0275text(5, "Actualiza la informaci\xF3n de tu cuenta.");
+    \u0275\u0275elementEnd();
+    \u0275\u0275conditionalCreate(6, Profile_ng_template_5_Conditional_6_Template, 2, 1, "p", 5);
+    \u0275\u0275conditionalCreate(7, Profile_ng_template_5_Conditional_7_Template, 2, 0, "p")(8, Profile_ng_template_5_Conditional_8_Template, 40, 6, "div", 6);
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(9, "mat-dialog-actions", 7)(10, "button", 8);
+    \u0275\u0275listener("click", function Profile_ng_template_5_Template_button_click_10_listener() {
+      \u0275\u0275restoreView(_r1);
+      const ctx_r1 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r1.closeProfile());
+    });
+    \u0275\u0275text(11, "Cancelar");
+    \u0275\u0275elementEnd();
+    \u0275\u0275elementStart(12, "button", 9);
+    \u0275\u0275text(13);
+    \u0275\u0275elementEnd()()();
+  }
+  if (rf & 2) {
+    const ctx_r1 = \u0275\u0275nextContext();
+    \u0275\u0275property("formGroup", ctx_r1.profileForm);
+    \u0275\u0275advance(6);
+    \u0275\u0275conditional(ctx_r1.errorMessage ? 6 : -1);
+    \u0275\u0275advance();
+    \u0275\u0275conditional(ctx_r1.loading ? 7 : 8);
+    \u0275\u0275advance(5);
+    \u0275\u0275property("disabled", ctx_r1.loading || ctx_r1.saving || ctx_r1.profileForm.invalid);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate1(" ", ctx_r1.saving ? "Guardando..." : "Guardar cambios", " ");
+  }
+}
+var Profile = class _Profile {
+  profileDialog;
+  profileUpdated = new EventEmitter();
+  profileForm = new FormGroup({
+    username: new FormControl("", { nonNullable: true, validators: Validators.required }),
+    nomina: new FormControl("", { nonNullable: true, validators: Validators.required }),
+    email: new FormControl("", { nonNullable: true, validators: [Validators.required, Validators.email] }),
+    name: new FormControl("", { nonNullable: true, validators: Validators.required }),
+    last_name: new FormControl("", { nonNullable: true, validators: Validators.required }),
+    area: new FormControl("", { nonNullable: true, validators: Validators.required }),
+    password: new FormControl("", { nonNullable: true, validators: Validators.minLength(8) })
+  });
+  areas = [];
+  roleName = "";
+  loading = false;
+  saving = false;
+  errorMessage = "";
+  authService = inject2(AuthService);
+  dialog = inject2(MatDialog);
+  dialogRef;
+  openProfile() {
+    this.loading = true;
+    this.errorMessage = "";
+    this.dialogRef = this.dialog.open(this.profileDialog, {
+      width: "600px",
+      maxWidth: "95vw",
+      disableClose: true
+    });
+    this.authService.getAreas().subscribe({
+      next: (response) => {
+        const areas = response.areas ?? response;
+        this.areas = Array.isArray(areas) ? areas.filter((area) => area.active !== false) : [];
+      },
+      error: () => this.errorMessage = "No fue posible cargar las \xE1reas."
+    });
+    this.authService.getUser().subscribe({
+      next: (response) => {
+        const user = response.user;
+        this.roleName = user?.rolId?.name ?? "";
+        this.profileForm.reset({
+          username: user?.username ?? "",
+          nomina: String(user?.nomina ?? ""),
+          email: user?.email ?? "",
+          name: user?.name ?? "",
+          last_name: user?.last_name ?? "",
+          area: user?.area?._id ?? user?.area ?? "",
+          password: ""
+        });
+        this.loading = false;
+      },
+      error: (error) => {
+        this.loading = false;
+        this.errorMessage = error.error?.message ?? "No fue posible cargar tu perfil.";
+      }
+    });
+  }
+  closeProfile() {
+    this.dialogRef?.close();
+  }
+  saveProfile() {
+    if (this.profileForm.invalid || this.saving) {
+      this.profileForm.markAllAsTouched();
+      return;
+    }
+    this.saving = true;
+    this.errorMessage = "";
+    const profile = __spreadValues({}, this.profileForm.getRawValue());
+    if (!profile["password"])
+      delete profile["password"];
+    this.authService.updateProfile(profile).subscribe({
+      next: (response) => {
+        this.saving = false;
+        this.profileUpdated.emit(response.user);
+        this.closeProfile();
+        window.alert(response.message ?? "Perfil actualizado correctamente.");
+      },
+      error: (error) => {
+        this.saving = false;
+        this.errorMessage = error.error?.message ?? "No fue posible actualizar tu perfil.";
+      }
+    });
+  }
+  static \u0275fac = function Profile_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _Profile)();
+  };
+  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _Profile, selectors: [["app-profile"]], viewQuery: function Profile_Query(rf, ctx) {
+    if (rf & 1) {
+      \u0275\u0275viewQuery(_c018, 5);
+    }
+    if (rf & 2) {
+      let _t;
+      \u0275\u0275queryRefresh(_t = \u0275\u0275loadQuery()) && (ctx.profileDialog = _t.first);
+    }
+  }, outputs: { profileUpdated: "profileUpdated" }, decls: 7, vars: 0, consts: [["profileDialog", ""], ["type", "button", "mat-button", "", 1, "menu-button", 3, "click"], [1, "span"], [1, "profile-form", 3, "ngSubmit", "formGroup"], ["mat-dialog-title", ""], ["role", "alert", 1, "form-error"], [1, "form-grid"], ["align", "end"], ["type", "button", "mat-button", "", 1, "cancel-btn", 3, "click"], ["type", "submit", "mat-flat-button", "", 1, "submit-btn", 3, "disabled"], [1, "form-group"], ["for", "profile-username"], ["id", "profile-username", "type", "text", "formControlName", "username"], [4, "ngIf"], ["for", "profile-nomina"], ["id", "profile-nomina", "type", "text", "formControlName", "nomina"], ["for", "profile-name"], ["id", "profile-name", "type", "text", "formControlName", "name"], ["for", "profile-last-name"], ["id", "profile-last-name", "type", "text", "formControlName", "last_name"], [1, "form-group", "full-width"], ["for", "profile-email"], ["id", "profile-email", "type", "email", "formControlName", "email"], ["for", "profile-area"], ["id", "profile-area", "formControlName", "area"], ["value", "", "disabled", ""], [3, "value", 4, "ngFor", "ngForOf"], ["for", "profile-role"], ["id", "profile-role", "type", "text", "disabled", "", 3, "value"], ["for", "profile-password"], ["id", "profile-password", "type", "password", "formControlName", "password", "placeholder", "M\xEDnimo 8 caracteres"], [3, "value"]], template: function Profile_Template(rf, ctx) {
+    if (rf & 1) {
+      \u0275\u0275elementStart(0, "button", 1);
+      \u0275\u0275listener("click", function Profile_Template_button_click_0_listener() {
+        return ctx.openProfile();
+      });
+      \u0275\u0275elementStart(1, "mat-icon");
+      \u0275\u0275text(2, "person");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(3, "span", 2);
+      \u0275\u0275text(4, "Perfil");
+      \u0275\u0275elementEnd()();
+      \u0275\u0275template(5, Profile_ng_template_5_Template, 14, 5, "ng-template", null, 0, \u0275\u0275templateRefExtractor);
+    }
+  }, dependencies: [CommonModule, NgForOf, NgIf, ReactiveFormsModule, \u0275NgNoValidate, NgSelectOption, \u0275NgSelectMultipleOption, DefaultValueAccessor, SelectControlValueAccessor, NgControlStatus, NgControlStatusGroup, FormGroupDirective, FormControlName, MatButtonModule, MatButton, MatDialogModule, MatDialogTitle, MatDialogActions, MatDialogContent, MatIconModule, MatIcon], styles: ["\n[_nghost-%COMP%] {\n  display: block;\n  width: 100%;\n}\n.menu-button[_ngcontent-%COMP%] {\n  width: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: flex-start;\n  font-size: 1rem;\n}\n.menu-button[_ngcontent-%COMP%]   mat-icon[_ngcontent-%COMP%] {\n  margin-right: 8px;\n  color: white;\n}\n.menu-button[_ngcontent-%COMP%]   .span[_ngcontent-%COMP%] {\n  color: white;\n  font-size: 1rem;\n  margin-left: 8px;\n}\n.profile-form[_ngcontent-%COMP%] {\n  min-width: 0;\n}\n.form-grid[_ngcontent-%COMP%] {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  gap: 16px;\n}\n.form-group[_ngcontent-%COMP%] {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n}\n.full-width[_ngcontent-%COMP%] {\n  grid-column: 1 / -1;\n}\ninput[_ngcontent-%COMP%], \nselect[_ngcontent-%COMP%] {\n  box-sizing: border-box;\n  width: 100%;\n  padding: 10px;\n  border: 1px solid #bdbdbd;\n  border-radius: 4px;\n}\ninput[_ngcontent-%COMP%]:disabled {\n  background: #eeeeee;\n  color: #616161;\n}\nsmall[_ngcontent-%COMP%], \n.form-error[_ngcontent-%COMP%] {\n  color: #b00020;\n}\n@media (max-width: 600px) {\n  .form-grid[_ngcontent-%COMP%] {\n    grid-template-columns: 1fr;\n  }\n  .full-width[_ngcontent-%COMP%] {\n    grid-column: auto;\n  }\n}\n/*# sourceMappingURL=profile.css.map */"] });
+};
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(Profile, [{
+    type: Component,
+    args: [{ selector: "app-profile", standalone: true, imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatDialogModule, MatIconModule], template: `<button type="button" mat-button class="menu-button" (click)="openProfile()">
+    <mat-icon>person</mat-icon>
+    <span class="span">Perfil</span>
+</button>
+
+<ng-template #profileDialog>
+    <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="profile-form">
+        <h2 mat-dialog-title>Editar perfil</h2>
+        <mat-dialog-content>
+            <p>Actualiza la informaci\xF3n de tu cuenta.</p>
+
+            @if (errorMessage) {
+                <p class="form-error" role="alert">{{ errorMessage }}</p>
+            }
+
+            @if (loading) {
+                <p>Cargando informaci\xF3n...</p>
+            } @else {
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="profile-username">Usuario</label>
+                        <input id="profile-username" type="text" formControlName="username">
+                        <small *ngIf="profileForm.get('username')?.touched && profileForm.get('username')?.hasError('required')">El usuario es requerido.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-nomina">N\xF3mina</label>
+                        <input id="profile-nomina" type="text" formControlName="nomina">
+                        <small *ngIf="profileForm.get('nomina')?.touched && profileForm.get('nomina')?.hasError('required')">La n\xF3mina es requerida.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-name">Nombre</label>
+                        <input id="profile-name" type="text" formControlName="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-last-name">Apellidos</label>
+                        <input id="profile-last-name" type="text" formControlName="last_name">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="profile-email">Correo electr\xF3nico</label>
+                        <input id="profile-email" type="email" formControlName="email">
+                        <small *ngIf="profileForm.get('email')?.touched && profileForm.get('email')?.invalid">Ingresa un correo electr\xF3nico v\xE1lido.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-area">\xC1rea</label>
+                        <select id="profile-area" formControlName="area">
+                            <option value="" disabled>Seleccione una opci\xF3n</option>
+                            <option *ngFor="let area of areas" [value]="area._id">{{ area.name }}</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="profile-role">Rol</label>
+                        <input id="profile-role" type="text" [value]="roleName" disabled>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="profile-password">Nueva contrase\xF1a (opcional)</label>
+                        <input id="profile-password" type="password" formControlName="password" placeholder="M\xEDnimo 8 caracteres">
+                        <small *ngIf="profileForm.get('password')?.touched && profileForm.get('password')?.hasError('minlength')">La contrase\xF1a debe tener al menos 8 caracteres.</small>
+                    </div>
+                </div>
+            }
+        </mat-dialog-content>
+        <mat-dialog-actions align="end">
+            <button type="button" mat-button class="cancel-btn" (click)="closeProfile()">Cancelar</button>
+            <button type="submit" mat-flat-button class="submit-btn" [disabled]="loading || saving || profileForm.invalid">
+                {{ saving ? 'Guardando...' : 'Guardar cambios' }}
+            </button>
+        </mat-dialog-actions>
+    </form>
+</ng-template>
+`, styles: ["/* src/app/auth/profile/profile.css */\n:host {\n  display: block;\n  width: 100%;\n}\n.menu-button {\n  width: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: flex-start;\n  font-size: 1rem;\n}\n.menu-button mat-icon {\n  margin-right: 8px;\n  color: white;\n}\n.menu-button .span {\n  color: white;\n  font-size: 1rem;\n  margin-left: 8px;\n}\n.profile-form {\n  min-width: 0;\n}\n.form-grid {\n  display: grid;\n  grid-template-columns: repeat(2, minmax(0, 1fr));\n  gap: 16px;\n}\n.form-group {\n  display: flex;\n  flex-direction: column;\n  gap: 6px;\n}\n.full-width {\n  grid-column: 1 / -1;\n}\ninput,\nselect {\n  box-sizing: border-box;\n  width: 100%;\n  padding: 10px;\n  border: 1px solid #bdbdbd;\n  border-radius: 4px;\n}\ninput:disabled {\n  background: #eeeeee;\n  color: #616161;\n}\nsmall,\n.form-error {\n  color: #b00020;\n}\n@media (max-width: 600px) {\n  .form-grid {\n    grid-template-columns: 1fr;\n  }\n  .full-width {\n    grid-column: auto;\n  }\n}\n/*# sourceMappingURL=profile.css.map */\n"] }]
+  }], null, { profileDialog: [{
+    type: ViewChild,
+    args: ["profileDialog"]
+  }], profileUpdated: [{
+    type: Output
+  }] });
+})();
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(Profile, { className: "Profile", filePath: "app/auth/profile/profile.ts", lineNumber: 16 });
+})();
+
+// src/app/auth/home-sol/home-sol.ts
+var _c019 = () => [5, 10, 25, 100];
+function HomeSol_Conditional_49_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "div", 19);
+    \u0275\u0275element(1, "mat-spinner");
+    \u0275\u0275elementEnd();
+  }
+}
+function HomeSol_th_52_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "th", 32);
+    \u0275\u0275text(1, " Folio ");
+    \u0275\u0275elementEnd();
+  }
+}
+function HomeSol_td_53_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "td", 33);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const elemento_r2 = ctx.$implicit;
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate1(" ", elemento_r2.folio, " ");
+  }
+}
+function HomeSol_th_55_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "th", 32);
+    \u0275\u0275text(1, " Tipo ");
+    \u0275\u0275elementEnd();
+  }
+}
+function HomeSol_td_56_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "td", 33);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const elemento_r3 = ctx.$implicit;
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate1(" ", elemento_r3.tipo, " ");
+  }
+}
+function HomeSol_th_58_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "th", 32);
+    \u0275\u0275text(1, " Descripci\xF3n ");
+    \u0275\u0275elementEnd();
+  }
+}
+function HomeSol_td_59_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "td", 33);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const elemento_r4 = ctx.$implicit;
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate1(" ", elemento_r4.descripcion, " ");
+  }
+}
+function HomeSol_th_61_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "th", 32);
+    \u0275\u0275text(1, " estado ");
+    \u0275\u0275elementEnd();
+  }
+}
+function HomeSol_td_62_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "td", 33);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const elemento_r5 = ctx.$implicit;
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate1(" ", elemento_r5.estado, " ");
+  }
+}
+function HomeSol_th_64_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "th", 32);
+    \u0275\u0275text(1, " Comentarios ");
+    \u0275\u0275elementEnd();
+  }
+}
+function HomeSol_td_65_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "td", 33);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const elemento_r6 = ctx.$implicit;
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate1(" ", elemento_r6.comentarios, " ");
+  }
+}
+function HomeSol_th_67_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "th", 32);
+    \u0275\u0275text(1, " Acciones ");
+    \u0275\u0275elementEnd();
+  }
+}
+function HomeSol_td_68_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r7 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "td", 33)(1, "button", 34);
+    \u0275\u0275listener("click", function HomeSol_td_68_Template_button_click_1_listener() {
+      const elemento_r8 = \u0275\u0275restoreView(_r7).$implicit;
+      const ctx_r8 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r8.editarSolicitud(elemento_r8));
+    });
+    \u0275\u0275elementStart(2, "mat-icon");
+    \u0275\u0275text(3, "edit");
+    \u0275\u0275elementEnd()();
+    \u0275\u0275elementStart(4, "button", 35);
+    \u0275\u0275listener("click", function HomeSol_td_68_Template_button_click_4_listener() {
+      const elemento_r8 = \u0275\u0275restoreView(_r7).$implicit;
+      const ctx_r8 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r8.eliminarSolicitud(elemento_r8));
+    });
+    \u0275\u0275elementStart(5, "mat-icon");
+    \u0275\u0275text(6, "delete");
+    \u0275\u0275elementEnd()()();
+  }
+}
+function HomeSol_tr_69_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275element(0, "tr", 36);
+  }
+}
+function HomeSol_tr_70_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275element(0, "tr", 37);
+  }
+}
+var HomeSol = class _HomeSol {
+  authService;
+  router;
+  breakpointObserver;
+  eliminarSolicitud(solicitud) {
+    const id = solicitud._id ?? solicitud.id;
+    if (!id || !window.confirm(`\xBFEliminar la solicitud "${solicitud.folio ?? id}"?`))
+      return;
+    this.authService.deleteSolicitud(id).subscribe({
+      next: () => this.cargarDatos(),
+      error: (error) => window.alert(error.error?.message ?? "No fue posible eliminar la solicitud.")
+    });
+  }
+  editarSolicitud(solicitud) {
+    const id = solicitud._id ?? solicitud.id;
+    if (!id)
+      return;
+    const comentarios = window.prompt("Comentarios:", solicitud.comentarios ?? "");
+    if (comentarios === null)
+      return;
+    this.authService.updateSolicitud(id, { comentarios }).subscribe({
+      next: () => this.cargarDatos(),
+      error: (error) => window.alert(error.error?.message ?? "No fue posible actualizar la solicitud.")
+    });
+  }
+  sidenav;
+  user;
+  isMobile = true;
+  menuAbierto = true;
+  constructor(authService, router, breakpointObserver) {
+    this.authService = authService;
+    this.router = router;
+    this.breakpointObserver = breakpointObserver;
+  }
+  http = inject2(HttpClient);
+  // Configuración de Tabla
+  columnasVisibles = ["folio", "tipo", "descripcion", "estado", "comentarios", "acciones"];
+  datos = new MatTableDataSource([]);
+  cargando = false;
+  // Estado de Paginación y Filtros (Servidor)
+  totalRegistros = 0;
+  tamanoPagina = 10;
+  paginaActual = 0;
+  filtroBusqueda = "";
+  ngOnInit() {
+    this.observarTamanoPantalla();
+    this.cargarDatos();
+    this.authService.getUser().subscribe({
+      next: (response) => {
+        if (response.status === "success")
+          this.user = response.user;
+      },
+      error: (error) => console.error("No se pudo cargar el usuario:", error)
+    });
+  }
+  observarTamanoPantalla() {
+    this.breakpointObserver.observe(["(max-width: 800px)"]).subscribe((res) => {
+      this.isMobile = res.matches;
+      this.menuAbierto = !res.matches;
+    });
+  }
+  cargarDatos() {
+    console.log("Se ejecuta la funci\xF3n de carga de datos");
+    this.cargando = true;
+    const params = new HttpParams().set("page", (this.paginaActual + 1).toString()).set("limit", this.tamanoPagina.toString()).set("search", this.filtroBusqueda);
+    this.authService.getSolicitudes(params).subscribe({
+      next: (respuesta) => {
+        const solicitudes = respuesta.solicitudes ?? respuesta;
+        this.datos.data = Array.isArray(solicitudes) ? solicitudes : [];
+        this.totalRegistros = respuesta.total ?? this.datos.data.length;
+        this.cargando = false;
+      },
+      error: () => this.cargando = false
+    });
+  }
+  onFiltrar(evento) {
+    const valorFiltro = evento.target.value;
+    this.filtroBusqueda = valorFiltro.trim().toLowerCase();
+    this.paginaActual = 0;
+    this.cargarDatos();
+  }
+  onCambiarPagina(evento) {
+    this.paginaActual = evento.pageIndex;
+    this.tamanoPagina = evento.pageSize;
+    this.cargarDatos();
+  }
+  toggleMenu() {
+    this.menuAbierto = !this.menuAbierto;
+  }
+  logout() {
+    this.authService.logout().subscribe({
+      next: (response) => {
+        window.alert(response.message);
+        this.router.navigateByUrl("/login", { replaceUrl: true });
+      },
+      error: () => {
+        console.log("err");
+        window.alert("Falla en salida del sistema, intenta de nuevo");
+      }
+    });
+  }
+  static \u0275fac = function HomeSol_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _HomeSol)(\u0275\u0275directiveInject(AuthService), \u0275\u0275directiveInject(Router), \u0275\u0275directiveInject(BreakpointObserver));
+  };
+  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _HomeSol, selectors: [["app-home-sol"]], viewQuery: function HomeSol_Query(rf, ctx) {
+    if (rf & 1) {
+      \u0275\u0275viewQuery(MatSidenav, 5);
+    }
+    if (rf & 2) {
+      let _t;
+      \u0275\u0275queryRefresh(_t = \u0275\u0275loadQuery()) && (ctx.sidenav = _t.first);
+    }
+  }, decls: 72, vars: 12, consts: [["drawer", ""], [3, "click"], ["src", "https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg", "alt", "Direcci\xF3n General de Tecnolog\xEDas de la Informaci\xF3n y Gobierno Digital", 1, "img-login"], [1, "espaciador-flexible"], ["mat-button", "", 1, "menu-button"], [1, "sidenav-container"], [1, "mat-elevation-z8", 3, "openedChange", "mode", "opened"], ["src", "../../../../public/Lot.png", 1, "avatar", "mat-elevation-z8"], [1, "name"], [1, "designation"], [3, "profileUpdated"], ["mat-button", "", "routerLink", "/solicitud", 1, "menu-button"], [1, "span"], ["mat-button", "", 1, "menu-button", 3, "click"], [1, "content"], ["name", "Solicitudes"], [1, "table-container"], ["appearance", "outline"], ["matInput", "", "placeholder", "Ej. Juan", 3, "keyup"], [1, "loading-spinner"], ["mat-table", "", 1, "mat-elevation-z8", 3, "dataSource"], ["matColumnDef", "folio"], ["mat-header-cell", "", 4, "matHeaderCellDef"], ["mat-cell", "", 4, "matCellDef"], ["matColumnDef", "tipo"], ["matColumnDef", "descripcion"], ["matColumnDef", "estado"], ["matColumnDef", "comentarios"], ["matColumnDef", "acciones"], ["mat-header-row", "", 4, "matHeaderRowDef"], ["mat-row", "", 4, "matRowDef", "matRowDefColumns"], ["aria-label", "Seleccionar p\xE1gina", 3, "page", "length", "pageSize", "pageSizeOptions"], ["mat-header-cell", ""], ["mat-cell", ""], ["mat-icon-button", "", "color", "primary", 3, "click"], ["mat-icon-button", "", 1, "deleteButton", 3, "click"], ["mat-header-row", ""], ["mat-row", ""]], template: function HomeSol_Template(rf, ctx) {
+    if (rf & 1) {
+      const _r1 = \u0275\u0275getCurrentView();
+      \u0275\u0275elementStart(0, "mat-toolbar")(1, "button", 1);
+      \u0275\u0275listener("click", function HomeSol_Template_button_click_1_listener() {
+        return ctx.toggleMenu();
+      });
+      \u0275\u0275elementStart(2, "mat-icon");
+      \u0275\u0275text(3, "menu");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(4, "span");
+      \u0275\u0275text(5, " Men\xFA ");
+      \u0275\u0275elementEnd()();
+      \u0275\u0275element(6, "img", 2)(7, "span", 3);
+      \u0275\u0275elementStart(8, "span");
+      \u0275\u0275text(9);
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(10, "span")(11, "button", 4)(12, "mat-icon");
+      \u0275\u0275text(13, "notifications_none");
+      \u0275\u0275elementEnd()()()();
+      \u0275\u0275elementStart(14, "mat-sidenav-container", 5)(15, "mat-sidenav", 6, 0);
+      \u0275\u0275twoWayListener("openedChange", function HomeSol_Template_mat_sidenav_openedChange_15_listener($event) {
+        \u0275\u0275restoreView(_r1);
+        \u0275\u0275twoWayBindingSet(ctx.menuAbierto, $event) || (ctx.menuAbierto = $event);
+        return \u0275\u0275resetView($event);
+      });
+      \u0275\u0275element(17, "img", 7);
+      \u0275\u0275elementStart(18, "h4", 8);
+      \u0275\u0275text(19);
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(20, "p", 9);
+      \u0275\u0275text(21, "Software Engineer");
+      \u0275\u0275elementEnd();
+      \u0275\u0275element(22, "mat-divider");
+      \u0275\u0275elementStart(23, "app-profile", 10);
+      \u0275\u0275listener("profileUpdated", function HomeSol_Template_app_profile_profileUpdated_23_listener($event) {
+        return ctx.user = $event;
+      });
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(24, "button", 11)(25, "mat-icon");
+      \u0275\u0275text(26, "assignment");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(27, "span", 12);
+      \u0275\u0275text(28, "Crea solicitud");
+      \u0275\u0275elementEnd()();
+      \u0275\u0275element(29, "mat-divider");
+      \u0275\u0275elementStart(30, "button", 4)(31, "mat-icon");
+      \u0275\u0275text(32, "help");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(33, "span", 12);
+      \u0275\u0275text(34, "Help");
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(35, "button", 13);
+      \u0275\u0275listener("click", function HomeSol_Template_button_click_35_listener() {
+        return ctx.logout();
+      });
+      \u0275\u0275elementStart(36, "mat-icon");
+      \u0275\u0275text(37, "exit_to_app");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(38, "span", 12);
+      \u0275\u0275text(39, "Salir");
+      \u0275\u0275elementEnd()()();
+      \u0275\u0275elementStart(40, "div", 14);
+      \u0275\u0275element(41, "router-outlet")(42, "router-outlet", 15);
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(43, "mat-sidenav-content")(44, "div", 16)(45, "mat-form-field", 17)(46, "mat-label");
+      \u0275\u0275text(47, "Buscar por nombre");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(48, "input", 18);
+      \u0275\u0275listener("keyup", function HomeSol_Template_input_keyup_48_listener($event) {
+        return ctx.onFiltrar($event);
+      });
+      \u0275\u0275elementEnd()();
+      \u0275\u0275conditionalCreate(49, HomeSol_Conditional_49_Template, 2, 0, "div", 19);
+      \u0275\u0275elementStart(50, "table", 20);
+      \u0275\u0275elementContainerStart(51, 21);
+      \u0275\u0275template(52, HomeSol_th_52_Template, 2, 0, "th", 22)(53, HomeSol_td_53_Template, 2, 1, "td", 23);
+      \u0275\u0275elementContainerEnd();
+      \u0275\u0275elementContainerStart(54, 24);
+      \u0275\u0275template(55, HomeSol_th_55_Template, 2, 0, "th", 22)(56, HomeSol_td_56_Template, 2, 1, "td", 23);
+      \u0275\u0275elementContainerEnd();
+      \u0275\u0275elementContainerStart(57, 25);
+      \u0275\u0275template(58, HomeSol_th_58_Template, 2, 0, "th", 22)(59, HomeSol_td_59_Template, 2, 1, "td", 23);
+      \u0275\u0275elementContainerEnd();
+      \u0275\u0275elementContainerStart(60, 26);
+      \u0275\u0275template(61, HomeSol_th_61_Template, 2, 0, "th", 22)(62, HomeSol_td_62_Template, 2, 1, "td", 23);
+      \u0275\u0275elementContainerEnd();
+      \u0275\u0275elementContainerStart(63, 27);
+      \u0275\u0275template(64, HomeSol_th_64_Template, 2, 0, "th", 22)(65, HomeSol_td_65_Template, 2, 1, "td", 23);
+      \u0275\u0275elementContainerEnd();
+      \u0275\u0275elementContainerStart(66, 28);
+      \u0275\u0275template(67, HomeSol_th_67_Template, 2, 0, "th", 22)(68, HomeSol_td_68_Template, 7, 0, "td", 23);
+      \u0275\u0275elementContainerEnd();
+      \u0275\u0275template(69, HomeSol_tr_69_Template, 1, 0, "tr", 29)(70, HomeSol_tr_70_Template, 1, 0, "tr", 30);
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(71, "mat-paginator", 31);
+      \u0275\u0275listener("page", function HomeSol_Template_mat_paginator_page_71_listener($event) {
+        return ctx.onCambiarPagina($event);
+      });
+      \u0275\u0275elementEnd()()()();
+    }
+    if (rf & 2) {
+      \u0275\u0275advance(9);
+      \u0275\u0275textInterpolate1(" Bienvenido ", ctx.user == null ? null : ctx.user.name, " ");
+      \u0275\u0275advance(6);
+      \u0275\u0275property("mode", ctx.isMobile ? "over" : "side");
+      \u0275\u0275twoWayProperty("opened", ctx.menuAbierto);
+      \u0275\u0275advance(4);
+      \u0275\u0275textInterpolate(ctx.user == null ? null : ctx.user.name);
+      \u0275\u0275advance(30);
+      \u0275\u0275conditional(ctx.cargando ? 49 : -1);
+      \u0275\u0275advance();
+      \u0275\u0275property("dataSource", ctx.datos);
+      \u0275\u0275advance(19);
+      \u0275\u0275property("matHeaderRowDef", ctx.columnasVisibles);
+      \u0275\u0275advance();
+      \u0275\u0275property("matRowDefColumns", ctx.columnasVisibles);
+      \u0275\u0275advance();
+      \u0275\u0275property("length", ctx.totalRegistros)("pageSize", ctx.tamanoPagina)("pageSizeOptions", \u0275\u0275pureFunction0(11, _c019));
+    }
+  }, dependencies: [
+    CommonModule,
+    MatToolbarModule,
+    MatToolbar,
+    MatSidenavModule,
+    MatSidenav,
+    MatSidenavContainer,
+    MatSidenavContent,
+    MatListModule,
+    MatDivider,
+    MatMenuModule,
+    MatButtonModule,
+    MatButton,
+    MatIconButton,
+    MatIconModule,
+    MatIcon,
+    MatExpansionModule,
+    MatDividerModule,
+    RouterModule,
+    RouterOutlet,
+    RouterLink,
+    MatTableModule,
+    MatTable,
+    MatHeaderCellDef,
+    MatHeaderRowDef,
+    MatColumnDef,
+    MatCellDef,
+    MatRowDef,
+    MatHeaderCell,
+    MatCell,
+    MatHeaderRow,
+    MatRow,
+    MatPaginatorModule,
+    MatPaginator,
+    MatInputModule,
+    MatInput,
+    MatFormField,
+    MatLabel,
+    MatFormFieldModule,
+    MatProgressSpinnerModule,
+    MatProgressSpinner,
+    Profile
+  ], styles: ["\nmat-toolbar[_ngcontent-%COMP%] {\n  background: #0194fe;\n  color: white;\n  top: 0;\n  z-index: 2;\n}\nmat-sidenav[_ngcontent-%COMP%] {\n  margin: 16px;\n  width: 200px;\n  border-right: none;\n  background: #0194fe;\n  color: white;\n  border-radius: 10px;\n  padding: 16px;\n  text-align: center;\n}\n.content[_ngcontent-%COMP%] {\n  height: calc(100vh - 98px);\n  border-radius: 10px;\n  margin: 16px;\n  margin-left: 32px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  font-size: 2rem;\n  color: lightgray;\n}\nmat-sidenav-container[_ngcontent-%COMP%] {\n  height: calc(100vh - 65px);\n  margin-right: 10;\n}\nmat-sidenav-container.oculto[_ngcontent-%COMP%] {\n  transform: translateX(-250px);\n}\n.span[_ngcontent-%COMP%] {\n  color: white;\n  font-size: 1rem;\n  margin-left: 8px;\n}\n.menu-button[_ngcontent-%COMP%] {\n  width: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: flex-start;\n  font-size: 1rem;\n}\n.menu-button[_ngcontent-%COMP%]   mat-icon[_ngcontent-%COMP%] {\n  margin-right: 8px;\n  color: white;\n}\n.avatar[_ngcontent-%COMP%] {\n  margin-top: 16px;\n  width: 100px;\n  height: 100px;\n  border-radius: 50%;\n}\n.name[_ngcontent-%COMP%] {\n  margin-top: 8px;\n  font-weight: normal;\n}\n.designation[_ngcontent-%COMP%] {\n  margin-top: 2px;\n  font-size: 0.7rem;\n  color: lightgrey;\n}\n.img-login[_ngcontent-%COMP%] {\n  width: auto;\n  height: 40px;\n  margin: 20px 5px;\n}\nmat-divider[_ngcontent-%COMP%] {\n  margin-top: 16px;\n  margin-bottom: 16px;\n  background-color: white;\n}\n.sidebar[_ngcontent-%COMP%] {\n  position: fixed;\n  left: 0;\n  top: 0;\n  width: 250px;\n  height: 100vh;\n  background-color: #2c3e50;\n  color: white;\n  transition: transform 0.3s ease;\n  transform: translateX(0);\n}\n.sidebar.oculto[_ngcontent-%COMP%] {\n  transform: translateX(-250px);\n}\n.table-container[_ngcontent-%COMP%] {\n  margin: 16px;\n  padding: 16px;\n  background-color: #ffffff;\n  border-radius: 10px;\n  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);\n}\n.mat-mdc-row[_ngcontent-%COMP%]:hover {\n  background-color: #f5f5f5;\n}\n.contenido[_ngcontent-%COMP%] {\n  margin-left: 250px;\n  transition: margin-left 0.3s ease;\n  padding: 20px;\n}\n.contenido.expandido[_ngcontent-%COMP%] {\n  margin-left: 0;\n}\n.media-funcion[_ngcontent-%COMP%] {\n  float: left;\n  margin: 0 auto;\n  max-width: 100%;\n  height: 30px;\n  padding: 15px 15px;\n  font-size: 14px;\n  background: #0194fe;\n}\n.espaciador-flexible[_ngcontent-%COMP%] {\n  flex: 1 1 auto;\n}\n/*# sourceMappingURL=home-sol.css.map */"] });
+};
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(HomeSol, [{
+    type: Component,
+    args: [{ selector: "app-home-sol", imports: [
+      CommonModule,
+      MatToolbarModule,
+      MatSidenavModule,
+      MatListModule,
+      MatMenuModule,
+      MatButtonModule,
+      MatIconModule,
+      MatExpansionModule,
+      MatDividerModule,
+      RouterModule,
+      MatTableModule,
+      MatPaginatorModule,
+      MatInputModule,
+      MatFormFieldModule,
+      MatProgressSpinnerModule,
+      MatIcon,
+      MatSidenavContainer,
+      MatSidenav,
+      MatTable,
+      MatTableModule,
+      MatDivider,
+      MatIcon,
+      MatToolbar,
+      MatSidenavModule,
+      MatPaginator,
+      RouterOutlet,
+      MatFormField,
+      MatLabel,
+      MatProgressSpinner,
+      MatToolbarModule,
+      MatSidenavModule,
+      MatButtonModule,
+      MatIconModule,
+      MatDividerModule,
+      RouterModule,
+      MatFormField,
+      MatLabel,
+      MatProgressSpinner,
+      MatPaginator,
+      MatTable,
+      MatTableModule,
+      MatPaginatorModule,
+      MatInputModule,
+      MatFormFieldModule,
+      MatProgressSpinnerModule,
+      MatIcon,
+      RouterLink,
+      Profile
+    ], template: `<mat-toolbar>
+    <button (click)="toggleMenu()">
+        <mat-icon>menu</mat-icon>
+        <span> Men\xFA </span>
+    </button>
+    <img class="img-login" src="https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg"
+        alt="Direcci\xF3n General de Tecnolog\xEDas de la Informaci\xF3n y Gobierno Digital">
+    <span class="espaciador-flexible"></span>
+    <span> Bienvenido {{ user?.name}} </span>
+    <span>
+        <button mat-button class="menu-button">
+            <mat-icon>notifications_none</mat-icon>
+        </button>
+    </span>
+
+</mat-toolbar>
+
+<mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #drawer [mode]="isMobile ? 'over' : 'side'" [(opened)]="menuAbierto" class="mat-elevation-z8">
+        <img class="avatar mat-elevation-z8" src="../../../../public/Lot.png" />
+
+        <h4 class="name">{{user?.name}}</h4>
+        <p class="designation">Software Engineer</p>
+
+        <mat-divider></mat-divider>
+        <app-profile (profileUpdated)="user = $event"></app-profile>
+        <button mat-button class="menu-button" routerLink="/solicitud">
+            <mat-icon>assignment</mat-icon>
+            <span class="span">Crea solicitud</span>
+        </button>
+
+        <mat-divider></mat-divider>
+
+        <button mat-button class="menu-button">
+            <mat-icon>help</mat-icon>
+            <span class="span">Help</span>
+        </button>
+        <button mat-button class="menu-button" (click)="logout()">
+            <mat-icon>exit_to_app</mat-icon>
+            <span class="span">Salir</span>
+        </button>
+    </mat-sidenav>
+
+    <div class="content">
+        <router-outlet></router-outlet>
+        <router-outlet name="Solicitudes"></router-outlet>
+    </div>
+    <mat-sidenav-content>
+        <div class="table-container">
+            <!-- Filtro de B\xFAsqueda -->
+            <mat-form-field appearance="outline">
+                <mat-label>Buscar por nombre</mat-label>
+                <input matInput (keyup)="onFiltrar($event)" placeholder="Ej. Juan">
+            </mat-form-field>
+
+
+            <!-- Spinner de Carga -->
+            @if (cargando) {
+            <div class="loading-spinner">
+                <mat-spinner></mat-spinner>
+            </div>
+            }
+
+            <!-- Tabla Angular Material -->
+            <table mat-table [dataSource]="datos" class="mat-elevation-z8">
+
+                <!-- Columna ID -->
+                <ng-container matColumnDef="folio">
+                    <th mat-header-cell *matHeaderCellDef> Folio </th>
+                    <td mat-cell *matCellDef="let elemento"> {{elemento.folio}} </td>
+                </ng-container>
+
+                <!-- Columna Nombre -->
+                <ng-container matColumnDef="tipo">
+                    <th mat-header-cell *matHeaderCellDef> Tipo </th>
+                    <td mat-cell *matCellDef="let elemento"> {{elemento.tipo}} </td>
+                </ng-container>
+
+                <!-- Columna Email -->
+                <ng-container matColumnDef="descripcion">
+                    <th mat-header-cell *matHeaderCellDef> Descripci\xF3n </th>
+                    <td mat-cell *matCellDef="let elemento"> {{elemento.descripcion}} </td>
+                </ng-container>
+
+                <!-- Columna Estatus -->
+                <ng-container matColumnDef="estado">
+                    <th mat-header-cell *matHeaderCellDef> estado </th>
+                    <td mat-cell *matCellDef="let elemento"> {{elemento.estado}} </td>
+                </ng-container>
+
+                <!-- Columna Rol -->
+                <ng-container matColumnDef="comentarios">
+                    <th mat-header-cell *matHeaderCellDef> Comentarios </th>
+                    <td mat-cell *matCellDef="let elemento"> {{elemento.comentarios}} </td>
+                </ng-container>
+
+                <!-- Columna Acciones -->
+                <ng-container matColumnDef="acciones">
+                    <th mat-header-cell *matHeaderCellDef> Acciones </th>
+                    <td mat-cell *matCellDef="let elemento">
+                        <button mat-icon-button color="primary" (click)="editarSolicitud(elemento)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button mat-icon-button class="deleteButton" (click)="eliminarSolicitud(elemento)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="columnasVisibles"></tr>
+                <tr mat-row *matRowDef="let row; columns: columnasVisibles;"></tr>
+            </table>
+
+            <!-- Paginador -->
+            <mat-paginator [length]="totalRegistros" [pageSize]="tamanoPagina" [pageSizeOptions]="[5, 10, 25, 100]"
+                (page)="onCambiarPagina($event)" aria-label="Seleccionar p\xE1gina">
+            </mat-paginator>
+        </div>
+
+    </mat-sidenav-content>
+</mat-sidenav-container>
+`, styles: ["/* src/app/auth/home-sol/home-sol.css */\nmat-toolbar {\n  background: #0194fe;\n  color: white;\n  top: 0;\n  z-index: 2;\n}\nmat-sidenav {\n  margin: 16px;\n  width: 200px;\n  border-right: none;\n  background: #0194fe;\n  color: white;\n  border-radius: 10px;\n  padding: 16px;\n  text-align: center;\n}\n.content {\n  height: calc(100vh - 98px);\n  border-radius: 10px;\n  margin: 16px;\n  margin-left: 32px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  font-size: 2rem;\n  color: lightgray;\n}\nmat-sidenav-container {\n  height: calc(100vh - 65px);\n  margin-right: 10;\n}\nmat-sidenav-container.oculto {\n  transform: translateX(-250px);\n}\n.span {\n  color: white;\n  font-size: 1rem;\n  margin-left: 8px;\n}\n.menu-button {\n  width: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: flex-start;\n  font-size: 1rem;\n}\n.menu-button mat-icon {\n  margin-right: 8px;\n  color: white;\n}\n.avatar {\n  margin-top: 16px;\n  width: 100px;\n  height: 100px;\n  border-radius: 50%;\n}\n.name {\n  margin-top: 8px;\n  font-weight: normal;\n}\n.designation {\n  margin-top: 2px;\n  font-size: 0.7rem;\n  color: lightgrey;\n}\n.img-login {\n  width: auto;\n  height: 40px;\n  margin: 20px 5px;\n}\nmat-divider {\n  margin-top: 16px;\n  margin-bottom: 16px;\n  background-color: white;\n}\n.sidebar {\n  position: fixed;\n  left: 0;\n  top: 0;\n  width: 250px;\n  height: 100vh;\n  background-color: #2c3e50;\n  color: white;\n  transition: transform 0.3s ease;\n  transform: translateX(0);\n}\n.sidebar.oculto {\n  transform: translateX(-250px);\n}\n.table-container {\n  margin: 16px;\n  padding: 16px;\n  background-color: #ffffff;\n  border-radius: 10px;\n  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);\n}\n.mat-mdc-row:hover {\n  background-color: #f5f5f5;\n}\n.contenido {\n  margin-left: 250px;\n  transition: margin-left 0.3s ease;\n  padding: 20px;\n}\n.contenido.expandido {\n  margin-left: 0;\n}\n.media-funcion {\n  float: left;\n  margin: 0 auto;\n  max-width: 100%;\n  height: 30px;\n  padding: 15px 15px;\n  font-size: 14px;\n  background: #0194fe;\n}\n.espaciador-flexible {\n  flex: 1 1 auto;\n}\n/*# sourceMappingURL=home-sol.css.map */\n"] }]
+  }], () => [{ type: AuthService }, { type: Router }, { type: BreakpointObserver }], { sidenav: [{
+    type: ViewChild,
+    args: [MatSidenav]
+  }] });
+})();
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(HomeSol, { className: "HomeSol", filePath: "app/auth/home-sol/home-sol.ts", lineNumber: 79 });
+})();
+
 // src/app/auth/users/users.ts
-var _c019 = ["userDialog"];
+var _c020 = ["userDialog"];
 var _c114 = () => [5, 10, 25, 100];
 function Users_Conditional_14_Template(rf, ctx) {
   if (rf & 1) {
@@ -69535,14 +69967,14 @@ function Users_Conditional_14_Template(rf, ctx) {
 }
 function Users_th_17_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 18);
+    \u0275\u0275elementStart(0, "th", 20);
     \u0275\u0275text(1, " ID ");
     \u0275\u0275elementEnd();
   }
 }
 function Users_td_18_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 19);
+    \u0275\u0275elementStart(0, "td", 21);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -69554,14 +69986,14 @@ function Users_td_18_Template(rf, ctx) {
 }
 function Users_th_20_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 18);
+    \u0275\u0275elementStart(0, "th", 20);
     \u0275\u0275text(1, " Usuario ");
     \u0275\u0275elementEnd();
   }
 }
 function Users_td_21_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 19);
+    \u0275\u0275elementStart(0, "td", 21);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -69573,14 +70005,14 @@ function Users_td_21_Template(rf, ctx) {
 }
 function Users_th_23_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 18);
+    \u0275\u0275elementStart(0, "th", 20);
     \u0275\u0275text(1, " Email ");
     \u0275\u0275elementEnd();
   }
 }
 function Users_td_24_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 19);
+    \u0275\u0275elementStart(0, "td", 21);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -69592,255 +70024,293 @@ function Users_td_24_Template(rf, ctx) {
 }
 function Users_th_26_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 18);
-    \u0275\u0275text(1, " Rol ");
+    \u0275\u0275elementStart(0, "th", 20);
+    \u0275\u0275text(1, " Nombre ");
     \u0275\u0275elementEnd();
   }
 }
 function Users_td_27_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 19);
+    \u0275\u0275elementStart(0, "td", 21);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
     const elemento_r6 = ctx.$implicit;
     \u0275\u0275advance();
-    \u0275\u0275textInterpolate1(" ", (elemento_r6.rolId == null ? null : elemento_r6.rolId.name) ?? (elemento_r6.rol == null ? null : elemento_r6.rol.name) ?? (elemento_r6.role == null ? null : elemento_r6.role.name) ?? elemento_r6.rol ?? elemento_r6.role, " ");
+    \u0275\u0275textInterpolate1(" ", elemento_r6.name, " ");
   }
 }
 function Users_th_29_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 18);
-    \u0275\u0275text(1, " Acciones ");
+    \u0275\u0275elementStart(0, "th", 20);
+    \u0275\u0275text(1, " Apellido ");
     \u0275\u0275elementEnd();
   }
 }
 function Users_td_30_Template(rf, ctx) {
   if (rf & 1) {
-    const _r7 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "td", 19)(1, "button", 20);
-    \u0275\u0275listener("click", function Users_td_30_Template_button_click_1_listener() {
-      const elemento_r8 = \u0275\u0275restoreView(_r7).$implicit;
-      const ctx_r8 = \u0275\u0275nextContext();
-      return \u0275\u0275resetView(ctx_r8.editarUsuario(elemento_r8));
+    \u0275\u0275elementStart(0, "td", 21);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const elemento_r7 = ctx.$implicit;
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate1(" ", elemento_r7.last_name, " ");
+  }
+}
+function Users_th_32_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "th", 20);
+    \u0275\u0275text(1, " Rol ");
+    \u0275\u0275elementEnd();
+  }
+}
+function Users_td_33_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "td", 21);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const elemento_r8 = ctx.$implicit;
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate1(" ", (elemento_r8.rolId == null ? null : elemento_r8.rolId.name) ?? "Sin rol", " ");
+  }
+}
+function Users_th_35_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "th", 20);
+    \u0275\u0275text(1, " Acciones ");
+    \u0275\u0275elementEnd();
+  }
+}
+function Users_td_36_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r9 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "td", 21)(1, "button", 22);
+    \u0275\u0275listener("click", function Users_td_36_Template_button_click_1_listener() {
+      const elemento_r10 = \u0275\u0275restoreView(_r9).$implicit;
+      const ctx_r10 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r10.editarUsuario(elemento_r10));
     });
     \u0275\u0275elementStart(2, "mat-icon");
     \u0275\u0275text(3, "edit");
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(4, "button", 21);
-    \u0275\u0275listener("click", function Users_td_30_Template_button_click_4_listener() {
-      const elemento_r8 = \u0275\u0275restoreView(_r7).$implicit;
-      const ctx_r8 = \u0275\u0275nextContext();
-      return \u0275\u0275resetView(ctx_r8.eliminarUsuario(elemento_r8));
+    \u0275\u0275elementStart(4, "button", 23);
+    \u0275\u0275listener("click", function Users_td_36_Template_button_click_4_listener() {
+      const elemento_r10 = \u0275\u0275restoreView(_r9).$implicit;
+      const ctx_r10 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r10.eliminarUsuario(elemento_r10));
     });
     \u0275\u0275elementStart(5, "mat-icon");
     \u0275\u0275text(6, "delete");
     \u0275\u0275elementEnd()()();
   }
 }
-function Users_tr_31_Template(rf, ctx) {
+function Users_tr_37_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275element(0, "tr", 22);
+    \u0275\u0275element(0, "tr", 24);
   }
 }
-function Users_tr_32_Template(rf, ctx) {
+function Users_tr_38_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275element(0, "tr", 23);
+    \u0275\u0275element(0, "tr", 25);
   }
 }
-function Users_ng_template_34_small_10_Template(rf, ctx) {
+function Users_ng_template_40_small_10_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "small");
     \u0275\u0275text(1, " Usuario es requerido. ");
     \u0275\u0275elementEnd();
   }
 }
-function Users_ng_template_34_small_15_Template(rf, ctx) {
+function Users_ng_template_40_small_15_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "small");
     \u0275\u0275text(1, " N\xF3mina es requerida. ");
     \u0275\u0275elementEnd();
   }
 }
-function Users_ng_template_34_div_20_div_1_Template(rf, ctx) {
+function Users_ng_template_40_div_20_div_1_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "div");
     \u0275\u0275text(1, "Email es requerido.");
     \u0275\u0275elementEnd();
   }
 }
-function Users_ng_template_34_div_20_div_2_Template(rf, ctx) {
+function Users_ng_template_40_div_20_div_2_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "div");
     \u0275\u0275text(1, "Formato de email inv\xE1lido.");
     \u0275\u0275elementEnd();
   }
 }
-function Users_ng_template_34_div_20_Template(rf, ctx) {
+function Users_ng_template_40_div_20_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "div");
-    \u0275\u0275template(1, Users_ng_template_34_div_20_div_1_Template, 2, 0, "div", 29)(2, Users_ng_template_34_div_20_div_2_Template, 2, 0, "div", 29);
+    \u0275\u0275template(1, Users_ng_template_40_div_20_div_1_Template, 2, 0, "div", 31)(2, Users_ng_template_40_div_20_div_2_Template, 2, 0, "div", 31);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
     let tmp_3_0;
     let tmp_4_0;
-    const ctx_r8 = \u0275\u0275nextContext(2);
+    const ctx_r10 = \u0275\u0275nextContext(2);
     \u0275\u0275advance();
-    \u0275\u0275property("ngIf", (tmp_3_0 = ctx_r8.registerForm.get("email")) == null ? null : tmp_3_0.errors == null ? null : tmp_3_0.errors["required"]);
+    \u0275\u0275property("ngIf", (tmp_3_0 = ctx_r10.registerForm.get("email")) == null ? null : tmp_3_0.errors == null ? null : tmp_3_0.errors["required"]);
     \u0275\u0275advance();
-    \u0275\u0275property("ngIf", (tmp_4_0 = ctx_r8.registerForm.get("email")) == null ? null : tmp_4_0.errors == null ? null : tmp_4_0.errors["email"]);
+    \u0275\u0275property("ngIf", (tmp_4_0 = ctx_r10.registerForm.get("email")) == null ? null : tmp_4_0.errors == null ? null : tmp_4_0.errors["email"]);
   }
 }
-function Users_ng_template_34_div_25_div_1_Template(rf, ctx) {
+function Users_ng_template_40_div_25_div_1_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "div");
     \u0275\u0275text(1, "Contrase\xF1a es requerida.");
     \u0275\u0275elementEnd();
   }
 }
-function Users_ng_template_34_div_25_div_2_Template(rf, ctx) {
+function Users_ng_template_40_div_25_div_2_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "div");
     \u0275\u0275text(1, " Contrase\xF1a debe tener al menos 8 caracteres. ");
     \u0275\u0275elementEnd();
   }
 }
-function Users_ng_template_34_div_25_Template(rf, ctx) {
+function Users_ng_template_40_div_25_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "div");
-    \u0275\u0275template(1, Users_ng_template_34_div_25_div_1_Template, 2, 0, "div", 29)(2, Users_ng_template_34_div_25_div_2_Template, 2, 0, "div", 29);
+    \u0275\u0275template(1, Users_ng_template_40_div_25_div_1_Template, 2, 0, "div", 31)(2, Users_ng_template_40_div_25_div_2_Template, 2, 0, "div", 31);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
     let tmp_3_0;
     let tmp_4_0;
-    const ctx_r8 = \u0275\u0275nextContext(2);
+    const ctx_r10 = \u0275\u0275nextContext(2);
     \u0275\u0275advance();
-    \u0275\u0275property("ngIf", (tmp_3_0 = ctx_r8.registerForm.get("password")) == null ? null : tmp_3_0.errors == null ? null : tmp_3_0.errors["required"]);
+    \u0275\u0275property("ngIf", (tmp_3_0 = ctx_r10.registerForm.get("password")) == null ? null : tmp_3_0.errors == null ? null : tmp_3_0.errors["required"]);
     \u0275\u0275advance();
-    \u0275\u0275property("ngIf", (tmp_4_0 = ctx_r8.registerForm.get("password")) == null ? null : tmp_4_0.errors == null ? null : tmp_4_0.errors["minlength"]);
+    \u0275\u0275property("ngIf", (tmp_4_0 = ctx_r10.registerForm.get("password")) == null ? null : tmp_4_0.errors == null ? null : tmp_4_0.errors["minlength"]);
   }
 }
-function Users_ng_template_34_small_30_Template(rf, ctx) {
+function Users_ng_template_40_small_30_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "small");
     \u0275\u0275text(1, " El nombre es requerido. ");
     \u0275\u0275elementEnd();
   }
 }
-function Users_ng_template_34_option_41_Template(rf, ctx) {
+function Users_ng_template_40_option_41_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "option", 50);
+    \u0275\u0275elementStart(0, "option", 52);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
-    const item_r11 = ctx.$implicit;
-    \u0275\u0275property("value", item_r11._id ?? item_r11.id);
+    const item_r13 = ctx.$implicit;
+    \u0275\u0275property("value", item_r13._id ?? item_r13.id);
     \u0275\u0275advance();
-    \u0275\u0275textInterpolate1(" ", item_r11.name ?? item_r11.nombre, " ");
+    \u0275\u0275textInterpolate1(" ", item_r13.name ?? item_r13.nombre, " ");
   }
 }
-function Users_ng_template_34_option_48_Template(rf, ctx) {
+function Users_ng_template_40_option_48_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "option", 50);
+    \u0275\u0275elementStart(0, "option", 52);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
-    const area_r12 = ctx.$implicit;
-    \u0275\u0275property("value", area_r12._id);
+    const area_r14 = ctx.$implicit;
+    \u0275\u0275property("value", area_r14._id);
     \u0275\u0275advance();
-    \u0275\u0275textInterpolate(area_r12.name);
+    \u0275\u0275textInterpolate(area_r14.name);
   }
 }
-function Users_ng_template_34_label_49_Template(rf, ctx) {
+function Users_ng_template_40_label_49_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "label", 51);
-    \u0275\u0275element(1, "input", 52);
+    \u0275\u0275elementStart(0, "label", 53);
+    \u0275\u0275element(1, "input", 54);
     \u0275\u0275text(2, " Usuario activo ");
     \u0275\u0275elementEnd();
   }
 }
-function Users_ng_template_34_Template(rf, ctx) {
+function Users_ng_template_40_Template(rf, ctx) {
   if (rf & 1) {
-    const _r10 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "form", 24);
-    \u0275\u0275listener("ngSubmit", function Users_ng_template_34_Template_form_ngSubmit_0_listener() {
-      \u0275\u0275restoreView(_r10);
-      const ctx_r8 = \u0275\u0275nextContext();
-      return \u0275\u0275resetView(ctx_r8.onSubmit());
+    const _r12 = \u0275\u0275getCurrentView();
+    \u0275\u0275elementStart(0, "form", 26);
+    \u0275\u0275listener("ngSubmit", function Users_ng_template_40_Template_form_ngSubmit_0_listener() {
+      \u0275\u0275restoreView(_r12);
+      const ctx_r10 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r10.onSubmit());
     });
-    \u0275\u0275elementStart(1, "h2", 25);
+    \u0275\u0275elementStart(1, "h2", 27);
     \u0275\u0275text(2);
     \u0275\u0275elementEnd();
     \u0275\u0275elementStart(3, "mat-dialog-content")(4, "p");
     \u0275\u0275text(5, "Por favor, completa los datos.");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(6, "div", 26)(7, "label", 27);
+    \u0275\u0275elementStart(6, "div", 28)(7, "label", 29);
     \u0275\u0275text(8, "Usuario");
     \u0275\u0275elementEnd();
-    \u0275\u0275element(9, "input", 28);
-    \u0275\u0275template(10, Users_ng_template_34_small_10_Template, 2, 0, "small", 29);
+    \u0275\u0275element(9, "input", 30);
+    \u0275\u0275template(10, Users_ng_template_40_small_10_Template, 2, 0, "small", 31);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(11, "div", 26)(12, "label", 30);
+    \u0275\u0275elementStart(11, "div", 28)(12, "label", 32);
     \u0275\u0275text(13, "N\xF3mina");
     \u0275\u0275elementEnd();
-    \u0275\u0275element(14, "input", 31);
-    \u0275\u0275template(15, Users_ng_template_34_small_15_Template, 2, 0, "small", 29);
+    \u0275\u0275element(14, "input", 33);
+    \u0275\u0275template(15, Users_ng_template_40_small_15_Template, 2, 0, "small", 31);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(16, "div", 26)(17, "label", 32);
+    \u0275\u0275elementStart(16, "div", 28)(17, "label", 34);
     \u0275\u0275text(18, "Correo Electr\xF3nico");
     \u0275\u0275elementEnd();
-    \u0275\u0275element(19, "input", 33);
-    \u0275\u0275template(20, Users_ng_template_34_div_20_Template, 3, 2, "div", 29);
+    \u0275\u0275element(19, "input", 35);
+    \u0275\u0275template(20, Users_ng_template_40_div_20_Template, 3, 2, "div", 31);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(21, "div", 26)(22, "label", 34);
+    \u0275\u0275elementStart(21, "div", 28)(22, "label", 36);
     \u0275\u0275text(23);
     \u0275\u0275elementEnd();
-    \u0275\u0275element(24, "input", 35);
-    \u0275\u0275template(25, Users_ng_template_34_div_25_Template, 3, 2, "div", 29);
+    \u0275\u0275element(24, "input", 37);
+    \u0275\u0275template(25, Users_ng_template_40_div_25_Template, 3, 2, "div", 31);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(26, "div", 26)(27, "label", 36);
+    \u0275\u0275elementStart(26, "div", 28)(27, "label", 38);
     \u0275\u0275text(28, "Nombre");
     \u0275\u0275elementEnd();
-    \u0275\u0275element(29, "input", 37);
-    \u0275\u0275template(30, Users_ng_template_34_small_30_Template, 2, 0, "small", 29);
+    \u0275\u0275element(29, "input", 39);
+    \u0275\u0275template(30, Users_ng_template_40_small_30_Template, 2, 0, "small", 31);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(31, "div", 26)(32, "label", 38);
+    \u0275\u0275elementStart(31, "div", 28)(32, "label", 40);
     \u0275\u0275text(33, "Apellidos");
     \u0275\u0275elementEnd();
-    \u0275\u0275element(34, "input", 39);
+    \u0275\u0275element(34, "input", 41);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(35, "div", 26)(36, "label", 40);
+    \u0275\u0275elementStart(35, "div", 28)(36, "label", 42);
     \u0275\u0275text(37, "Rol de la Cuenta");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(38, "select", 41)(39, "option", 42);
+    \u0275\u0275elementStart(38, "select", 43)(39, "option", 44);
     \u0275\u0275text(40, "Seleccione una opci\xF3n");
     \u0275\u0275elementEnd();
-    \u0275\u0275template(41, Users_ng_template_34_option_41_Template, 2, 2, "option", 43);
+    \u0275\u0275template(41, Users_ng_template_40_option_41_Template, 2, 2, "option", 45);
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(42, "div", 26)(43, "label", 44);
+    \u0275\u0275elementStart(42, "div", 28)(43, "label", 46);
     \u0275\u0275text(44, "\xC1rea");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(45, "select", 45)(46, "option", 42);
+    \u0275\u0275elementStart(45, "select", 47)(46, "option", 44);
     \u0275\u0275text(47, "Seleccione una opci\xF3n");
     \u0275\u0275elementEnd();
-    \u0275\u0275template(48, Users_ng_template_34_option_48_Template, 2, 2, "option", 43);
+    \u0275\u0275template(48, Users_ng_template_40_option_48_Template, 2, 2, "option", 45);
     \u0275\u0275elementEnd()();
-    \u0275\u0275template(49, Users_ng_template_34_label_49_Template, 3, 0, "label", 46);
+    \u0275\u0275template(49, Users_ng_template_40_label_49_Template, 3, 0, "label", 48);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(50, "mat-dialog-actions", 47)(51, "button", 48);
-    \u0275\u0275listener("click", function Users_ng_template_34_Template_button_click_51_listener() {
-      \u0275\u0275restoreView(_r10);
-      const ctx_r8 = \u0275\u0275nextContext();
-      return \u0275\u0275resetView(ctx_r8.cerrarFormulario());
+    \u0275\u0275elementStart(50, "mat-dialog-actions", 49)(51, "button", 50);
+    \u0275\u0275listener("click", function Users_ng_template_40_Template_button_click_51_listener() {
+      \u0275\u0275restoreView(_r12);
+      const ctx_r10 = \u0275\u0275nextContext();
+      return \u0275\u0275resetView(ctx_r10.cerrarFormulario());
     });
     \u0275\u0275text(52, "Cancelar");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(53, "button", 49);
+    \u0275\u0275elementStart(53, "button", 51);
     \u0275\u0275text(54);
     \u0275\u0275elementEnd()()();
   }
@@ -69850,34 +70320,34 @@ function Users_ng_template_34_Template(rf, ctx) {
     let tmp_6_0;
     let tmp_9_0;
     let tmp_10_0;
-    const ctx_r8 = \u0275\u0275nextContext();
-    \u0275\u0275property("formGroup", ctx_r8.registerForm);
+    const ctx_r10 = \u0275\u0275nextContext();
+    \u0275\u0275property("formGroup", ctx_r10.registerForm);
     \u0275\u0275advance(2);
-    \u0275\u0275textInterpolate(ctx_r8.editingId ? "Editar usuario" : "Nuevo usuario");
+    \u0275\u0275textInterpolate(ctx_r10.editingId ? "Editar usuario" : "Nuevo usuario");
     \u0275\u0275advance(8);
-    \u0275\u0275property("ngIf", ((tmp_4_0 = ctx_r8.registerForm.get("username")) == null ? null : tmp_4_0.hasError("required")) && ((tmp_4_0 = ctx_r8.registerForm.get("username")) == null ? null : tmp_4_0.touched));
+    \u0275\u0275property("ngIf", ((tmp_4_0 = ctx_r10.registerForm.get("username")) == null ? null : tmp_4_0.hasError("required")) && ((tmp_4_0 = ctx_r10.registerForm.get("username")) == null ? null : tmp_4_0.touched));
     \u0275\u0275advance(5);
-    \u0275\u0275property("ngIf", ((tmp_5_0 = ctx_r8.registerForm.get("nomina")) == null ? null : tmp_5_0.hasError("required")) && ((tmp_5_0 = ctx_r8.registerForm.get("nomina")) == null ? null : tmp_5_0.touched));
+    \u0275\u0275property("ngIf", ((tmp_5_0 = ctx_r10.registerForm.get("nomina")) == null ? null : tmp_5_0.hasError("required")) && ((tmp_5_0 = ctx_r10.registerForm.get("nomina")) == null ? null : tmp_5_0.touched));
     \u0275\u0275advance(5);
-    \u0275\u0275property("ngIf", ((tmp_6_0 = ctx_r8.registerForm.get("email")) == null ? null : tmp_6_0.invalid) && ((tmp_6_0 = ctx_r8.registerForm.get("email")) == null ? null : tmp_6_0.touched));
+    \u0275\u0275property("ngIf", ((tmp_6_0 = ctx_r10.registerForm.get("email")) == null ? null : tmp_6_0.invalid) && ((tmp_6_0 = ctx_r10.registerForm.get("email")) == null ? null : tmp_6_0.touched));
     \u0275\u0275advance(3);
-    \u0275\u0275textInterpolate1("Contrase\xF1a", ctx_r8.editingId ? " (opcional)" : "");
+    \u0275\u0275textInterpolate1("Contrase\xF1a", ctx_r10.editingId ? " (opcional)" : "");
     \u0275\u0275advance();
-    \u0275\u0275property("placeholder", ctx_r8.editingId ? "Dejar vac\xEDa para conservarla" : "M\xEDnimo 8 caracteres");
+    \u0275\u0275property("placeholder", ctx_r10.editingId ? "Dejar vac\xEDa para conservarla" : "M\xEDnimo 8 caracteres");
     \u0275\u0275advance();
-    \u0275\u0275property("ngIf", ((tmp_9_0 = ctx_r8.registerForm.get("password")) == null ? null : tmp_9_0.invalid) && ((tmp_9_0 = ctx_r8.registerForm.get("password")) == null ? null : tmp_9_0.touched));
+    \u0275\u0275property("ngIf", ((tmp_9_0 = ctx_r10.registerForm.get("password")) == null ? null : tmp_9_0.invalid) && ((tmp_9_0 = ctx_r10.registerForm.get("password")) == null ? null : tmp_9_0.touched));
     \u0275\u0275advance(5);
-    \u0275\u0275property("ngIf", ((tmp_10_0 = ctx_r8.registerForm.get("name")) == null ? null : tmp_10_0.hasError("required")) && ((tmp_10_0 = ctx_r8.registerForm.get("name")) == null ? null : tmp_10_0.touched));
+    \u0275\u0275property("ngIf", ((tmp_10_0 = ctx_r10.registerForm.get("name")) == null ? null : tmp_10_0.hasError("required")) && ((tmp_10_0 = ctx_r10.registerForm.get("name")) == null ? null : tmp_10_0.touched));
     \u0275\u0275advance(11);
-    \u0275\u0275property("ngForOf", ctx_r8.elementos);
+    \u0275\u0275property("ngForOf", ctx_r10.elementos);
     \u0275\u0275advance(7);
-    \u0275\u0275property("ngForOf", ctx_r8.areas);
+    \u0275\u0275property("ngForOf", ctx_r10.areas);
     \u0275\u0275advance();
-    \u0275\u0275property("ngIf", ctx_r8.editingId);
+    \u0275\u0275property("ngIf", ctx_r10.editingId);
     \u0275\u0275advance(4);
-    \u0275\u0275property("disabled", ctx_r8.registerForm.invalid);
+    \u0275\u0275property("disabled", ctx_r10.registerForm.invalid);
     \u0275\u0275advance();
-    \u0275\u0275textInterpolate1(" ", ctx_r8.editingId ? "Guardar cambios" : "Registrar usuario", " ");
+    \u0275\u0275textInterpolate1(" ", ctx_r10.editingId ? "Guardar cambios" : "Registrar usuario", " ");
   }
 }
 var Users = class _Users {
@@ -69912,7 +70382,7 @@ var Users = class _Users {
   dialog = inject2(MatDialog);
   dialogRef;
   // Configuración de Tabla
-  columnasVisibles = ["id", "nombre", "email", "rol", "acciones"];
+  columnasVisibles = ["id", "usuario", "email", "name", "last_name", "rol", "acciones"];
   datos = new MatTableDataSource([]);
   cargando = false;
   // Estado de Paginación y Filtros (Servidor)
@@ -70037,7 +70507,7 @@ var Users = class _Users {
       password: "",
       name: usuario.name ?? "",
       last_name: usuario.last_name ?? "",
-      rolId: usuario.rolId?._id ?? usuario.rol?._id ?? usuario.role?._id ?? usuario.rolId ?? usuario.rol ?? usuario.role ?? "",
+      rolId: usuario.rolId?._id ?? usuario.rolId ?? "",
       area: usuario.area?._id ?? usuario.area ?? "",
       active: usuario.active ?? true
     });
@@ -70074,13 +70544,13 @@ var Users = class _Users {
   };
   static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _Users, selectors: [["app-users"]], viewQuery: function Users_Query(rf, ctx) {
     if (rf & 1) {
-      \u0275\u0275viewQuery(_c019, 5);
+      \u0275\u0275viewQuery(_c020, 5);
     }
     if (rf & 2) {
       let _t;
       \u0275\u0275queryRefresh(_t = \u0275\u0275loadQuery()) && (ctx.userDialog = _t.first);
     }
-  }, inputs: { roleFilter: "roleFilter", titulo: "titulo" }, decls: 36, vars: 9, consts: [["userDialog", ""], [1, "table-container"], ["appearance", "outline"], ["matInput", "", "placeholder", "Ej. Juan", 3, "keyup"], [1, "espaciador-flexible"], ["mat-flat-button", "", 1, "my_button", 3, "click"], [1, "loading-spinner"], ["mat-table", "", 1, "mat-elevation-z8", 3, "dataSource"], ["matColumnDef", "id"], ["mat-header-cell", "", 4, "matHeaderCellDef"], ["mat-cell", "", 4, "matCellDef"], ["matColumnDef", "nombre"], ["matColumnDef", "email"], ["matColumnDef", "rol"], ["matColumnDef", "acciones"], ["mat-header-row", "", 4, "matHeaderRowDef"], ["mat-row", "", 4, "matRowDef", "matRowDefColumns"], ["aria-label", "Seleccionar p\xE1gina", 3, "page", "length", "pageSize", "pageSizeOptions"], ["mat-header-cell", ""], ["mat-cell", ""], ["mat-icon-button", "", "color", "primary", 3, "click"], ["mat-icon-button", "", 1, "deleteButton", 3, "click"], ["mat-header-row", ""], ["mat-row", ""], [1, "register-form", 3, "ngSubmit", "formGroup"], ["mat-dialog-title", ""], [1, "form-group"], ["for", "username"], ["type", "text", "id", "username", "formControlName", "username", "placeholder", "Usuario"], [4, "ngIf"], ["for", "nomina"], ["type", "text", "id", "nomina", "formControlName", "nomina", "placeholder", "N\xF3mina"], ["for", "email"], ["type", "email", "id", "email", "formControlName", "email", "placeholder", "correo@ejemplo.com"], ["for", "password"], ["type", "password", "id", "password", "formControlName", "password", 3, "placeholder"], ["for", "name"], ["type", "text", "id", "name", "formControlName", "name", "placeholder", "Nombre"], ["for", "last_name"], ["type", "text", "id", "last_name", "formControlName", "last_name", "placeholder", "Apellidos"], ["for", "rol"], ["id", "rol", "formControlName", "rolId"], ["value", "", "disabled", ""], [3, "value", 4, "ngFor", "ngForOf"], ["for", "area"], ["id", "area", "formControlName", "area"], ["class", "checkbox-row", 4, "ngIf"], ["align", "end"], ["type", "button", "mat-button", "", 1, "cancel-btn", 3, "click"], ["type", "submit", "mat-flat-button", "", 1, "submit-btn", 3, "disabled"], [3, "value"], [1, "checkbox-row"], ["type", "checkbox", "formControlName", "active"]], template: function Users_Template(rf, ctx) {
+  }, inputs: { roleFilter: "roleFilter", titulo: "titulo" }, decls: 42, vars: 9, consts: [["userDialog", ""], [1, "table-container"], ["appearance", "outline"], ["matInput", "", "placeholder", "Ej. Juan", 3, "keyup"], [1, "espaciador-flexible"], ["mat-flat-button", "", 1, "my_button", 3, "click"], [1, "loading-spinner"], ["mat-table", "", 1, "mat-elevation-z8", 3, "dataSource"], ["matColumnDef", "id"], ["mat-header-cell", "", 4, "matHeaderCellDef"], ["mat-cell", "", 4, "matCellDef"], ["matColumnDef", "usuario"], ["matColumnDef", "email"], ["matColumnDef", "name"], ["matColumnDef", "last_name"], ["matColumnDef", "rol"], ["matColumnDef", "acciones"], ["mat-header-row", "", 4, "matHeaderRowDef"], ["mat-row", "", 4, "matRowDef", "matRowDefColumns"], ["aria-label", "Seleccionar p\xE1gina", 3, "page", "length", "pageSize", "pageSizeOptions"], ["mat-header-cell", ""], ["mat-cell", ""], ["mat-icon-button", "", "color", "primary", 3, "click"], ["mat-icon-button", "", 1, "deleteButton", 3, "click"], ["mat-header-row", ""], ["mat-row", ""], [1, "register-form", 3, "ngSubmit", "formGroup"], ["mat-dialog-title", ""], [1, "form-group"], ["for", "username"], ["type", "text", "id", "username", "formControlName", "username", "placeholder", "Usuario"], [4, "ngIf"], ["for", "nomina"], ["type", "text", "id", "nomina", "formControlName", "nomina", "placeholder", "N\xF3mina"], ["for", "email"], ["type", "email", "id", "email", "formControlName", "email", "placeholder", "correo@ejemplo.com"], ["for", "password"], ["type", "password", "id", "password", "formControlName", "password", 3, "placeholder"], ["for", "name"], ["type", "text", "id", "name", "formControlName", "name", "placeholder", "Nombre"], ["for", "last_name"], ["type", "text", "id", "last_name", "formControlName", "last_name", "placeholder", "Apellidos"], ["for", "rol"], ["id", "rol", "formControlName", "rolId"], ["value", "", "disabled", ""], [3, "value", 4, "ngFor", "ngForOf"], ["for", "area"], ["id", "area", "formControlName", "area"], ["class", "checkbox-row", 4, "ngIf"], ["align", "end"], ["type", "button", "mat-button", "", 1, "cancel-btn", 3, "click"], ["type", "submit", "mat-flat-button", "", 1, "submit-btn", 3, "disabled"], [3, "value"], [1, "checkbox-row"], ["type", "checkbox", "formControlName", "active"]], template: function Users_Template(rf, ctx) {
     if (rf & 1) {
       const _r1 = \u0275\u0275getCurrentView();
       \u0275\u0275elementStart(0, "div", 1)(1, "h2");
@@ -70099,7 +70569,7 @@ var Users = class _Users {
       \u0275\u0275elementStart(9, "button", 5);
       \u0275\u0275listener("click", function Users_Template_button_click_9_listener() {
         \u0275\u0275restoreView(_r1);
-        const userDialog_r2 = \u0275\u0275reference(35);
+        const userDialog_r2 = \u0275\u0275reference(41);
         return \u0275\u0275resetView(ctx.abrirFormulario(userDialog_r2));
       });
       \u0275\u0275elementStart(10, "mat-icon");
@@ -70123,16 +70593,22 @@ var Users = class _Users {
       \u0275\u0275template(26, Users_th_26_Template, 2, 0, "th", 9)(27, Users_td_27_Template, 2, 1, "td", 10);
       \u0275\u0275elementContainerEnd();
       \u0275\u0275elementContainerStart(28, 14);
-      \u0275\u0275template(29, Users_th_29_Template, 2, 0, "th", 9)(30, Users_td_30_Template, 7, 0, "td", 10);
+      \u0275\u0275template(29, Users_th_29_Template, 2, 0, "th", 9)(30, Users_td_30_Template, 2, 1, "td", 10);
       \u0275\u0275elementContainerEnd();
-      \u0275\u0275template(31, Users_tr_31_Template, 1, 0, "tr", 15)(32, Users_tr_32_Template, 1, 0, "tr", 16);
+      \u0275\u0275elementContainerStart(31, 15);
+      \u0275\u0275template(32, Users_th_32_Template, 2, 0, "th", 9)(33, Users_td_33_Template, 2, 1, "td", 10);
+      \u0275\u0275elementContainerEnd();
+      \u0275\u0275elementContainerStart(34, 16);
+      \u0275\u0275template(35, Users_th_35_Template, 2, 0, "th", 9)(36, Users_td_36_Template, 7, 0, "td", 10);
+      \u0275\u0275elementContainerEnd();
+      \u0275\u0275template(37, Users_tr_37_Template, 1, 0, "tr", 17)(38, Users_tr_38_Template, 1, 0, "tr", 18);
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(33, "mat-paginator", 17);
-      \u0275\u0275listener("page", function Users_Template_mat_paginator_page_33_listener($event) {
+      \u0275\u0275elementStart(39, "mat-paginator", 19);
+      \u0275\u0275listener("page", function Users_Template_mat_paginator_page_39_listener($event) {
         return ctx.onCambiarPagina($event);
       });
       \u0275\u0275elementEnd()();
-      \u0275\u0275template(34, Users_ng_template_34_Template, 55, 14, "ng-template", null, 0, \u0275\u0275templateRefExtractor);
+      \u0275\u0275template(40, Users_ng_template_40_Template, 55, 14, "ng-template", null, 0, \u0275\u0275templateRefExtractor);
     }
     if (rf & 2) {
       \u0275\u0275advance(2);
@@ -70141,7 +70617,7 @@ var Users = class _Users {
       \u0275\u0275conditional(ctx.cargando ? 14 : -1);
       \u0275\u0275advance();
       \u0275\u0275property("dataSource", ctx.datos);
-      \u0275\u0275advance(16);
+      \u0275\u0275advance(22);
       \u0275\u0275property("matHeaderRowDef", ctx.columnasVisibles);
       \u0275\u0275advance();
       \u0275\u0275property("matRowDefColumns", ctx.columnasVisibles);
@@ -70243,7 +70719,7 @@ var Users = class _Users {
         </ng-container>
 
         <!-- Columna Nombre -->
-        <ng-container matColumnDef="nombre">
+        <ng-container matColumnDef="usuario">
             <th mat-header-cell *matHeaderCellDef> Usuario </th>
             <td mat-cell *matCellDef="let elemento"> {{elemento.username}} </td>
         </ng-container>
@@ -70254,11 +70730,23 @@ var Users = class _Users {
             <td mat-cell *matCellDef="let elemento"> {{elemento.email}} </td>
         </ng-container>
 
+        <!-- Columna Nombre -->
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> Nombre </th>
+            <td mat-cell *matCellDef="let elemento"> {{elemento.name}} </td>
+        </ng-container>
+
+        <!-- Columna Apellido -->
+        <ng-container matColumnDef="last_name">
+            <th mat-header-cell *matHeaderCellDef> Apellido </th>
+            <td mat-cell *matCellDef="let elemento"> {{elemento.last_name}} </td>
+        </ng-container>
+
         <!-- Columna Rol -->
         <ng-container matColumnDef="rol">
             <th mat-header-cell *matHeaderCellDef> Rol </th>
             <td mat-cell *matCellDef="let elemento">
-                {{elemento.rolId?.name ?? elemento.rol?.name ?? elemento.role?.name ?? elemento.rol ?? elemento.role}}
+                {{ elemento.rolId?.name ?? 'Sin rol' }}
             </td>
         </ng-container>
 
@@ -70388,7 +70876,7 @@ var Users = class _Users {
 })();
 
 // src/app/auth/area/area.ts
-var _c020 = ["areaDialog"];
+var _c021 = ["areaDialog"];
 var _c115 = () => [5, 10, 25, 100];
 function Area_Conditional_14_Template(rf, ctx) {
   if (rf & 1) {
@@ -70725,7 +71213,7 @@ var Area = class _Area {
   };
   static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _Area, selectors: [["app-area"]], viewQuery: function Area_Query(rf, ctx) {
     if (rf & 1) {
-      \u0275\u0275viewQuery(_c020, 5);
+      \u0275\u0275viewQuery(_c021, 5);
     }
     if (rf & 2) {
       let _t;
@@ -70978,7 +71466,7 @@ var Area = class _Area {
 })();
 
 // src/app/auth/category/category.ts
-var _c021 = ["categoryDialog"];
+var _c022 = ["categoryDialog"];
 var _c116 = () => [5, 10, 25, 100];
 function Category_Conditional_14_Template(rf, ctx) {
   if (rf & 1) {
@@ -71323,7 +71811,7 @@ var Category = class _Category {
   };
   static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _Category, selectors: [["app-category"]], viewQuery: function Category_Query(rf, ctx) {
     if (rf & 1) {
-      \u0275\u0275viewQuery(_c021, 5);
+      \u0275\u0275viewQuery(_c022, 5);
     }
     if (rf & 2) {
       let _t;
@@ -71576,7 +72064,7 @@ var Category = class _Category {
 })();
 
 // src/app/auth/role/role.ts
-var _c022 = ["roleDialog"];
+var _c023 = ["roleDialog"];
 var _c117 = () => [5, 10, 25, 100];
 function Role_Conditional_14_Template(rf, ctx) {
   if (rf & 1) {
@@ -71835,7 +72323,7 @@ var Role = class _Role {
     const params = new HttpParams().set("page", (this.paginaActual + 1).toString()).set("limit", this.tamanoPagina.toString()).set("search", this.filtroBusqueda);
     this.authService.getRoles(params).subscribe({
       next: (respuesta) => {
-        const roles = respuesta.roles ?? respuesta.rols ?? respuesta;
+        const roles = respuesta.roles ?? respuesta;
         this.datos.data = Array.isArray(roles) ? roles : [];
         this.totalRegistros = respuesta.total ?? this.datos.data.length;
         this.cargando = false;
@@ -71915,7 +72403,7 @@ var Role = class _Role {
   };
   static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _Role, selectors: [["app-role"]], viewQuery: function Role_Query(rf, ctx) {
     if (rf & 1) {
-      \u0275\u0275viewQuery(_c022, 5);
+      \u0275\u0275viewQuery(_c023, 5);
     }
     if (rf & 2) {
       let _t;
@@ -72168,7 +72656,7 @@ var Role = class _Role {
 })();
 
 // src/app/auth/inventory/inventory.ts
-var _c023 = ["inventoryDialog"];
+var _c024 = ["inventoryDialog"];
 var _c118 = () => [5, 10, 25, 100];
 function Inventory_Conditional_14_Template(rf, ctx) {
   if (rf & 1) {
@@ -72564,7 +73052,7 @@ var Inventory = class _Inventory {
   };
   static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _Inventory, selectors: [["app-inventory"]], viewQuery: function Inventory_Query(rf, ctx) {
     if (rf & 1) {
-      \u0275\u0275viewQuery(_c023, 5);
+      \u0275\u0275viewQuery(_c024, 5);
     }
     if (rf & 2) {
       let _t;
@@ -72846,7 +73334,7 @@ var Inventory = class _Inventory {
 })();
 
 // src/app/auth/assignments/assignments.ts
-var _c024 = () => [5, 10, 25, 100];
+var _c025 = () => [5, 10, 25, 100];
 function Assignments_Conditional_14_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275elementStart(0, "div", 6);
@@ -73428,7 +73916,7 @@ var Assignments = class _Assignments {
       \u0275\u0275advance();
       \u0275\u0275property("matRowDefColumns", ctx.columnasVisibles);
       \u0275\u0275advance();
-      \u0275\u0275property("length", ctx.totalRegistros)("pageSize", ctx.tamanoPagina)("pageSizeOptions", \u0275\u0275pureFunction0(7, _c024));
+      \u0275\u0275property("length", ctx.totalRegistros)("pageSize", ctx.tamanoPagina)("pageSizeOptions", \u0275\u0275pureFunction0(7, _c025));
     }
   }, dependencies: [CommonModule, NgForOf, NgIf, ReactiveFormsModule, \u0275NgNoValidate, NgSelectOption, \u0275NgSelectMultipleOption, DefaultValueAccessor, SelectControlValueAccessor, NgControlStatus, NgControlStatusGroup, FormGroupDirective, FormControlName, MatButtonModule, MatButton, MatIconButton, MatDialogModule, MatDialogTitle, MatDialogActions, MatDialogContent, MatFormFieldModule, MatFormField, MatLabel, MatIconModule, MatIcon, MatInputModule, MatInput, MatPaginatorModule, MatPaginator, MatProgressSpinnerModule, MatProgressSpinner, MatTableModule, MatTable, MatHeaderCellDef, MatHeaderRowDef, MatColumnDef, MatCellDef, MatRowDef, MatHeaderCell, MatCell, MatHeaderRow, MatRow, DatePipe], styles: ["\nmat-icon[_ngcontent-%COMP%] {\n  margin-right: 8px;\n  color: white;\n}\n.my_button[_ngcontent-%COMP%] {\n  background-color: #0194fe;\n}\n.table-container[_ngcontent-%COMP%] {\n  margin: 16px;\n  padding: 16px;\n  background: #fff;\n  border-radius: 10px;\n  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);\n}\n.header-row[_ngcontent-%COMP%], \n.filters[_ngcontent-%COMP%] {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 16px;\n  flex-wrap: wrap;\n}\n.header-row[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  color: #666;\n  margin-top: 0;\n}\n.filters[_ngcontent-%COMP%]   mat-form-field[_ngcontent-%COMP%] {\n  min-width: 280px;\n}\n.status-filter[_ngcontent-%COMP%] {\n  display: grid;\n  gap: 6px;\n  color: #444;\n}\n.status-filter[_ngcontent-%COMP%]   select[_ngcontent-%COMP%], \n.form-group[_ngcontent-%COMP%]   select[_ngcontent-%COMP%], \n.form-group[_ngcontent-%COMP%]   textarea[_ngcontent-%COMP%] {\n  padding: 0.75rem;\n  border: 1px solid #ccc;\n  border-radius: 6px;\n  background: #fff;\n  font: inherit;\n}\n.table-scroll[_ngcontent-%COMP%] {\n  overflow-x: auto;\n}\ntable[_ngcontent-%COMP%] {\n  width: 100%;\n}\n.loading-spinner[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: center;\n  padding: 24px;\n}\n.status[_ngcontent-%COMP%] {\n  color: #666;\n}\n.status.active[_ngcontent-%COMP%] {\n  color: #087f23;\n  font-weight: 600;\n}\n.assignment-form[_ngcontent-%COMP%] {\n  width: 100%;\n  box-sizing: border-box;\n}\n.form-group[_ngcontent-%COMP%] {\n  display: grid;\n  gap: 6px;\n  margin-bottom: 16px;\n}\n.form-group[_ngcontent-%COMP%]   small[_ngcontent-%COMP%] {\n  color: #b3261e;\n}\n@media (max-width: 700px) {\n  .header-row[_ngcontent-%COMP%]    > button[_ngcontent-%COMP%], \n   .filters[_ngcontent-%COMP%]   mat-form-field[_ngcontent-%COMP%] {\n    width: 100%;\n  }\n}\n/*# sourceMappingURL=assignments.css.map */"] });
 };
@@ -73598,42 +74086,42 @@ var Assignments = class _Assignments {
 })();
 
 // src/app/auth/home/home.ts
-function Home_Conditional_84_Template(rf, ctx) {
+function Home_Conditional_85_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275element(0, "app-home-sol");
   }
 }
-function Home_Conditional_85_Template(rf, ctx) {
+function Home_Conditional_86_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275element(0, "app-register");
   }
 }
-function Home_Conditional_86_Template(rf, ctx) {
+function Home_Conditional_87_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275element(0, "app-area");
   }
 }
-function Home_Conditional_87_Template(rf, ctx) {
+function Home_Conditional_88_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275element(0, "app-category");
   }
 }
-function Home_Conditional_88_Template(rf, ctx) {
+function Home_Conditional_89_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275element(0, "app-role");
   }
 }
-function Home_Conditional_89_Template(rf, ctx) {
+function Home_Conditional_90_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275element(0, "app-inventory");
   }
 }
-function Home_Conditional_90_Template(rf, ctx) {
+function Home_Conditional_91_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275element(0, "app-assignments");
   }
 }
-function Home_Conditional_91_Template(rf, ctx) {
+function Home_Conditional_92_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275element(0, "app-users");
   }
@@ -73707,7 +74195,7 @@ var Home = class _Home {
       let _t;
       \u0275\u0275queryRefresh(_t = \u0275\u0275loadQuery()) && (ctx.sidenav = _t.first);
     }
-  }, decls: 92, vars: 6, consts: [["drawer", ""], ["administracion", "matMenu"], [3, "click"], ["src", "https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg", "alt", "Direcci\xF3n General de Tecnolog\xEDas de la Informaci\xF3n y Gobierno Digital", 1, "img-login"], [1, "espaciador-flexible"], ["mat-button", "", 1, "menu-button"], [1, "mat-elevation-z8", 3, "openedChange", "mode", "opened"], ["src", "../../../../public/Lot.png", 1, "avatar", "mat-elevation-z8"], [1, "name"], [1, "designation"], ["mat-button", "", 1, "menu-button", 3, "click"], [1, "span"], ["mat-button", "", 1, "menu-button", 3, "matMenuTriggerFor"], ["matListItemMeta", ""], ["xPosition", "after", "panelClass", "menu-personalizado"], [1, "main-container"], [1, "contenido-dinamico"]], template: function Home_Template(rf, ctx) {
+  }, decls: 93, vars: 6, consts: [["drawer", ""], ["administracion", "matMenu"], [3, "click"], ["src", "https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg", "alt", "Direcci\xF3n General de Tecnolog\xEDas de la Informaci\xF3n y Gobierno Digital", 1, "img-login"], [1, "espaciador-flexible"], ["mat-button", "", 1, "menu-button"], [1, "mat-elevation-z8", 3, "openedChange", "mode", "opened"], ["src", "../../../../public/Lot.png", 1, "avatar", "mat-elevation-z8"], [1, "name"], [1, "designation"], [3, "profileUpdated"], ["mat-button", "", 1, "menu-button", 3, "click"], [1, "span"], ["mat-button", "", 1, "menu-button", 3, "matMenuTriggerFor"], ["matListItemMeta", ""], ["xPosition", "after", "panelClass", "menu-personalizado"], [1, "main-container"], [1, "contenido-dinamico"]], template: function Home_Template(rf, ctx) {
     if (rf & 1) {
       const _r1 = \u0275\u0275getCurrentView();
       \u0275\u0275elementStart(0, "mat-toolbar")(1, "button", 2);
@@ -73741,126 +74229,131 @@ var Home = class _Home {
       \u0275\u0275text(21, "Software Engineer");
       \u0275\u0275elementEnd();
       \u0275\u0275element(22, "mat-divider");
-      \u0275\u0275elementStart(23, "button", 10);
-      \u0275\u0275listener("click", function Home_Template_button_click_23_listener() {
+      \u0275\u0275elementStart(23, "app-profile", 10);
+      \u0275\u0275listener("profileUpdated", function Home_Template_app_profile_profileUpdated_23_listener($event) {
+        return ctx.user = $event;
+      });
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(24, "button", 11);
+      \u0275\u0275listener("click", function Home_Template_button_click_24_listener() {
         return ctx.cambiarVista("users");
       });
-      \u0275\u0275elementStart(24, "mat-icon");
-      \u0275\u0275text(25, "person");
+      \u0275\u0275elementStart(25, "mat-icon");
+      \u0275\u0275text(26, "person");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(26, "span", 11);
-      \u0275\u0275text(27, "Usuarios");
+      \u0275\u0275elementStart(27, "span", 12);
+      \u0275\u0275text(28, "Usuarios");
       \u0275\u0275elementEnd()();
-      \u0275\u0275elementStart(28, "button", 10);
-      \u0275\u0275listener("click", function Home_Template_button_click_28_listener() {
+      \u0275\u0275elementStart(29, "button", 11);
+      \u0275\u0275listener("click", function Home_Template_button_click_29_listener() {
         return ctx.cambiarVista("register");
       });
-      \u0275\u0275elementStart(29, "mat-icon");
-      \u0275\u0275text(30, "assignment");
+      \u0275\u0275elementStart(30, "mat-icon");
+      \u0275\u0275text(31, "assignment");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(31, "span", 11);
-      \u0275\u0275text(32, "Nuevo usuario");
+      \u0275\u0275elementStart(32, "span", 12);
+      \u0275\u0275text(33, "Nuevo usuario");
       \u0275\u0275elementEnd()();
-      \u0275\u0275elementStart(33, "button", 10);
-      \u0275\u0275listener("click", function Home_Template_button_click_33_listener() {
+      \u0275\u0275elementStart(34, "button", 11);
+      \u0275\u0275listener("click", function Home_Template_button_click_34_listener() {
         return ctx.cambiarVista("reportes");
       });
-      \u0275\u0275elementStart(34, "mat-icon");
-      \u0275\u0275text(35, "inbox");
+      \u0275\u0275elementStart(35, "mat-icon");
+      \u0275\u0275text(36, "inbox");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(36, "span", 11);
-      \u0275\u0275text(37, "Reportes");
+      \u0275\u0275elementStart(37, "span", 12);
+      \u0275\u0275text(38, "Reportes");
       \u0275\u0275elementEnd()();
-      \u0275\u0275elementStart(38, "mat-nav-list")(39, "button", 12)(40, "mat-icon", 13);
-      \u0275\u0275text(41, "settings");
+      \u0275\u0275elementStart(39, "mat-nav-list")(40, "button", 13)(41, "mat-icon", 14);
+      \u0275\u0275text(42, "settings");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(42, "span", 11);
-      \u0275\u0275text(43, "Administraci\xF3n");
+      \u0275\u0275elementStart(43, "span", 12);
+      \u0275\u0275text(44, "Administraci\xF3n");
       \u0275\u0275elementEnd()();
-      \u0275\u0275elementStart(44, "mat-menu", 14, 1)(46, "button", 10);
-      \u0275\u0275listener("click", function Home_Template_button_click_46_listener() {
+      \u0275\u0275elementStart(45, "mat-menu", 15, 1)(47, "button", 11);
+      \u0275\u0275listener("click", function Home_Template_button_click_47_listener() {
         return ctx.cambiarVista("area");
       });
-      \u0275\u0275elementStart(47, "mat-icon");
-      \u0275\u0275text(48, "settings");
+      \u0275\u0275elementStart(48, "mat-icon");
+      \u0275\u0275text(49, "settings");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(49, "span", 11);
-      \u0275\u0275text(50, "\xC1reas");
+      \u0275\u0275elementStart(50, "span", 12);
+      \u0275\u0275text(51, "\xC1reas");
       \u0275\u0275elementEnd()();
-      \u0275\u0275elementStart(51, "button", 10);
-      \u0275\u0275listener("click", function Home_Template_button_click_51_listener() {
+      \u0275\u0275elementStart(52, "button", 11);
+      \u0275\u0275listener("click", function Home_Template_button_click_52_listener() {
         return ctx.cambiarVista("categoria");
       });
-      \u0275\u0275elementStart(52, "mat-icon");
-      \u0275\u0275text(53, "settings");
+      \u0275\u0275elementStart(53, "mat-icon");
+      \u0275\u0275text(54, "settings");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(54, "span", 11);
-      \u0275\u0275text(55, "Categor\xEDas");
+      \u0275\u0275elementStart(55, "span", 12);
+      \u0275\u0275text(56, "Categor\xEDas");
       \u0275\u0275elementEnd()();
-      \u0275\u0275elementStart(56, "button", 10);
-      \u0275\u0275listener("click", function Home_Template_button_click_56_listener() {
+      \u0275\u0275elementStart(57, "button", 11);
+      \u0275\u0275listener("click", function Home_Template_button_click_57_listener() {
         return ctx.cambiarVista("role");
       });
-      \u0275\u0275elementStart(57, "mat-icon");
-      \u0275\u0275text(58, "settings");
+      \u0275\u0275elementStart(58, "mat-icon");
+      \u0275\u0275text(59, "settings");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(59, "span", 11);
-      \u0275\u0275text(60, "Roles");
+      \u0275\u0275elementStart(60, "span", 12);
+      \u0275\u0275text(61, "Roles");
       \u0275\u0275elementEnd()();
-      \u0275\u0275elementStart(61, "button", 10);
-      \u0275\u0275listener("click", function Home_Template_button_click_61_listener() {
+      \u0275\u0275elementStart(62, "button", 11);
+      \u0275\u0275listener("click", function Home_Template_button_click_62_listener() {
         return ctx.cambiarVista("inventario");
       });
-      \u0275\u0275elementStart(62, "mat-icon");
-      \u0275\u0275text(63, "settings");
+      \u0275\u0275elementStart(63, "mat-icon");
+      \u0275\u0275text(64, "settings");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(64, "span", 11);
-      \u0275\u0275text(65, "Inventario");
+      \u0275\u0275elementStart(65, "span", 12);
+      \u0275\u0275text(66, "Inventario");
       \u0275\u0275elementEnd()();
-      \u0275\u0275elementStart(66, "button", 10);
-      \u0275\u0275listener("click", function Home_Template_button_click_66_listener() {
+      \u0275\u0275elementStart(67, "button", 11);
+      \u0275\u0275listener("click", function Home_Template_button_click_67_listener() {
         return ctx.cambiarVista("asignaciones");
       });
-      \u0275\u0275elementStart(67, "mat-icon");
-      \u0275\u0275text(68, "assignment_ind");
+      \u0275\u0275elementStart(68, "mat-icon");
+      \u0275\u0275text(69, "assignment_ind");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(69, "span", 11);
-      \u0275\u0275text(70, "Asignaciones");
+      \u0275\u0275elementStart(70, "span", 12);
+      \u0275\u0275text(71, "Asignaciones");
       \u0275\u0275elementEnd()()();
-      \u0275\u0275element(71, "mat-divider");
-      \u0275\u0275elementStart(72, "button", 5)(73, "mat-icon");
-      \u0275\u0275text(74, "help");
+      \u0275\u0275element(72, "mat-divider");
+      \u0275\u0275elementStart(73, "button", 5)(74, "mat-icon");
+      \u0275\u0275text(75, "help");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(75, "span", 11);
-      \u0275\u0275text(76, "Ayuda");
+      \u0275\u0275elementStart(76, "span", 12);
+      \u0275\u0275text(77, "Ayuda");
       \u0275\u0275elementEnd()();
-      \u0275\u0275elementStart(77, "button", 10);
-      \u0275\u0275listener("click", function Home_Template_button_click_77_listener() {
+      \u0275\u0275elementStart(78, "button", 11);
+      \u0275\u0275listener("click", function Home_Template_button_click_78_listener() {
         return ctx.logout();
       });
-      \u0275\u0275elementStart(78, "mat-icon");
-      \u0275\u0275text(79, "exit_to_app");
+      \u0275\u0275elementStart(79, "mat-icon");
+      \u0275\u0275text(80, "exit_to_app");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(80, "span", 11);
-      \u0275\u0275text(81, "Salir");
+      \u0275\u0275elementStart(81, "span", 12);
+      \u0275\u0275text(82, "Salir");
       \u0275\u0275elementEnd()()()();
-      \u0275\u0275elementStart(82, "mat-sidenav-content", 15)(83, "div", 16);
-      \u0275\u0275conditionalCreate(84, Home_Conditional_84_Template, 1, 0, "app-home-sol")(85, Home_Conditional_85_Template, 1, 0, "app-register")(86, Home_Conditional_86_Template, 1, 0, "app-area")(87, Home_Conditional_87_Template, 1, 0, "app-category")(88, Home_Conditional_88_Template, 1, 0, "app-role")(89, Home_Conditional_89_Template, 1, 0, "app-inventory")(90, Home_Conditional_90_Template, 1, 0, "app-assignments")(91, Home_Conditional_91_Template, 1, 0, "app-users");
+      \u0275\u0275elementStart(83, "mat-sidenav-content", 16)(84, "div", 17);
+      \u0275\u0275conditionalCreate(85, Home_Conditional_85_Template, 1, 0, "app-home-sol")(86, Home_Conditional_86_Template, 1, 0, "app-register")(87, Home_Conditional_87_Template, 1, 0, "app-area")(88, Home_Conditional_88_Template, 1, 0, "app-category")(89, Home_Conditional_89_Template, 1, 0, "app-role")(90, Home_Conditional_90_Template, 1, 0, "app-inventory")(91, Home_Conditional_91_Template, 1, 0, "app-assignments")(92, Home_Conditional_92_Template, 1, 0, "app-users");
       \u0275\u0275elementEnd()()();
     }
     if (rf & 2) {
-      const administracion_r2 = \u0275\u0275reference(45);
+      const administracion_r2 = \u0275\u0275reference(46);
       \u0275\u0275advance(9);
-      \u0275\u0275textInterpolate1(" Bienvenido ", ctx.user == null ? null : ctx.user.username, " ");
+      \u0275\u0275textInterpolate1(" Bienvenido ", ctx.user == null ? null : ctx.user.name, " ");
       \u0275\u0275advance(6);
       \u0275\u0275property("mode", ctx.isMobile ? "over" : "side");
       \u0275\u0275twoWayProperty("opened", ctx.menuAbierto);
       \u0275\u0275advance(4);
-      \u0275\u0275textInterpolate(ctx.user == null ? null : ctx.user.username);
-      \u0275\u0275advance(20);
+      \u0275\u0275textInterpolate(ctx.user == null ? null : ctx.user.name);
+      \u0275\u0275advance(21);
       \u0275\u0275property("matMenuTriggerFor", administracion_r2);
       \u0275\u0275advance(45);
-      \u0275\u0275conditional(ctx.vistaActiva === "" ? 84 : ctx.vistaActiva === "register" ? 85 : ctx.vistaActiva === "area" ? 86 : ctx.vistaActiva === "categoria" ? 87 : ctx.vistaActiva === "role" ? 88 : ctx.vistaActiva === "inventario" ? 89 : ctx.vistaActiva === "asignaciones" ? 90 : 91);
+      \u0275\u0275conditional(ctx.vistaActiva === "" ? 85 : ctx.vistaActiva === "register" ? 86 : ctx.vistaActiva === "area" ? 87 : ctx.vistaActiva === "categoria" ? 88 : ctx.vistaActiva === "role" ? 89 : ctx.vistaActiva === "inventario" ? 90 : ctx.vistaActiva === "asignaciones" ? 91 : 92);
     }
   }, dependencies: [
     MatToolbarModule,
@@ -73895,7 +74388,8 @@ var Home = class _Home {
     Category,
     Role,
     Inventory,
-    Assignments
+    Assignments,
+    Profile
   ], styles: ["\nmat-toolbar[_ngcontent-%COMP%] {\n  background: #0194fe;\n  color: white;\n  top: 0;\n  z-index: 2;\n}\n  .mat-mdc-menu-panel {\n  background-color: #0194fe !important;\n}\nmat-sidenav[_ngcontent-%COMP%] {\n  margin: 16px;\n  width: 200px;\n  border-right: none;\n  background: #0194fe;\n  color: white;\n  border-radius: 10px;\n  padding: 16px;\n  text-align: center;\n}\n.content[_ngcontent-%COMP%] {\n  height: calc(100vh - 98px);\n  border-radius: 10px;\n  margin: 16px;\n  margin-left: 32px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  font-size: 2rem;\n  color: lightgray;\n}\n.mat-menu[_ngcontent-%COMP%] {\n  background-color: #0194fe;\n  color: #0194fe;\n}\nmat-sidenav-container[_ngcontent-%COMP%] {\n  height: calc(100vh - 65px);\n  margin-right: 10;\n}\nmat-sidenav-container.oculto[_ngcontent-%COMP%] {\n  transform: translateX(-250px);\n}\n.span[_ngcontent-%COMP%] {\n  color: white;\n  font-size: 1rem;\n  margin-left: 8px;\n}\n.menu-button[_ngcontent-%COMP%] {\n  width: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: flex-start;\n  font-size: 1rem;\n}\n.menu-button[_ngcontent-%COMP%]   mat-icon[_ngcontent-%COMP%] {\n  margin-right: 8px;\n  color: white;\n}\n.avatar[_ngcontent-%COMP%] {\n  margin-top: 16px;\n  width: 100px;\n  height: 100px;\n  border-radius: 50%;\n}\n.name[_ngcontent-%COMP%] {\n  margin-top: 8px;\n  font-weight: normal;\n}\n.designation[_ngcontent-%COMP%] {\n  margin-top: 2px;\n  font-size: 0.7rem;\n  color: lightgrey;\n}\n.img-login[_ngcontent-%COMP%] {\n  width: auto;\n  height: 40px;\n  margin: 20px 5px;\n}\nmat-divider[_ngcontent-%COMP%] {\n  margin-top: 16px;\n  margin-bottom: 16px;\n  background-color: white;\n}\n.sidebar[_ngcontent-%COMP%] {\n  position: fixed;\n  left: 0;\n  top: 0;\n  width: 250px;\n  height: 100vh;\n  background-color: #2c3e50;\n  color: white;\n  transition: transform 0.3s ease;\n  transform: translateX(0);\n}\n.sidebar.oculto[_ngcontent-%COMP%] {\n  transform: translateX(-250px);\n}\n.table-container[_ngcontent-%COMP%] {\n  margin: 16px;\n  padding: 16px;\n  background-color: #ffffff;\n  border-radius: 10px;\n  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);\n}\n.mat-mdc-row[_ngcontent-%COMP%]:hover {\n  background-color: #f5f5f5;\n}\n.contenido[_ngcontent-%COMP%] {\n  margin-left: 250px;\n  transition: margin-left 0.3s ease;\n  padding: 20px;\n}\n.contenido.expandido[_ngcontent-%COMP%] {\n  margin-left: 0;\n}\n.media-funcion[_ngcontent-%COMP%] {\n  float: left;\n  margin: 0 auto;\n  max-width: 100%;\n  height: 30px;\n  padding: 15px 15px;\n  font-size: 14px;\n  background: #0194fe;\n}\n.espaciador-flexible[_ngcontent-%COMP%] {\n  flex: 1 1 auto;\n}\n/*# sourceMappingURL=home.css.map */"] });
 };
 (() => {
@@ -73924,7 +74418,8 @@ var Home = class _Home {
       Category,
       Role,
       Inventory,
-      Assignments
+      Assignments,
+      Profile
     ], template: `<mat-toolbar>
     <button (click)="toggleMenu()">
         <mat-icon>menu</mat-icon>
@@ -73934,7 +74429,7 @@ var Home = class _Home {
         alt="Direcci\xF3n General de Tecnolog\xEDas de la Informaci\xF3n y Gobierno Digital">
 
     <span class="espaciador-flexible"></span>
-    <span> Bienvenido {{ user?.username}} </span>
+    <span> Bienvenido {{ user?.name}} </span>
     <span>
         <button mat-button class="menu-button">
             <mat-icon>notifications_none</mat-icon>
@@ -73947,10 +74442,11 @@ var Home = class _Home {
     <mat-sidenav #drawer [mode]="isMobile ? 'over' : 'side'" [(opened)]="menuAbierto" class="mat-elevation-z8">
         <img class="avatar mat-elevation-z8" src="../../../../public/Lot.png" />
 
-        <h4 class="name">{{user?.username}}</h4>
+        <h4 class="name">{{user?.name}}</h4>
         <p class="designation">Software Engineer</p>
 
         <mat-divider></mat-divider>
+        <app-profile (profileUpdated)="user = $event"></app-profile>
         <button mat-button class="menu-button" (click)="cambiarVista('users')">
             <mat-icon>person</mat-icon>
             <span class="span">Usuarios</span>
@@ -74036,11 +74532,11 @@ var Home = class _Home {
   }] });
 })();
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(Home, { className: "Home", filePath: "app/auth/home/home.ts", lineNumber: 58 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(Home, { className: "Home", filePath: "app/auth/home/home.ts", lineNumber: 60 });
 })();
 
 // node_modules/@angular/material/fesm2022/card.mjs
-var _c025 = ["*"];
+var _c026 = ["*"];
 var _c119 = [[["mat-card-title"], ["mat-card-subtitle"], ["", "mat-card-title", ""], ["", "mat-card-subtitle", ""], ["", "matCardTitle", ""], ["", "matCardSubtitle", ""]], [["", "mat-card-image", ""], ["", "matCardImage", ""], ["", "mat-card-sm-image", ""], ["", "matCardImageSmall", ""], ["", "mat-card-md-image", ""], ["", "matCardImageMedium", ""], ["", "mat-card-lg-image", ""], ["", "matCardImageLarge", ""], ["", "mat-card-xl-image", ""], ["", "matCardImageXLarge", ""]], "*"];
 var _c29 = ["mat-card-title, mat-card-subtitle,\n      [mat-card-title], [mat-card-subtitle],\n      [matCardTitle], [matCardSubtitle]", "[mat-card-image], [matCardImage],\n                    [mat-card-sm-image], [matCardImageSmall],\n                    [mat-card-md-image], [matCardImageMedium],\n                    [mat-card-lg-image], [matCardImageLarge],\n                    [mat-card-xl-image], [matCardImageXLarge]", "*"];
 var _c39 = [[["", "mat-card-avatar", ""], ["", "matCardAvatar", ""]], [["mat-card-title"], ["mat-card-subtitle"], ["", "mat-card-title", ""], ["", "mat-card-subtitle", ""], ["", "matCardTitle", ""], ["", "matCardSubtitle", ""]], "*"];
@@ -74071,7 +74567,7 @@ var MatCard = class _MatCard {
       appearance: "appearance"
     },
     exportAs: ["matCard"],
-    ngContentSelectors: _c025,
+    ngContentSelectors: _c026,
     decls: 1,
     vars: 0,
     template: function MatCard_Template(rf, ctx) {
@@ -74604,7 +75100,7 @@ var MatLineModule = class _MatLineModule {
 })();
 
 // node_modules/@angular/material/fesm2022/grid-list.mjs
-var _c026 = ["*"];
+var _c027 = ["*"];
 var _c120 = [[["", "mat-grid-avatar", ""], ["", "matGridAvatar", ""]], [["", "mat-line", ""], ["", "matLine", ""]], "*"];
 var _c210 = ["[mat-grid-avatar], [matGridAvatar]", "[mat-line], [matLine]", "*"];
 var _c310 = ".mat-grid-list {\n  display: block;\n  position: relative;\n}\n\n.mat-grid-tile {\n  display: block;\n  position: absolute;\n  overflow: hidden;\n}\n.mat-grid-tile .mat-grid-tile-header,\n.mat-grid-tile .mat-grid-tile-footer {\n  display: flex;\n  align-items: center;\n  height: 48px;\n  color: #fff;\n  background: rgba(0, 0, 0, 0.38);\n  overflow: hidden;\n  padding: 0 16px;\n  position: absolute;\n  left: 0;\n  right: 0;\n}\n.mat-grid-tile .mat-grid-tile-header > *,\n.mat-grid-tile .mat-grid-tile-footer > * {\n  margin: 0;\n  padding: 0;\n  font-weight: normal;\n  font-size: inherit;\n}\n.mat-grid-tile .mat-grid-tile-header.mat-2-line,\n.mat-grid-tile .mat-grid-tile-footer.mat-2-line {\n  height: 68px;\n}\n.mat-grid-tile .mat-grid-list-text {\n  display: flex;\n  flex-direction: column;\n  flex: auto;\n  box-sizing: border-box;\n  overflow: hidden;\n}\n.mat-grid-tile .mat-grid-list-text > * {\n  margin: 0;\n  padding: 0;\n  font-weight: normal;\n  font-size: inherit;\n}\n.mat-grid-tile .mat-grid-list-text:empty {\n  display: none;\n}\n.mat-grid-tile .mat-grid-tile-header {\n  top: 0;\n}\n.mat-grid-tile .mat-grid-tile-footer {\n  bottom: 0;\n}\n.mat-grid-tile .mat-grid-avatar {\n  padding-right: 16px;\n}\n[dir=rtl] .mat-grid-tile .mat-grid-avatar {\n  padding-right: 0;\n  padding-left: 16px;\n}\n.mat-grid-tile .mat-grid-avatar:empty {\n  display: none;\n}\n\n.mat-grid-tile-header {\n  font-size: var(--mat-grid-list-tile-header-primary-text-size, var(--mat-sys-body-large));\n}\n.mat-grid-tile-header .mat-line {\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  display: block;\n  box-sizing: border-box;\n}\n.mat-grid-tile-header .mat-line:nth-child(n+2) {\n  font-size: var(--mat-grid-list-tile-header-secondary-text-size, var(--mat-sys-body-medium));\n}\n\n.mat-grid-tile-footer {\n  font-size: var(--mat-grid-list-tile-footer-primary-text-size, var(--mat-sys-body-large));\n}\n.mat-grid-tile-footer .mat-line {\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  display: block;\n  box-sizing: border-box;\n}\n.mat-grid-tile-footer .mat-line:nth-child(n+2) {\n  font-size: var(--mat-grid-list-tile-footer-secondary-text-size, var(--mat-sys-body-medium));\n}\n\n.mat-grid-tile-content {\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  position: absolute;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  height: 100%;\n  padding: 0;\n  margin: 0;\n}\n";
@@ -74651,7 +75147,7 @@ var MatGridTile = class _MatGridTile {
       colspan: "colspan"
     },
     exportAs: ["matGridTile"],
-    ngContentSelectors: _c026,
+    ngContentSelectors: _c027,
     decls: 2,
     vars: 0,
     consts: [[1, "mat-grid-tile-content"]],
@@ -75061,7 +75557,7 @@ var MatGridList = class _MatGridList {
       provide: MAT_GRID_LIST,
       useExisting: _MatGridList
     }])],
-    ngContentSelectors: _c026,
+    ngContentSelectors: _c027,
     decls: 2,
     vars: 0,
     template: function MatGridList_Template(rf, ctx) {
@@ -75224,7 +75720,7 @@ function Solicitud_small_15_Template(rf, ctx) {
 }
 function Solicitud_option_22_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "option", 24);
+    \u0275\u0275elementStart(0, "option", 25);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -75254,6 +75750,7 @@ var Solicitud = class _Solicitud {
   router;
   solicitudForm;
   areas = [];
+  selectedFile = null;
   constructor(authService, router) {
     this.authService = authService;
     this.router = router;
@@ -75281,11 +75778,25 @@ var Solicitud = class _Solicitud {
     }
     this.authService.createSolicitud(this.solicitudForm.getRawValue()).subscribe({
       next: (response) => {
+        if (this.selectedFile) {
+          const formData = new FormData();
+          formData.append("file", this.selectedFile);
+          this.authService.uploadFile(formData).subscribe({
+            next: (response2) => console.log("Archivo subido con \xE9xito", response2),
+            error: (error) => console.error("Error al subir el archivo", error)
+          });
+        }
         window.alert(response.message ?? "Solicitud registrada correctamente.");
         this.router.navigateByUrl("/homesol");
       },
       error: (error) => window.alert(error.error?.message ?? "No fue posible registrar la solicitud.")
     });
+  }
+  onFileSelected(event) {
+    const file = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
+    }
   }
   loadChildren(arg0) {
     this.router.navigate([`/${arg0}`]);
@@ -75293,7 +75804,7 @@ var Solicitud = class _Solicitud {
   static \u0275fac = function Solicitud_Factory(__ngFactoryType__) {
     return new (__ngFactoryType__ || _Solicitud)(\u0275\u0275directiveInject(AuthService), \u0275\u0275directiveInject(Router));
   };
-  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _Solicitud, selectors: [["app-solicitud"]], decls: 49, vars: 7, consts: [[1, "solicitud-container"], [1, "solicitud-form", 3, "ngSubmit", "formGroup"], [1, "form-group"], ["for", "tipo"], ["type", "text", "id", "tipo", "formControlName", "tipo", "placeholder", "Tipo de Solicitud"], [4, "ngIf"], ["for", "descripcion"], ["type", "text", "id", "descripcion", "formControlName", "descripcion", "placeholder", "Descripci\xF3n"], ["for", "area"], ["id", "area", "formControlName", "area"], ["value", "", "disabled", ""], [3, "value", 4, "ngFor", "ngForOf"], ["for", "prioridad"], ["id", "prioridad", "formControlName", "prioridad"], ["value", ""], ["value", "muy-baja"], ["value", "baja"], ["value", "media"], ["value", "alta"], ["value", "muy-alta"], ["for", "comentarios"], ["type", "text", "id", "comentarios", "formControlName", "comentarios", "placeholder", "Comentarios"], ["type", "submit", "mat-raised-button", "", "color", "primary", 1, "submit-btn", 3, "disabled"], ["type", "button", "mat-raised-button", "", "color", "accent", 1, "cancel-btn", 3, "click"], [3, "value"]], template: function Solicitud_Template(rf, ctx) {
+  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _Solicitud, selectors: [["app-solicitud"]], decls: 51, vars: 7, consts: [[1, "solicitud-container"], [1, "solicitud-form", 3, "ngSubmit", "formGroup"], [1, "form-group"], ["for", "tipo"], ["type", "text", "id", "tipo", "formControlName", "tipo", "placeholder", "Tipo de Solicitud"], [4, "ngIf"], ["for", "descripcion"], ["type", "text", "id", "descripcion", "formControlName", "descripcion", "placeholder", "Descripci\xF3n"], ["for", "area"], ["id", "area", "formControlName", "area"], ["value", "", "disabled", ""], [3, "value", 4, "ngFor", "ngForOf"], ["for", "prioridad"], ["id", "prioridad", "formControlName", "prioridad"], ["value", ""], ["value", "muy-baja"], ["value", "baja"], ["value", "media"], ["value", "alta"], ["value", "muy-alta"], ["type", "file", 3, "change"], ["for", "comentarios"], ["type", "text", "id", "comentarios", "formControlName", "comentarios", "placeholder", "Comentarios"], ["type", "submit", "mat-raised-button", "", "color", "primary", 1, "submit-btn", 3, "disabled"], ["type", "button", "mat-raised-button", "", "color", "accent", 1, "cancel-btn", 3, "click"], [3, "value"]], template: function Solicitud_Template(rf, ctx) {
     if (rf & 1) {
       \u0275\u0275elementStart(0, "div", 0)(1, "form", 1);
       \u0275\u0275listener("ngSubmit", function Solicitud_Template_form_ngSubmit_1_listener() {
@@ -75350,19 +75861,24 @@ var Solicitud = class _Solicitud {
       \u0275\u0275elementEnd()();
       \u0275\u0275template(40, Solicitud_small_40_Template, 2, 0, "small", 5);
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(41, "div", 2)(42, "label", 20);
-      \u0275\u0275text(43, "Comentarios");
+      \u0275\u0275elementStart(41, "div")(42, "input", 20);
+      \u0275\u0275listener("change", function Solicitud_Template_input_change_42_listener($event) {
+        return ctx.onFileSelected($event);
+      });
+      \u0275\u0275elementEnd()();
+      \u0275\u0275elementStart(43, "div", 2)(44, "label", 21);
+      \u0275\u0275text(45, "Comentarios");
       \u0275\u0275elementEnd();
-      \u0275\u0275element(44, "input", 21);
-      \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(45, "button", 22);
-      \u0275\u0275text(46, " Enviar Solicitud");
+      \u0275\u0275element(46, "input", 22);
       \u0275\u0275elementEnd();
       \u0275\u0275elementStart(47, "button", 23);
-      \u0275\u0275listener("click", function Solicitud_Template_button_click_47_listener() {
+      \u0275\u0275text(48, " Enviar Solicitud");
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(49, "button", 24);
+      \u0275\u0275listener("click", function Solicitud_Template_button_click_49_listener() {
         return ctx.loadChildren("homesol");
       });
-      \u0275\u0275text(48, "Cancelar");
+      \u0275\u0275text(50, "Cancelar");
       \u0275\u0275elementEnd()()();
     }
     if (rf & 2) {
@@ -75382,7 +75898,7 @@ var Solicitud = class _Solicitud {
       \u0275\u0275property("ngIf", ((tmp_4_0 = ctx.solicitudForm.get("area")) == null ? null : tmp_4_0.hasError("required")) && ((tmp_4_0 = ctx.solicitudForm.get("area")) == null ? null : tmp_4_0.touched));
       \u0275\u0275advance(17);
       \u0275\u0275property("ngIf", ((tmp_5_0 = ctx.solicitudForm.get("prioridad")) == null ? null : tmp_5_0.hasError("required")) && ((tmp_5_0 = ctx.solicitudForm.get("prioridad")) == null ? null : tmp_5_0.touched));
-      \u0275\u0275advance(5);
+      \u0275\u0275advance(7);
       \u0275\u0275property("disabled", ctx.solicitudForm.invalid);
     }
   }, dependencies: [CommonModule, NgForOf, NgIf, ReactiveFormsModule, \u0275NgNoValidate, NgSelectOption, \u0275NgSelectMultipleOption, DefaultValueAccessor, SelectControlValueAccessor, NgControlStatus, NgControlStatusGroup, FormGroupDirective, FormControlName], styles: ["\nmat-icon[_ngcontent-%COMP%] {\n  margin-right: 8px;\n  color: white;\n}\n.my_button[_ngcontent-%COMP%] {\n  background-color: #0194fe;\n}\n.solicitud-container[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  height: 100vh;\n  background-color: #f4f7f6;\n}\n.solicitud-form[_ngcontent-%COMP%] {\n  background: #ffffff;\n  padding: 2.5rem;\n  border-radius: 10px;\n  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);\n  width: 100%;\n  max-width: 400px;\n}\n.solicitud-form[_ngcontent-%COMP%]   h2[_ngcontent-%COMP%] {\n  margin-bottom: 0.5rem;\n  color: #333333;\n}\n.solicitud-form[_ngcontent-%COMP%]   p[_ngcontent-%COMP%] {\n  color: #666666;\n  font-size: 0.9rem;\n  margin-bottom: 1.5rem;\n}\n.form-group[_ngcontent-%COMP%] {\n  margin-bottom: 1.2rem;\n}\n.form-group[_ngcontent-%COMP%]   label[_ngcontent-%COMP%] {\n  display: block;\n  margin-bottom: 0.4rem;\n  color: #444444;\n  font-weight: 500;\n}\n.form-group[_ngcontent-%COMP%]   input[_ngcontent-%COMP%] {\n  width: 100%;\n  padding: 0.8rem;\n  border: 1px solid #ccc;\n  border-radius: 6px;\n  font-size: 1rem;\n  box-sizing: border-box;\n}\n.form-group[_ngcontent-%COMP%]   select[_ngcontent-%COMP%] {\n  width: 100%;\n  padding: 0.8rem;\n  border: 1px solid #ccc;\n  border-radius: 6px;\n  font-size: 1rem;\n  box-sizing: border-box;\n  background-color: white;\n}\n.form-group[_ngcontent-%COMP%]   input[_ngcontent-%COMP%]:focus {\n  border-color: #007bff;\n  outline: none;\n}\n.form-group[_ngcontent-%COMP%]   select[_ngcontent-%COMP%]:focus {\n  border-color: #007bff;\n  outline: none;\n}\n.submit-btn[_ngcontent-%COMP%] {\n  width: 100%;\n  padding: 0.8rem;\n  background-color: #007bff;\n  color: white;\n  border: none;\n  border-radius: 6px;\n  font-size: 1rem;\n  font-weight: 600;\n  cursor: pointer;\n  margin-top: 1rem;\n}\n.submit-btn[_ngcontent-%COMP%]:disabled {\n  background-color: #b0c4de;\n  cursor: not-allowed;\n}\n.submit-btn[_ngcontent-%COMP%]:hover:not(:disabled) {\n  background-color: #0056b3;\n}\n.cancel-btn[_ngcontent-%COMP%] {\n  width: 100%;\n  padding: 0.8rem;\n  background-color: #007bff;\n  color: white;\n  border: none;\n  border-radius: 6px;\n  font-size: 1rem;\n  font-weight: 600;\n  cursor: pointer;\n  margin-top: 1rem;\n}\n#filosofia-cintilla[_ngcontent-%COMP%]   h1[_ngcontent-%COMP%] {\n  color: #fff;\n  text-align: center;\n  font-size: 55px;\n  font-weight: 900;\n  margin: 10px 0px;\n}\nheader[_ngcontent-%COMP%]   .logo[_ngcontent-%COMP%]   img[_ngcontent-%COMP%] {\n  float: left;\n  margin: 15px 10px 0px 0px;\n}\n@media (max-width: 930px) {\n  .media-funcion[_ngcontent-%COMP%] {\n    height: 85px;\n    padding: 10px 15px;\n  }\n  .social-media[_ngcontent-%COMP%] {\n    float: left;\n    padding: 10px 5px 10px 10px;\n  }\n  header[_ngcontent-%COMP%]   nav[_ngcontent-%COMP%] {\n    top: 185px;\n  }\n  .opcion-destacados[_ngcontent-%COMP%] {\n    height: 210px;\n  }\n  .opcion-destacados[_ngcontent-%COMP%]   a[_ngcontent-%COMP%] {\n    width: 100%;\n    float: none;\n    clear: both;\n    margin-bottom: 25px;\n  }\n  .modulo[_ngcontent-%COMP%] {\n    height: 680px;\n  }\n  footer[_ngcontent-%COMP%] {\n    padding: 100px 0px 40px 0px;\n    margin: 10px 10px 0px 10px;\n  }\n  #copy[_ngcontent-%COMP%] {\n    margin: 0px 10px;\n  }\n  #articulo-cintilla[_ngcontent-%COMP%]   h1[_ngcontent-%COMP%] {\n    font-size: 16px;\n    line-height: 16px;\n  }\n  .dato-que[_ngcontent-%COMP%]   a[_ngcontent-%COMP%] {\n    height: 400px;\n  }\n  .box-menu-lateral[_ngcontent-%COMP%] {\n    flex-basis: 220px;\n  }\n  .box-textos[_ngcontent-%COMP%] {\n    flex-basis: 500px;\n  }\n  .box-datos-contacto[_ngcontent-%COMP%] {\n    flex-basis: 250px;\n  }\n  .box-formulario-contacto[_ngcontent-%COMP%] {\n    flex-basis: 380px;\n  }\n  .campo[_ngcontent-%COMP%] {\n    float: none;\n    width: 100%;\n    margin-right: 0px;\n  }\n  .intro-directorio[_ngcontent-%COMP%] {\n    width: 95%;\n  }\n  .img-carrusel[_ngcontent-%COMP%] {\n    width: 95%;\n  }\n  .container-cat[_ngcontent-%COMP%] {\n    height: 290px;\n  }\n  .sesion[_ngcontent-%COMP%] {\n    width: 85%;\n  }\n  #content-login[_ngcontent-%COMP%] {\n    margin-top: -50px;\n  }\n  .info-login[_ngcontent-%COMP%] {\n    width: 99%;\n  }\n  .img-login[_ngcontent-%COMP%] {\n    width: 200px;\n  }\n  .box-descrip-destacado[_ngcontent-%COMP%]   h1[_ngcontent-%COMP%] {\n    font-size: 22px;\n    line-height: 25px;\n  }\n  .box-img-secc[_ngcontent-%COMP%] {\n    flex-basis: 200px;\n  }\n  .box-descrip-destacado[_ngcontent-%COMP%] {\n    flex-basis: 410px;\n  }\n  .ilustra-img-secc[_ngcontent-%COMP%] {\n    width: 99%;\n  }\n  .ruta-temas[_ngcontent-%COMP%] {\n    width: 98%;\n    font-size: 15px;\n    line-height: 18px;\n  }\n}\n/*# sourceMappingURL=solicitud.css.map */"] });
@@ -75437,6 +75953,9 @@ var Solicitud = class _Solicitud {
                 *ngIf="solicitudForm.get('prioridad')?.hasError('required') && solicitudForm.get('prioridad')?.touched">
                 Prioridad es requerida.
             </small>
+        </div>
+        <div>
+            <input type="file" (change)="onFileSelected($event)" />
         </div>
 
         <div class="form-group">
@@ -75650,24 +76169,24 @@ var Ticket = class _Ticket {
 })();
 
 // src/app/auth/home-tick/home-tick.ts
-var _c027 = () => [5, 10, 25, 100];
-function HomeTick_Conditional_50_Template(rf, ctx) {
+var _c028 = () => [5, 10, 25, 100];
+function HomeTick_Conditional_46_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 17);
+    \u0275\u0275elementStart(0, "div", 18);
     \u0275\u0275element(1, "mat-spinner");
     \u0275\u0275elementEnd();
   }
 }
-function HomeTick_th_53_Template(rf, ctx) {
+function HomeTick_th_49_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 30);
+    \u0275\u0275elementStart(0, "th", 31);
     \u0275\u0275text(1, "Folio");
     \u0275\u0275elementEnd();
   }
 }
-function HomeTick_td_54_Template(rf, ctx) {
+function HomeTick_td_50_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 31);
+    \u0275\u0275elementStart(0, "td", 32);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -75677,16 +76196,16 @@ function HomeTick_td_54_Template(rf, ctx) {
     \u0275\u0275textInterpolate(elemento_r2.folio);
   }
 }
-function HomeTick_th_56_Template(rf, ctx) {
+function HomeTick_th_52_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 30);
+    \u0275\u0275elementStart(0, "th", 31);
     \u0275\u0275text(1, "T\xEDtulo");
     \u0275\u0275elementEnd();
   }
 }
-function HomeTick_td_57_Template(rf, ctx) {
+function HomeTick_td_53_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 31);
+    \u0275\u0275elementStart(0, "td", 32);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -75696,16 +76215,16 @@ function HomeTick_td_57_Template(rf, ctx) {
     \u0275\u0275textInterpolate(elemento_r3.titulo);
   }
 }
-function HomeTick_th_59_Template(rf, ctx) {
+function HomeTick_th_55_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 30);
+    \u0275\u0275elementStart(0, "th", 31);
     \u0275\u0275text(1, "Descripci\xF3n");
     \u0275\u0275elementEnd();
   }
 }
-function HomeTick_td_60_Template(rf, ctx) {
+function HomeTick_td_56_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 31);
+    \u0275\u0275elementStart(0, "td", 32);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -75715,16 +76234,16 @@ function HomeTick_td_60_Template(rf, ctx) {
     \u0275\u0275textInterpolate(elemento_r4.descripcion);
   }
 }
-function HomeTick_th_62_Template(rf, ctx) {
+function HomeTick_th_58_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 30);
+    \u0275\u0275elementStart(0, "th", 31);
     \u0275\u0275text(1, "Estado");
     \u0275\u0275elementEnd();
   }
 }
-function HomeTick_td_63_Template(rf, ctx) {
+function HomeTick_td_59_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 31);
+    \u0275\u0275elementStart(0, "td", 32);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -75734,16 +76253,16 @@ function HomeTick_td_63_Template(rf, ctx) {
     \u0275\u0275textInterpolate(elemento_r5.estado);
   }
 }
-function HomeTick_th_65_Template(rf, ctx) {
+function HomeTick_th_61_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 30);
+    \u0275\u0275elementStart(0, "th", 31);
     \u0275\u0275text(1, "Comentarios");
     \u0275\u0275elementEnd();
   }
 }
-function HomeTick_td_66_Template(rf, ctx) {
+function HomeTick_td_62_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 31);
+    \u0275\u0275elementStart(0, "td", 32);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -75753,18 +76272,18 @@ function HomeTick_td_66_Template(rf, ctx) {
     \u0275\u0275textInterpolate(elemento_r6.comentarios);
   }
 }
-function HomeTick_th_68_Template(rf, ctx) {
+function HomeTick_th_64_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 30);
+    \u0275\u0275elementStart(0, "th", 31);
     \u0275\u0275text(1, "Acciones");
     \u0275\u0275elementEnd();
   }
 }
-function HomeTick_td_69_Template(rf, ctx) {
+function HomeTick_td_65_Template(rf, ctx) {
   if (rf & 1) {
     const _r7 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "td", 31)(1, "button", 32);
-    \u0275\u0275listener("click", function HomeTick_td_69_Template_button_click_1_listener() {
+    \u0275\u0275elementStart(0, "td", 32)(1, "button", 33);
+    \u0275\u0275listener("click", function HomeTick_td_65_Template_button_click_1_listener() {
       const elemento_r8 = \u0275\u0275restoreView(_r7).$implicit;
       const ctx_r8 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r8.editarTicket(elemento_r8));
@@ -75772,8 +76291,8 @@ function HomeTick_td_69_Template(rf, ctx) {
     \u0275\u0275elementStart(2, "mat-icon");
     \u0275\u0275text(3, "edit");
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(4, "button", 33);
-    \u0275\u0275listener("click", function HomeTick_td_69_Template_button_click_4_listener() {
+    \u0275\u0275elementStart(4, "button", 34);
+    \u0275\u0275listener("click", function HomeTick_td_65_Template_button_click_4_listener() {
       const elemento_r8 = \u0275\u0275restoreView(_r7).$implicit;
       const ctx_r8 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r8.eliminarTicket(elemento_r8));
@@ -75783,14 +76302,14 @@ function HomeTick_td_69_Template(rf, ctx) {
     \u0275\u0275elementEnd()()();
   }
 }
-function HomeTick_tr_70_Template(rf, ctx) {
-  if (rf & 1) {
-    \u0275\u0275element(0, "tr", 34);
-  }
-}
-function HomeTick_tr_71_Template(rf, ctx) {
+function HomeTick_tr_66_Template(rf, ctx) {
   if (rf & 1) {
     \u0275\u0275element(0, "tr", 35);
+  }
+}
+function HomeTick_tr_67_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275element(0, "tr", 36);
   }
 }
 var HomeTick = class _HomeTick {
@@ -75902,7 +76421,7 @@ var HomeTick = class _HomeTick {
       let _t;
       \u0275\u0275queryRefresh(_t = \u0275\u0275loadQuery()) && (ctx.sidenav = _t.first);
     }
-  }, decls: 73, vars: 13, consts: [["drawer", ""], [3, "click"], ["src", "https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg", "alt", "Direcci\xF3n General de Tecnolog\xEDas de la Informaci\xF3n y Gobierno Digital", 1, "img-login"], [1, "espaciador-flexible"], ["mat-button", "", 1, "menu-button"], [1, "sidenav-container"], [1, "mat-elevation-z8", 3, "openedChange", "mode", "opened"], ["src", "../../../../public/Lot.png", "alt", "Foto de perfil", 1, "avatar", "mat-elevation-z8"], [1, "name"], [1, "designation"], ["type", "button", "mat-button", "", 1, "menu-button", 3, "click"], [1, "span"], ["type", "button", "mat-button", "", "routerLink", "/ticket", 1, "menu-button"], ["type", "button", "mat-button", "", 1, "menu-button"], [1, "table-container"], ["appearance", "outline"], ["matInput", "", "placeholder", "Folio o t\xEDtulo", 3, "keyup"], [1, "loading-spinner"], ["mat-table", "", 1, "mat-elevation-z8", 3, "dataSource"], ["matColumnDef", "folio"], ["mat-header-cell", "", 4, "matHeaderCellDef"], ["mat-cell", "", 4, "matCellDef"], ["matColumnDef", "titulo"], ["matColumnDef", "descripcion"], ["matColumnDef", "estado"], ["matColumnDef", "comentarios"], ["matColumnDef", "acciones"], ["mat-header-row", "", 4, "matHeaderRowDef"], ["mat-row", "", 4, "matRowDef", "matRowDefColumns"], ["aria-label", "Seleccionar p\xE1gina de tickets", 3, "page", "length", "pageSize", "pageIndex", "pageSizeOptions"], ["mat-header-cell", ""], ["mat-cell", ""], ["type", "button", "mat-icon-button", "", "color", "primary", "aria-label", "Editar ticket", 3, "click"], ["type", "button", "mat-icon-button", "", "aria-label", "Eliminar ticket", 1, "deleteButton", 3, "click"], ["mat-header-row", ""], ["mat-row", ""]], template: function HomeTick_Template(rf, ctx) {
+  }, decls: 69, vars: 13, consts: [["drawer", ""], [3, "click"], ["src", "https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg", "alt", "Direcci\xF3n General de Tecnolog\xEDas de la Informaci\xF3n y Gobierno Digital", 1, "img-login"], [1, "espaciador-flexible"], ["mat-button", "", 1, "menu-button"], [1, "sidenav-container"], [1, "mat-elevation-z8", 3, "openedChange", "mode", "opened"], ["src", "../../../../public/Lot.png", "alt", "Foto de perfil", 1, "avatar", "mat-elevation-z8"], [1, "name"], [1, "designation"], [3, "profileUpdated"], ["type", "button", "mat-button", "", "routerLink", "/ticket", 1, "menu-button"], [1, "span"], ["type", "button", "mat-button", "", 1, "menu-button"], ["type", "button", "mat-button", "", 1, "menu-button", 3, "click"], [1, "table-container"], ["appearance", "outline"], ["matInput", "", "placeholder", "Folio o t\xEDtulo", 3, "keyup"], [1, "loading-spinner"], ["mat-table", "", 1, "mat-elevation-z8", 3, "dataSource"], ["matColumnDef", "folio"], ["mat-header-cell", "", 4, "matHeaderCellDef"], ["mat-cell", "", 4, "matCellDef"], ["matColumnDef", "titulo"], ["matColumnDef", "descripcion"], ["matColumnDef", "estado"], ["matColumnDef", "comentarios"], ["matColumnDef", "acciones"], ["mat-header-row", "", 4, "matHeaderRowDef"], ["mat-row", "", 4, "matRowDef", "matRowDefColumns"], ["aria-label", "Seleccionar p\xE1gina de tickets", 3, "page", "length", "pageSize", "pageIndex", "pageSizeOptions"], ["mat-header-cell", ""], ["mat-cell", ""], ["type", "button", "mat-icon-button", "", "color", "primary", "aria-label", "Editar ticket", 3, "click"], ["type", "button", "mat-icon-button", "", "aria-label", "Eliminar ticket", 1, "deleteButton", 3, "click"], ["mat-header-row", ""], ["mat-row", ""]], template: function HomeTick_Template(rf, ctx) {
     if (rf & 1) {
       const _r1 = \u0275\u0275getCurrentView();
       \u0275\u0275elementStart(0, "mat-toolbar")(1, "button", 1);
@@ -75936,85 +76455,80 @@ var HomeTick = class _HomeTick {
       \u0275\u0275text(21, "Software Engineer");
       \u0275\u0275elementEnd();
       \u0275\u0275element(22, "mat-divider");
-      \u0275\u0275elementStart(23, "button", 10);
-      \u0275\u0275listener("click", function HomeTick_Template_button_click_23_listener() {
-        return ctx.toggleMenu();
+      \u0275\u0275elementStart(23, "app-profile", 10);
+      \u0275\u0275listener("profileUpdated", function HomeTick_Template_app_profile_profileUpdated_23_listener($event) {
+        return ctx.user = $event;
       });
-      \u0275\u0275elementStart(24, "mat-icon");
-      \u0275\u0275text(25, "person");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(26, "span", 11);
-      \u0275\u0275text(27, "Perfil");
-      \u0275\u0275elementEnd()();
-      \u0275\u0275elementStart(28, "button", 12)(29, "mat-icon");
-      \u0275\u0275text(30, "assignment");
+      \u0275\u0275elementStart(24, "button", 11)(25, "mat-icon");
+      \u0275\u0275text(26, "assignment");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(31, "span", 11);
-      \u0275\u0275text(32, "Crear ticket");
+      \u0275\u0275elementStart(27, "span", 12);
+      \u0275\u0275text(28, "Crear ticket");
       \u0275\u0275elementEnd()();
-      \u0275\u0275element(33, "mat-divider");
-      \u0275\u0275elementStart(34, "button", 13)(35, "mat-icon");
-      \u0275\u0275text(36, "help");
+      \u0275\u0275element(29, "mat-divider");
+      \u0275\u0275elementStart(30, "button", 13)(31, "mat-icon");
+      \u0275\u0275text(32, "help");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(37, "span", 11);
-      \u0275\u0275text(38, "Ayuda");
+      \u0275\u0275elementStart(33, "span", 12);
+      \u0275\u0275text(34, "Ayuda");
       \u0275\u0275elementEnd()();
-      \u0275\u0275elementStart(39, "button", 10);
-      \u0275\u0275listener("click", function HomeTick_Template_button_click_39_listener() {
+      \u0275\u0275elementStart(35, "button", 14);
+      \u0275\u0275listener("click", function HomeTick_Template_button_click_35_listener() {
         return ctx.logout();
       });
-      \u0275\u0275elementStart(40, "mat-icon");
-      \u0275\u0275text(41, "exit_to_app");
+      \u0275\u0275elementStart(36, "mat-icon");
+      \u0275\u0275text(37, "exit_to_app");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(42, "span", 11);
-      \u0275\u0275text(43, "Salir");
+      \u0275\u0275elementStart(38, "span", 12);
+      \u0275\u0275text(39, "Salir");
       \u0275\u0275elementEnd()()();
-      \u0275\u0275elementStart(44, "mat-sidenav-content")(45, "div", 14)(46, "mat-form-field", 15)(47, "mat-label");
-      \u0275\u0275text(48, "Buscar ticket");
+      \u0275\u0275elementStart(40, "mat-sidenav-content")(41, "div", 15)(42, "mat-form-field", 16)(43, "mat-label");
+      \u0275\u0275text(44, "Buscar ticket");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(49, "input", 16);
-      \u0275\u0275listener("keyup", function HomeTick_Template_input_keyup_49_listener($event) {
+      \u0275\u0275elementStart(45, "input", 17);
+      \u0275\u0275listener("keyup", function HomeTick_Template_input_keyup_45_listener($event) {
         return ctx.onFiltrar($event);
       });
       \u0275\u0275elementEnd()();
-      \u0275\u0275conditionalCreate(50, HomeTick_Conditional_50_Template, 2, 0, "div", 17);
-      \u0275\u0275elementStart(51, "table", 18);
-      \u0275\u0275elementContainerStart(52, 19);
-      \u0275\u0275template(53, HomeTick_th_53_Template, 2, 0, "th", 20)(54, HomeTick_td_54_Template, 2, 1, "td", 21);
+      \u0275\u0275conditionalCreate(46, HomeTick_Conditional_46_Template, 2, 0, "div", 18);
+      \u0275\u0275elementStart(47, "table", 19);
+      \u0275\u0275elementContainerStart(48, 20);
+      \u0275\u0275template(49, HomeTick_th_49_Template, 2, 0, "th", 21)(50, HomeTick_td_50_Template, 2, 1, "td", 22);
       \u0275\u0275elementContainerEnd();
-      \u0275\u0275elementContainerStart(55, 22);
-      \u0275\u0275template(56, HomeTick_th_56_Template, 2, 0, "th", 20)(57, HomeTick_td_57_Template, 2, 1, "td", 21);
+      \u0275\u0275elementContainerStart(51, 23);
+      \u0275\u0275template(52, HomeTick_th_52_Template, 2, 0, "th", 21)(53, HomeTick_td_53_Template, 2, 1, "td", 22);
       \u0275\u0275elementContainerEnd();
-      \u0275\u0275elementContainerStart(58, 23);
-      \u0275\u0275template(59, HomeTick_th_59_Template, 2, 0, "th", 20)(60, HomeTick_td_60_Template, 2, 1, "td", 21);
+      \u0275\u0275elementContainerStart(54, 24);
+      \u0275\u0275template(55, HomeTick_th_55_Template, 2, 0, "th", 21)(56, HomeTick_td_56_Template, 2, 1, "td", 22);
       \u0275\u0275elementContainerEnd();
-      \u0275\u0275elementContainerStart(61, 24);
-      \u0275\u0275template(62, HomeTick_th_62_Template, 2, 0, "th", 20)(63, HomeTick_td_63_Template, 2, 1, "td", 21);
+      \u0275\u0275elementContainerStart(57, 25);
+      \u0275\u0275template(58, HomeTick_th_58_Template, 2, 0, "th", 21)(59, HomeTick_td_59_Template, 2, 1, "td", 22);
       \u0275\u0275elementContainerEnd();
-      \u0275\u0275elementContainerStart(64, 25);
-      \u0275\u0275template(65, HomeTick_th_65_Template, 2, 0, "th", 20)(66, HomeTick_td_66_Template, 2, 1, "td", 21);
+      \u0275\u0275elementContainerStart(60, 26);
+      \u0275\u0275template(61, HomeTick_th_61_Template, 2, 0, "th", 21)(62, HomeTick_td_62_Template, 2, 1, "td", 22);
       \u0275\u0275elementContainerEnd();
-      \u0275\u0275elementContainerStart(67, 26);
-      \u0275\u0275template(68, HomeTick_th_68_Template, 2, 0, "th", 20)(69, HomeTick_td_69_Template, 7, 0, "td", 21);
+      \u0275\u0275elementContainerStart(63, 27);
+      \u0275\u0275template(64, HomeTick_th_64_Template, 2, 0, "th", 21)(65, HomeTick_td_65_Template, 7, 0, "td", 22);
       \u0275\u0275elementContainerEnd();
-      \u0275\u0275template(70, HomeTick_tr_70_Template, 1, 0, "tr", 27)(71, HomeTick_tr_71_Template, 1, 0, "tr", 28);
+      \u0275\u0275template(66, HomeTick_tr_66_Template, 1, 0, "tr", 28)(67, HomeTick_tr_67_Template, 1, 0, "tr", 29);
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(72, "mat-paginator", 29);
-      \u0275\u0275listener("page", function HomeTick_Template_mat_paginator_page_72_listener($event) {
+      \u0275\u0275elementStart(68, "mat-paginator", 30);
+      \u0275\u0275listener("page", function HomeTick_Template_mat_paginator_page_68_listener($event) {
         return ctx.onCambiarPagina($event);
       });
       \u0275\u0275elementEnd()()()();
     }
     if (rf & 2) {
       \u0275\u0275advance(9);
-      \u0275\u0275textInterpolate1(" Bienvenido ", ctx.user == null ? null : ctx.user.username, " ");
+      \u0275\u0275textInterpolate1(" Bienvenido ", ctx.user == null ? null : ctx.user.name, " ");
       \u0275\u0275advance(6);
       \u0275\u0275property("mode", ctx.isMobile ? "over" : "side");
       \u0275\u0275twoWayProperty("opened", ctx.menuAbierto);
       \u0275\u0275advance(4);
-      \u0275\u0275textInterpolate(ctx.user == null ? null : ctx.user.username);
-      \u0275\u0275advance(31);
-      \u0275\u0275conditional(ctx.cargando ? 50 : -1);
+      \u0275\u0275textInterpolate(ctx.user == null ? null : ctx.user.name);
+      \u0275\u0275advance(27);
+      \u0275\u0275conditional(ctx.cargando ? 46 : -1);
       \u0275\u0275advance();
       \u0275\u0275property("dataSource", ctx.datos);
       \u0275\u0275advance(19);
@@ -76022,7 +76536,7 @@ var HomeTick = class _HomeTick {
       \u0275\u0275advance();
       \u0275\u0275property("matRowDefColumns", ctx.columnasVisibles);
       \u0275\u0275advance();
-      \u0275\u0275property("length", ctx.totalRegistros)("pageSize", ctx.tamanoPagina)("pageIndex", ctx.paginaActual)("pageSizeOptions", \u0275\u0275pureFunction0(12, _c027));
+      \u0275\u0275property("length", ctx.totalRegistros)("pageSize", ctx.tamanoPagina)("pageIndex", ctx.paginaActual)("pageSizeOptions", \u0275\u0275pureFunction0(12, _c028));
     }
   }, dependencies: [
     CommonModule,
@@ -76063,7 +76577,8 @@ var HomeTick = class _HomeTick {
     MatLabel,
     MatFormFieldModule,
     MatProgressSpinnerModule,
-    MatProgressSpinner
+    MatProgressSpinner,
+    Profile
   ], styles: ["\nmat-toolbar[_ngcontent-%COMP%] {\n  background: #0194fe;\n  color: white;\n  top: 0;\n  z-index: 2;\n}\n  .mat-mdc-menu-panel {\n  background-color: #0194fe !important;\n}\nmat-sidenav[_ngcontent-%COMP%] {\n  margin: 16px;\n  width: 200px;\n  border-right: none;\n  background: #0194fe;\n  color: white;\n  border-radius: 10px;\n  padding: 16px;\n  text-align: center;\n}\n.content[_ngcontent-%COMP%] {\n  height: calc(100vh - 98px);\n  border-radius: 10px;\n  margin: 16px;\n  margin-left: 32px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  font-size: 2rem;\n  color: lightgray;\n}\n.mat-menu[_ngcontent-%COMP%] {\n  background-color: #0194fe;\n  color: #0194fe;\n}\nmat-sidenav-container[_ngcontent-%COMP%] {\n  height: calc(100vh - 65px);\n  margin-right: 10;\n}\nmat-sidenav-container.oculto[_ngcontent-%COMP%] {\n  transform: translateX(-250px);\n}\n.span[_ngcontent-%COMP%] {\n  color: white;\n  font-size: 1rem;\n  margin-left: 8px;\n}\n.menu-button[_ngcontent-%COMP%] {\n  width: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: flex-start;\n  font-size: 1rem;\n}\n.menu-button[_ngcontent-%COMP%]   mat-icon[_ngcontent-%COMP%] {\n  margin-right: 8px;\n  color: white;\n}\n.avatar[_ngcontent-%COMP%] {\n  margin-top: 16px;\n  width: 100px;\n  height: 100px;\n  border-radius: 50%;\n}\n.name[_ngcontent-%COMP%] {\n  margin-top: 8px;\n  font-weight: normal;\n}\n.designation[_ngcontent-%COMP%] {\n  margin-top: 2px;\n  font-size: 0.7rem;\n  color: lightgrey;\n}\n.img-login[_ngcontent-%COMP%] {\n  width: auto;\n  height: 40px;\n  margin: 20px 5px;\n}\nmat-divider[_ngcontent-%COMP%] {\n  margin-top: 16px;\n  margin-bottom: 16px;\n  background-color: white;\n}\n.sidebar[_ngcontent-%COMP%] {\n  position: fixed;\n  left: 0;\n  top: 0;\n  width: 250px;\n  height: 100vh;\n  background-color: #2c3e50;\n  color: white;\n  transition: transform 0.3s ease;\n  transform: translateX(0);\n}\n.sidebar.oculto[_ngcontent-%COMP%] {\n  transform: translateX(-250px);\n}\n.table-container[_ngcontent-%COMP%] {\n  margin: 16px;\n  padding: 16px;\n  background-color: #ffffff;\n  border-radius: 10px;\n  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);\n}\n.mat-mdc-row[_ngcontent-%COMP%]:hover {\n  background-color: #f5f5f5;\n}\n.contenido[_ngcontent-%COMP%] {\n  margin-left: 250px;\n  transition: margin-left 0.3s ease;\n  padding: 20px;\n}\n.contenido.expandido[_ngcontent-%COMP%] {\n  margin-left: 0;\n}\n.media-funcion[_ngcontent-%COMP%] {\n  float: left;\n  margin: 0 auto;\n  max-width: 100%;\n  height: 30px;\n  padding: 15px 15px;\n  font-size: 14px;\n  background: #0194fe;\n}\n.espaciador-flexible[_ngcontent-%COMP%] {\n  flex: 1 1 auto;\n}\n/*# sourceMappingURL=home-tick.css.map */"] });
 };
 (() => {
@@ -76085,7 +76600,8 @@ var HomeTick = class _HomeTick {
       MatInputModule,
       MatFormFieldModule,
       MatProgressSpinnerModule,
-      MatIcon
+      MatIcon,
+      Profile
     ], template: `<mat-toolbar>
     <button (click)="toggleMenu()">
         <mat-icon>menu</mat-icon>
@@ -76095,7 +76611,7 @@ var HomeTick = class _HomeTick {
         alt="Direcci\xF3n General de Tecnolog\xEDas de la Informaci\xF3n y Gobierno Digital">
 
     <span class="espaciador-flexible"></span>
-    <span> Bienvenido {{ user?.username}} </span>
+    <span> Bienvenido {{ user?.name}} </span>
     <span>
         <button mat-button class="menu-button">
             <mat-icon>notifications_none</mat-icon>
@@ -76107,14 +76623,11 @@ var HomeTick = class _HomeTick {
 <mat-sidenav-container class="sidenav-container">
     <mat-sidenav #drawer [mode]="isMobile ? 'over' : 'side'" [(opened)]="menuAbierto" class="mat-elevation-z8">
         <img class="avatar mat-elevation-z8" src="../../../../public/Lot.png" alt="Foto de perfil">
-        <h4 class="name">{{ user?.username }}</h4>
+        <h4 class="name">{{ user?.name }}</h4>
         <p class="designation">Software Engineer</p>
 
         <mat-divider></mat-divider>
-        <button type="button" mat-button class="menu-button" (click)="toggleMenu()">
-            <mat-icon>person</mat-icon>
-            <span class="span">Perfil</span>
-        </button>
+        <app-profile (profileUpdated)="user = $event"></app-profile>
         <button type="button" mat-button class="menu-button" routerLink="/ticket">
             <mat-icon>assignment</mat-icon>
             <span class="span">Crear ticket</span>
@@ -76193,72 +76706,84 @@ var HomeTick = class _HomeTick {
   }] });
 })();
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(HomeTick, { className: "HomeTick", filePath: "app/auth/home-tick/home-tick.ts", lineNumber: 44 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(HomeTick, { className: "HomeTick", filePath: "app/auth/home-tick/home-tick.ts", lineNumber: 46 });
 })();
 
 // src/app/auth/home-tec/home-tec.ts
-var _c028 = () => [5, 10, 25, 100];
-function HomeTec_Conditional_48_Template(rf, ctx) {
+var _c029 = () => [5, 10, 25, 100];
+function HomeTec_Conditional_49_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 15);
+    \u0275\u0275elementStart(0, "div", 16);
     \u0275\u0275element(1, "mat-spinner");
     \u0275\u0275elementEnd();
   }
 }
-function HomeTec_Conditional_49_th_2_Template(rf, ctx) {
+function HomeTec_Conditional_50_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 30);
+    \u0275\u0275elementStart(0, "p", 17);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const ctx_r1 = \u0275\u0275nextContext();
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(ctx_r1.errorCarga);
+  }
+}
+function HomeTec_Conditional_51_th_2_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "th", 32);
     \u0275\u0275text(1, "Folio");
     \u0275\u0275elementEnd();
   }
 }
-function HomeTec_Conditional_49_td_3_Template(rf, ctx) {
+function HomeTec_Conditional_51_td_3_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 31);
+    \u0275\u0275elementStart(0, "td", 33);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
-    const registro_r2 = ctx.$implicit;
+    const registro_r3 = ctx.$implicit;
     \u0275\u0275advance();
-    \u0275\u0275textInterpolate(registro_r2.folio);
+    \u0275\u0275textInterpolate(registro_r3.folio);
   }
 }
-function HomeTec_Conditional_49_th_5_Template(rf, ctx) {
+function HomeTec_Conditional_51_th_5_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 30);
+    \u0275\u0275elementStart(0, "th", 32);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
-    const ctx_r2 = \u0275\u0275nextContext(2);
+    const ctx_r1 = \u0275\u0275nextContext(2);
     \u0275\u0275advance();
-    \u0275\u0275textInterpolate(ctx_r2.vistaActiva === "tickets" ? "T\xEDtulo" : "Tipo");
+    \u0275\u0275textInterpolate(ctx_r1.vistaActiva === "tickets" ? "T\xEDtulo" : "Tipo");
   }
 }
-function HomeTec_Conditional_49_td_6_Template(rf, ctx) {
+function HomeTec_Conditional_51_td_6_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 31);
+    \u0275\u0275elementStart(0, "td", 33);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
     const registro_r4 = ctx.$implicit;
-    const ctx_r2 = \u0275\u0275nextContext(2);
+    const ctx_r1 = \u0275\u0275nextContext(2);
     \u0275\u0275advance();
-    \u0275\u0275textInterpolate(ctx_r2.obtenerAsunto(registro_r4));
+    \u0275\u0275textInterpolate(ctx_r1.obtenerAsunto(registro_r4));
   }
 }
-function HomeTec_Conditional_49_th_8_Template(rf, ctx) {
+function HomeTec_Conditional_51_th_8_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 30);
+    \u0275\u0275elementStart(0, "th", 32);
     \u0275\u0275text(1, "Descripci\xF3n");
     \u0275\u0275elementEnd();
   }
 }
-function HomeTec_Conditional_49_td_9_Template(rf, ctx) {
+function HomeTec_Conditional_51_td_9_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 31);
+    \u0275\u0275elementStart(0, "td", 33);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -76268,16 +76793,16 @@ function HomeTec_Conditional_49_td_9_Template(rf, ctx) {
     \u0275\u0275textInterpolate(registro_r5.descripcion);
   }
 }
-function HomeTec_Conditional_49_th_11_Template(rf, ctx) {
+function HomeTec_Conditional_51_th_11_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 30);
+    \u0275\u0275elementStart(0, "th", 32);
     \u0275\u0275text(1, "Prioridad");
     \u0275\u0275elementEnd();
   }
 }
-function HomeTec_Conditional_49_td_12_Template(rf, ctx) {
+function HomeTec_Conditional_51_td_12_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 31);
+    \u0275\u0275elementStart(0, "td", 33);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -76287,16 +76812,16 @@ function HomeTec_Conditional_49_td_12_Template(rf, ctx) {
     \u0275\u0275textInterpolate(registro_r6.prioridad);
   }
 }
-function HomeTec_Conditional_49_th_14_Template(rf, ctx) {
+function HomeTec_Conditional_51_th_14_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 30);
+    \u0275\u0275elementStart(0, "th", 32);
     \u0275\u0275text(1, "Estado");
     \u0275\u0275elementEnd();
   }
 }
-function HomeTec_Conditional_49_td_15_option_2_Template(rf, ctx) {
+function HomeTec_Conditional_51_td_15_option_2_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "option", 34);
+    \u0275\u0275elementStart(0, "option", 36);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -76307,37 +76832,37 @@ function HomeTec_Conditional_49_td_15_option_2_Template(rf, ctx) {
     \u0275\u0275textInterpolate(estado_r9);
   }
 }
-function HomeTec_Conditional_49_td_15_Template(rf, ctx) {
+function HomeTec_Conditional_51_td_15_Template(rf, ctx) {
   if (rf & 1) {
     const _r7 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "td", 31)(1, "select", 32);
-    \u0275\u0275listener("change", function HomeTec_Conditional_49_td_15_Template_select_change_1_listener($event) {
+    \u0275\u0275elementStart(0, "td", 33)(1, "select", 34);
+    \u0275\u0275listener("change", function HomeTec_Conditional_51_td_15_Template_select_change_1_listener($event) {
       const registro_r8 = \u0275\u0275restoreView(_r7).$implicit;
-      const ctx_r2 = \u0275\u0275nextContext(2);
-      return \u0275\u0275resetView(ctx_r2.cambiarEstado(registro_r8, $event));
+      const ctx_r1 = \u0275\u0275nextContext(2);
+      return \u0275\u0275resetView(ctx_r1.cambiarEstado(registro_r8, $event));
     });
-    \u0275\u0275template(2, HomeTec_Conditional_49_td_15_option_2_Template, 2, 2, "option", 33);
+    \u0275\u0275template(2, HomeTec_Conditional_51_td_15_option_2_Template, 2, 2, "option", 35);
     \u0275\u0275elementEnd()();
   }
   if (rf & 2) {
     const registro_r8 = ctx.$implicit;
-    const ctx_r2 = \u0275\u0275nextContext(2);
+    const ctx_r1 = \u0275\u0275nextContext(2);
     \u0275\u0275advance();
     \u0275\u0275property("value", registro_r8.estado);
     \u0275\u0275advance();
-    \u0275\u0275property("ngForOf", ctx_r2.estados);
+    \u0275\u0275property("ngForOf", ctx_r1.estados);
   }
 }
-function HomeTec_Conditional_49_th_17_Template(rf, ctx) {
+function HomeTec_Conditional_51_th_17_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 30);
+    \u0275\u0275elementStart(0, "th", 32);
     \u0275\u0275text(1, "Comentarios");
     \u0275\u0275elementEnd();
   }
 }
-function HomeTec_Conditional_49_td_18_Template(rf, ctx) {
+function HomeTec_Conditional_51_td_18_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 31);
+    \u0275\u0275elementStart(0, "td", 33);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -76347,91 +76872,92 @@ function HomeTec_Conditional_49_td_18_Template(rf, ctx) {
     \u0275\u0275textInterpolate(registro_r10.comentarios || "Sin comentarios");
   }
 }
-function HomeTec_Conditional_49_th_20_Template(rf, ctx) {
+function HomeTec_Conditional_51_th_20_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 30);
+    \u0275\u0275elementStart(0, "th", 32);
     \u0275\u0275text(1, "Acciones");
     \u0275\u0275elementEnd();
   }
 }
-function HomeTec_Conditional_49_td_21_Template(rf, ctx) {
+function HomeTec_Conditional_51_td_21_Template(rf, ctx) {
   if (rf & 1) {
     const _r11 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "td", 31)(1, "button", 35);
-    \u0275\u0275listener("click", function HomeTec_Conditional_49_td_21_Template_button_click_1_listener() {
+    \u0275\u0275elementStart(0, "td", 33)(1, "button", 37);
+    \u0275\u0275listener("click", function HomeTec_Conditional_51_td_21_Template_button_click_1_listener() {
       const registro_r12 = \u0275\u0275restoreView(_r11).$implicit;
-      const ctx_r2 = \u0275\u0275nextContext(2);
-      return \u0275\u0275resetView(ctx_r2.editarRegistro(registro_r12));
+      const ctx_r1 = \u0275\u0275nextContext(2);
+      return \u0275\u0275resetView(ctx_r1.editarRegistro(registro_r12));
     });
     \u0275\u0275elementStart(2, "mat-icon");
     \u0275\u0275text(3, "edit");
     \u0275\u0275elementEnd()()();
   }
 }
-function HomeTec_Conditional_49_tr_22_Template(rf, ctx) {
+function HomeTec_Conditional_51_tr_22_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275element(0, "tr", 36);
+    \u0275\u0275element(0, "tr", 38);
   }
 }
-function HomeTec_Conditional_49_tr_23_Template(rf, ctx) {
+function HomeTec_Conditional_51_tr_23_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275element(0, "tr", 37);
+    \u0275\u0275element(0, "tr", 39);
   }
 }
-function HomeTec_Conditional_49_tr_24_Template(rf, ctx) {
+function HomeTec_Conditional_51_tr_24_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "tr", 38)(1, "td", 39);
+    \u0275\u0275elementStart(0, "tr", 40)(1, "td", 41);
     \u0275\u0275text(2);
     \u0275\u0275elementEnd()();
   }
   if (rf & 2) {
-    const ctx_r2 = \u0275\u0275nextContext(2);
+    const ctx_r1 = \u0275\u0275nextContext(2);
     \u0275\u0275advance();
-    \u0275\u0275attribute("colspan", ctx_r2.columnasVisibles.length);
+    \u0275\u0275attribute("colspan", ctx_r1.columnasVisibles.length);
     \u0275\u0275advance();
-    \u0275\u0275textInterpolate1(" No tienes ", ctx_r2.vistaActiva, " asignados. ");
+    \u0275\u0275textInterpolate1(" No tienes ", ctx_r1.vistaActiva, " asignados. ");
   }
 }
-function HomeTec_Conditional_49_Template(rf, ctx) {
+function HomeTec_Conditional_51_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "table", 16);
-    \u0275\u0275elementContainerStart(1, 18);
-    \u0275\u0275template(2, HomeTec_Conditional_49_th_2_Template, 2, 0, "th", 19)(3, HomeTec_Conditional_49_td_3_Template, 2, 1, "td", 20);
+    \u0275\u0275elementStart(0, "table", 18);
+    \u0275\u0275elementContainerStart(1, 20);
+    \u0275\u0275template(2, HomeTec_Conditional_51_th_2_Template, 2, 0, "th", 21)(3, HomeTec_Conditional_51_td_3_Template, 2, 1, "td", 22);
     \u0275\u0275elementContainerEnd();
-    \u0275\u0275elementContainerStart(4, 21);
-    \u0275\u0275template(5, HomeTec_Conditional_49_th_5_Template, 2, 1, "th", 19)(6, HomeTec_Conditional_49_td_6_Template, 2, 1, "td", 20);
+    \u0275\u0275elementContainerStart(4, 23);
+    \u0275\u0275template(5, HomeTec_Conditional_51_th_5_Template, 2, 1, "th", 21)(6, HomeTec_Conditional_51_td_6_Template, 2, 1, "td", 22);
     \u0275\u0275elementContainerEnd();
-    \u0275\u0275elementContainerStart(7, 22);
-    \u0275\u0275template(8, HomeTec_Conditional_49_th_8_Template, 2, 0, "th", 19)(9, HomeTec_Conditional_49_td_9_Template, 2, 1, "td", 20);
+    \u0275\u0275elementContainerStart(7, 24);
+    \u0275\u0275template(8, HomeTec_Conditional_51_th_8_Template, 2, 0, "th", 21)(9, HomeTec_Conditional_51_td_9_Template, 2, 1, "td", 22);
     \u0275\u0275elementContainerEnd();
-    \u0275\u0275elementContainerStart(10, 23);
-    \u0275\u0275template(11, HomeTec_Conditional_49_th_11_Template, 2, 0, "th", 19)(12, HomeTec_Conditional_49_td_12_Template, 2, 1, "td", 20);
+    \u0275\u0275elementContainerStart(10, 25);
+    \u0275\u0275template(11, HomeTec_Conditional_51_th_11_Template, 2, 0, "th", 21)(12, HomeTec_Conditional_51_td_12_Template, 2, 1, "td", 22);
     \u0275\u0275elementContainerEnd();
-    \u0275\u0275elementContainerStart(13, 24);
-    \u0275\u0275template(14, HomeTec_Conditional_49_th_14_Template, 2, 0, "th", 19)(15, HomeTec_Conditional_49_td_15_Template, 3, 2, "td", 20);
+    \u0275\u0275elementContainerStart(13, 26);
+    \u0275\u0275template(14, HomeTec_Conditional_51_th_14_Template, 2, 0, "th", 21)(15, HomeTec_Conditional_51_td_15_Template, 3, 2, "td", 22);
     \u0275\u0275elementContainerEnd();
-    \u0275\u0275elementContainerStart(16, 25);
-    \u0275\u0275template(17, HomeTec_Conditional_49_th_17_Template, 2, 0, "th", 19)(18, HomeTec_Conditional_49_td_18_Template, 2, 1, "td", 20);
+    \u0275\u0275elementContainerStart(16, 27);
+    \u0275\u0275template(17, HomeTec_Conditional_51_th_17_Template, 2, 0, "th", 21)(18, HomeTec_Conditional_51_td_18_Template, 2, 1, "td", 22);
     \u0275\u0275elementContainerEnd();
-    \u0275\u0275elementContainerStart(19, 26);
-    \u0275\u0275template(20, HomeTec_Conditional_49_th_20_Template, 2, 0, "th", 19)(21, HomeTec_Conditional_49_td_21_Template, 4, 0, "td", 20);
+    \u0275\u0275elementContainerStart(19, 28);
+    \u0275\u0275template(20, HomeTec_Conditional_51_th_20_Template, 2, 0, "th", 21)(21, HomeTec_Conditional_51_td_21_Template, 4, 0, "td", 22);
     \u0275\u0275elementContainerEnd();
-    \u0275\u0275template(22, HomeTec_Conditional_49_tr_22_Template, 1, 0, "tr", 27)(23, HomeTec_Conditional_49_tr_23_Template, 1, 0, "tr", 28)(24, HomeTec_Conditional_49_tr_24_Template, 3, 2, "tr", 29);
+    \u0275\u0275template(22, HomeTec_Conditional_51_tr_22_Template, 1, 0, "tr", 29)(23, HomeTec_Conditional_51_tr_23_Template, 1, 0, "tr", 30)(24, HomeTec_Conditional_51_tr_24_Template, 3, 2, "tr", 31);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
-    const ctx_r2 = \u0275\u0275nextContext();
-    \u0275\u0275property("dataSource", ctx_r2.datos);
+    const ctx_r1 = \u0275\u0275nextContext();
+    \u0275\u0275property("dataSource", ctx_r1.datos);
     \u0275\u0275advance(22);
-    \u0275\u0275property("matHeaderRowDef", ctx_r2.columnasVisibles);
+    \u0275\u0275property("matHeaderRowDef", ctx_r1.columnasVisibles);
     \u0275\u0275advance();
-    \u0275\u0275property("matRowDefColumns", ctx_r2.columnasVisibles);
+    \u0275\u0275property("matRowDefColumns", ctx_r1.columnasVisibles);
   }
 }
 var HomeTec = class _HomeTec {
   authService;
   router;
   breakpointObserver;
+  changeDetectorRef;
   estados = [];
   sidenav;
   user;
@@ -76441,14 +76967,17 @@ var HomeTec = class _HomeTec {
   columnasVisibles = ["folio", "asunto", "descripcion", "prioridad", "estado", "comentarios", "acciones"];
   datos = new MatTableDataSource([]);
   cargando = false;
+  errorCarga = "";
   totalRegistros = 0;
   tamanoPagina = 10;
   paginaActual = 0;
   filtroBusqueda = "";
-  constructor(authService, router, breakpointObserver) {
+  temporizadorBusqueda;
+  constructor(authService, router, breakpointObserver, changeDetectorRef) {
     this.authService = authService;
     this.router = router;
     this.breakpointObserver = breakpointObserver;
+    this.changeDetectorRef = changeDetectorRef;
   }
   ngOnInit() {
     this.observarTamanoPantalla();
@@ -76464,7 +76993,10 @@ var HomeTec = class _HomeTec {
   }
   cargarEstados() {
     this.authService.getEstados().subscribe({
-      next: (response) => this.estados = response.estados ?? [],
+      next: (response) => {
+        this.estados = response.estados ?? [];
+        this.changeDetectorRef.markForCheck();
+      },
       error: (error) => console.error("No se pudo cargar el cat\xE1logo de estados:", error)
     });
   }
@@ -76486,20 +77018,33 @@ var HomeTec = class _HomeTec {
   }
   cargarDatos() {
     this.cargando = true;
+    this.errorCarga = "";
+    this.datos.data = [];
+    const vistaSolicitada = this.vistaActiva;
     const params = new HttpParams().set("page", (this.paginaActual + 1).toString()).set("limit", this.tamanoPagina.toString()).set("search", this.filtroBusqueda).set("assignedToMe", "true");
-    const request = this.vistaActiva === "tickets" ? this.authService.getTickets(params) : this.authService.getSolicitudes(params);
-    request.subscribe({
+    const request = vistaSolicitada === "tickets" ? this.authService.getTickets(params) : this.authService.getSolicitudes(params);
+    request.pipe(timeout(15e3), finalize(() => {
+      if (this.vistaActiva === vistaSolicitada) {
+        this.cargando = false;
+        this.changeDetectorRef.markForCheck();
+      }
+    })).subscribe({
       next: (respuesta) => {
-        const registros = this.vistaActiva === "tickets" ? respuesta.tickets : respuesta.solicitudes;
+        if (this.vistaActiva !== vistaSolicitada)
+          return;
+        const registros = vistaSolicitada === "tickets" ? respuesta.tickets : respuesta.solicitudes;
         this.datos.data = Array.isArray(registros) ? registros : [];
         this.totalRegistros = respuesta.total ?? this.datos.data.length;
-        this.cargando = false;
+        this.changeDetectorRef.markForCheck();
       },
       error: (error) => {
-        console.error(`No se pudieron cargar las ${this.vistaActiva}:`, error);
+        if (this.vistaActiva !== vistaSolicitada)
+          return;
+        console.error(`No se pudieron cargar las ${vistaSolicitada}:`, error);
         this.datos.data = [];
         this.totalRegistros = 0;
-        this.cargando = false;
+        this.errorCarga = error.error?.message ?? `No fue posible cargar ${vistaSolicitada}.`;
+        this.changeDetectorRef.markForCheck();
       }
     });
   }
@@ -76509,7 +77054,9 @@ var HomeTec = class _HomeTec {
   onFiltrar(evento) {
     this.filtroBusqueda = evento.target.value.trim();
     this.paginaActual = 0;
-    this.cargarDatos();
+    if (this.temporizadorBusqueda)
+      clearTimeout(this.temporizadorBusqueda);
+    this.temporizadorBusqueda = setTimeout(() => this.cargarDatos(), 300);
   }
   onCambiarPagina(evento) {
     this.paginaActual = evento.pageIndex;
@@ -76553,7 +77100,7 @@ var HomeTec = class _HomeTec {
     });
   }
   static \u0275fac = function HomeTec_Factory(__ngFactoryType__) {
-    return new (__ngFactoryType__ || _HomeTec)(\u0275\u0275directiveInject(AuthService), \u0275\u0275directiveInject(Router), \u0275\u0275directiveInject(BreakpointObserver));
+    return new (__ngFactoryType__ || _HomeTec)(\u0275\u0275directiveInject(AuthService), \u0275\u0275directiveInject(Router), \u0275\u0275directiveInject(BreakpointObserver), \u0275\u0275directiveInject(ChangeDetectorRef));
   };
   static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _HomeTec, selectors: [["app-home-tec"]], viewQuery: function HomeTec_Query(rf, ctx) {
     if (rf & 1) {
@@ -76563,7 +77110,7 @@ var HomeTec = class _HomeTec {
       let _t;
       \u0275\u0275queryRefresh(_t = \u0275\u0275loadQuery()) && (ctx.sidenav = _t.first);
     }
-  }, decls: 51, vars: 12, consts: [["drawer", ""], ["type", "button", "aria-label", "Abrir o cerrar men\xFA", 3, "click"], ["src", "https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg", "alt", "Direcci\xF3n General de Tecnolog\xEDas de la Informaci\xF3n y Gobierno Digital", 1, "img-login"], [1, "espaciador-flexible"], [1, "mat-elevation-z8", 3, "openedChange", "mode", "opened"], ["src", "../../../../public/Lot.png", "alt", "Foto de perfil", 1, "avatar", "mat-elevation-z8"], [1, "name"], [1, "designation"], ["type", "button", "mat-button", "", 1, "menu-button", 3, "click"], [1, "span"], ["type", "button", "mat-button", "", 1, "menu-button"], [1, "main-container"], [1, "table-container"], ["appearance", "outline"], ["matInput", "", "placeholder", "Escribe para buscar", 3, "keyup", "value"], [1, "loading-spinner"], ["mat-table", "", 1, "mat-elevation-z8", 3, "dataSource"], ["aria-label", "Seleccionar p\xE1gina", 3, "page", "length", "pageSize", "pageIndex", "pageSizeOptions"], ["matColumnDef", "folio"], ["mat-header-cell", "", 4, "matHeaderCellDef"], ["mat-cell", "", 4, "matCellDef"], ["matColumnDef", "asunto"], ["matColumnDef", "descripcion"], ["matColumnDef", "prioridad"], ["matColumnDef", "estado"], ["matColumnDef", "comentarios"], ["matColumnDef", "acciones"], ["mat-header-row", "", 4, "matHeaderRowDef"], ["mat-row", "", 4, "matRowDef", "matRowDefColumns"], ["class", "mat-row", 4, "matNoDataRow"], ["mat-header-cell", ""], ["mat-cell", ""], ["aria-label", "Estado del registro", 3, "change", "value"], [3, "value", 4, "ngFor", "ngForOf"], [3, "value"], ["type", "button", "mat-icon-button", "", "color", "primary", "aria-label", "Actualizar estado y comentarios", 3, "click"], ["mat-header-row", ""], ["mat-row", ""], [1, "mat-row"], [1, "mat-cell"]], template: function HomeTec_Template(rf, ctx) {
+  }, decls: 53, vars: 12, consts: [["drawer", ""], ["type", "button", "aria-label", "Abrir o cerrar men\xFA", 3, "click"], ["src", "https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg", "alt", "Direcci\xF3n General de Tecnolog\xEDas de la Informaci\xF3n y Gobierno Digital", 1, "img-login"], [1, "espaciador-flexible"], [1, "mat-elevation-z8", 3, "openedChange", "mode", "opened"], ["src", "../../../../public/Lot.png", "alt", "Foto de perfil", 1, "avatar", "mat-elevation-z8"], [1, "name"], [1, "designation"], [3, "profileUpdated"], ["type", "button", "mat-button", "", 1, "menu-button", 3, "click"], [1, "span"], ["type", "button", "mat-button", "", 1, "menu-button"], [1, "main-container"], [1, "table-container"], ["appearance", "outline"], ["matInput", "", "placeholder", "Escribe para buscar", 3, "keyup", "value"], [1, "loading-spinner"], ["role", "alert", 1, "load-error"], ["mat-table", "", 1, "mat-elevation-z8", 3, "dataSource"], ["aria-label", "Seleccionar p\xE1gina", 3, "page", "length", "pageSize", "pageIndex", "pageSizeOptions"], ["matColumnDef", "folio"], ["mat-header-cell", "", 4, "matHeaderCellDef"], ["mat-cell", "", 4, "matCellDef"], ["matColumnDef", "asunto"], ["matColumnDef", "descripcion"], ["matColumnDef", "prioridad"], ["matColumnDef", "estado"], ["matColumnDef", "comentarios"], ["matColumnDef", "acciones"], ["mat-header-row", "", 4, "matHeaderRowDef"], ["mat-row", "", 4, "matRowDef", "matRowDefColumns"], ["class", "mat-row", 4, "matNoDataRow"], ["mat-header-cell", ""], ["mat-cell", ""], ["aria-label", "Estado del registro", 3, "change", "value"], [3, "value", 4, "ngFor", "ngForOf"], [3, "value"], ["type", "button", "mat-icon-button", "", "color", "primary", "aria-label", "Actualizar estado y comentarios", 3, "click"], ["mat-header-row", ""], ["mat-row", ""], [1, "mat-row"], [1, "mat-cell"]], template: function HomeTec_Template(rf, ctx) {
     if (rf & 1) {
       const _r1 = \u0275\u0275getCurrentView();
       \u0275\u0275elementStart(0, "mat-toolbar")(1, "button", 1);
@@ -76594,79 +77141,84 @@ var HomeTec = class _HomeTec {
       \u0275\u0275text(17, "T\xE9cnico");
       \u0275\u0275elementEnd();
       \u0275\u0275element(18, "mat-divider");
-      \u0275\u0275elementStart(19, "button", 8);
-      \u0275\u0275listener("click", function HomeTec_Template_button_click_19_listener() {
+      \u0275\u0275elementStart(19, "app-profile", 8);
+      \u0275\u0275listener("profileUpdated", function HomeTec_Template_app_profile_profileUpdated_19_listener($event) {
+        return ctx.user = $event;
+      });
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(20, "button", 9);
+      \u0275\u0275listener("click", function HomeTec_Template_button_click_20_listener() {
         return ctx.cambiarVista("solicitudes");
       });
-      \u0275\u0275elementStart(20, "mat-icon");
-      \u0275\u0275text(21, "assignment");
+      \u0275\u0275elementStart(21, "mat-icon");
+      \u0275\u0275text(22, "assignment");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(22, "span", 9);
-      \u0275\u0275text(23, "Solicitudes asignadas");
+      \u0275\u0275elementStart(23, "span", 10);
+      \u0275\u0275text(24, "Solicitudes asignadas");
       \u0275\u0275elementEnd()();
-      \u0275\u0275elementStart(24, "button", 8);
-      \u0275\u0275listener("click", function HomeTec_Template_button_click_24_listener() {
+      \u0275\u0275elementStart(25, "button", 9);
+      \u0275\u0275listener("click", function HomeTec_Template_button_click_25_listener() {
         return ctx.cambiarVista("tickets");
       });
-      \u0275\u0275elementStart(25, "mat-icon");
-      \u0275\u0275text(26, "confirmation_number");
+      \u0275\u0275elementStart(26, "mat-icon");
+      \u0275\u0275text(27, "confirmation_number");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(27, "span", 9);
-      \u0275\u0275text(28, "Tickets asignados");
+      \u0275\u0275elementStart(28, "span", 10);
+      \u0275\u0275text(29, "Tickets asignados");
       \u0275\u0275elementEnd()();
-      \u0275\u0275element(29, "mat-divider");
-      \u0275\u0275elementStart(30, "button", 10)(31, "mat-icon");
-      \u0275\u0275text(32, "help");
+      \u0275\u0275element(30, "mat-divider");
+      \u0275\u0275elementStart(31, "button", 11)(32, "mat-icon");
+      \u0275\u0275text(33, "help");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(33, "span", 9);
-      \u0275\u0275text(34, "Ayuda");
+      \u0275\u0275elementStart(34, "span", 10);
+      \u0275\u0275text(35, "Ayuda");
       \u0275\u0275elementEnd()();
-      \u0275\u0275elementStart(35, "button", 8);
-      \u0275\u0275listener("click", function HomeTec_Template_button_click_35_listener() {
+      \u0275\u0275elementStart(36, "button", 9);
+      \u0275\u0275listener("click", function HomeTec_Template_button_click_36_listener() {
         return ctx.logout();
       });
-      \u0275\u0275elementStart(36, "mat-icon");
-      \u0275\u0275text(37, "exit_to_app");
+      \u0275\u0275elementStart(37, "mat-icon");
+      \u0275\u0275text(38, "exit_to_app");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(38, "span", 9);
-      \u0275\u0275text(39, "Salir");
+      \u0275\u0275elementStart(39, "span", 10);
+      \u0275\u0275text(40, "Salir");
       \u0275\u0275elementEnd()()();
-      \u0275\u0275elementStart(40, "mat-sidenav-content", 11)(41, "div", 12)(42, "h2");
-      \u0275\u0275text(43);
+      \u0275\u0275elementStart(41, "mat-sidenav-content", 12)(42, "div", 13)(43, "h2");
+      \u0275\u0275text(44);
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(44, "mat-form-field", 13)(45, "mat-label");
-      \u0275\u0275text(46, "Buscar por folio, asunto o descripci\xF3n");
+      \u0275\u0275elementStart(45, "mat-form-field", 14)(46, "mat-label");
+      \u0275\u0275text(47, "Buscar por folio, asunto o descripci\xF3n");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(47, "input", 14);
-      \u0275\u0275listener("keyup", function HomeTec_Template_input_keyup_47_listener($event) {
+      \u0275\u0275elementStart(48, "input", 15);
+      \u0275\u0275listener("keyup", function HomeTec_Template_input_keyup_48_listener($event) {
         return ctx.onFiltrar($event);
       });
       \u0275\u0275elementEnd()();
-      \u0275\u0275conditionalCreate(48, HomeTec_Conditional_48_Template, 2, 0, "div", 15)(49, HomeTec_Conditional_49_Template, 25, 3, "table", 16);
-      \u0275\u0275elementStart(50, "mat-paginator", 17);
-      \u0275\u0275listener("page", function HomeTec_Template_mat_paginator_page_50_listener($event) {
+      \u0275\u0275conditionalCreate(49, HomeTec_Conditional_49_Template, 2, 0, "div", 16)(50, HomeTec_Conditional_50_Template, 2, 1, "p", 17)(51, HomeTec_Conditional_51_Template, 25, 3, "table", 18);
+      \u0275\u0275elementStart(52, "mat-paginator", 19);
+      \u0275\u0275listener("page", function HomeTec_Template_mat_paginator_page_52_listener($event) {
         return ctx.onCambiarPagina($event);
       });
       \u0275\u0275elementEnd()()()();
     }
     if (rf & 2) {
       \u0275\u0275advance(9);
-      \u0275\u0275textInterpolate1("Bienvenido ", ctx.user == null ? null : ctx.user.username);
+      \u0275\u0275textInterpolate1("Bienvenido ", ctx.user == null ? null : ctx.user.name);
       \u0275\u0275advance(2);
       \u0275\u0275property("mode", ctx.isMobile ? "over" : "side");
       \u0275\u0275twoWayProperty("opened", ctx.menuAbierto);
       \u0275\u0275advance(4);
-      \u0275\u0275textInterpolate(ctx.user == null ? null : ctx.user.username);
-      \u0275\u0275advance(28);
+      \u0275\u0275textInterpolate(ctx.user == null ? null : ctx.user.name);
+      \u0275\u0275advance(29);
       \u0275\u0275textInterpolate(ctx.vistaActiva === "tickets" ? "Tickets asignados" : "Solicitudes asignadas");
       \u0275\u0275advance(4);
       \u0275\u0275property("value", ctx.filtroBusqueda);
       \u0275\u0275advance();
-      \u0275\u0275conditional(ctx.cargando ? 48 : 49);
-      \u0275\u0275advance(2);
-      \u0275\u0275property("length", ctx.totalRegistros)("pageSize", ctx.tamanoPagina)("pageIndex", ctx.paginaActual)("pageSizeOptions", \u0275\u0275pureFunction0(11, _c028));
+      \u0275\u0275conditional(ctx.cargando ? 49 : ctx.errorCarga ? 50 : 51);
+      \u0275\u0275advance(3);
+      \u0275\u0275property("length", ctx.totalRegistros)("pageSize", ctx.tamanoPagina)("pageIndex", ctx.paginaActual)("pageSizeOptions", \u0275\u0275pureFunction0(11, _c029));
     }
-  }, dependencies: [CommonModule, NgForOf, MatToolbarModule, MatToolbar, MatButtonModule, MatButton, MatIconButton, MatIconModule, MatIcon, MatSidenavModule, MatSidenav, MatSidenavContainer, MatSidenavContent, MatDividerModule, MatDivider, MatTableModule, MatTable, MatHeaderCellDef, MatHeaderRowDef, MatColumnDef, MatCellDef, MatRowDef, MatHeaderCell, MatCell, MatHeaderRow, MatRow, MatNoDataRow, MatPaginatorModule, MatPaginator, MatFormFieldModule, MatFormField, MatLabel, MatInputModule, MatInput, MatProgressSpinnerModule, MatProgressSpinner], styles: ["\nmat-toolbar[_ngcontent-%COMP%] {\n  background: #0194fe;\n  color: white;\n  top: 0;\n  z-index: 2;\n}\nmat-sidenav[_ngcontent-%COMP%] {\n  margin: 16px;\n  width: 200px;\n  border-right: none;\n  background: #0194fe;\n  color: white;\n  border-radius: 10px;\n  padding: 16px;\n  text-align: center;\n}\n.content[_ngcontent-%COMP%] {\n  height: calc(100vh - 98px);\n  border-radius: 10px;\n  margin: 16px;\n  margin-left: 32px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  font-size: 2rem;\n  color: lightgray;\n}\nmat-sidenav-container[_ngcontent-%COMP%] {\n  height: calc(100vh - 65px);\n  margin-right: 10px;\n}\nmat-sidenav-container.oculto[_ngcontent-%COMP%] {\n  transform: translateX(-250px);\n}\n.span[_ngcontent-%COMP%] {\n  color: white;\n  font-size: 1rem;\n  margin-left: 8px;\n}\n.menu-button[_ngcontent-%COMP%] {\n  width: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: flex-start;\n  font-size: 1rem;\n}\n.menu-button[_ngcontent-%COMP%]   mat-icon[_ngcontent-%COMP%] {\n  margin-right: 8px;\n  color: white;\n}\n.avatar[_ngcontent-%COMP%] {\n  margin-top: 16px;\n  width: 100px;\n  height: 100px;\n  border-radius: 50%;\n}\n.name[_ngcontent-%COMP%] {\n  margin-top: 8px;\n  font-weight: normal;\n}\n.designation[_ngcontent-%COMP%] {\n  margin-top: 2px;\n  font-size: 0.7rem;\n  color: lightgrey;\n}\n.img-login[_ngcontent-%COMP%] {\n  width: auto;\n  height: 40px;\n  margin: 20px 5px;\n}\nmat-divider[_ngcontent-%COMP%] {\n  margin-top: 16px;\n  margin-bottom: 16px;\n  background-color: white;\n}\n.sidebar[_ngcontent-%COMP%] {\n  position: fixed;\n  left: 0;\n  top: 0;\n  width: 250px;\n  height: 100vh;\n  background-color: #2c3e50;\n  color: white;\n  transition: transform 0.3s ease;\n  transform: translateX(0);\n}\n.sidebar.oculto[_ngcontent-%COMP%] {\n  transform: translateX(-250px);\n}\n.table-container[_ngcontent-%COMP%] {\n  margin: 16px;\n  padding: 16px;\n  background-color: #ffffff;\n  border-radius: 10px;\n  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);\n  overflow-x: auto;\n}\n.table-container[_ngcontent-%COMP%]   mat-form-field[_ngcontent-%COMP%], \n.table-container[_ngcontent-%COMP%]   table[_ngcontent-%COMP%], \n.table-container[_ngcontent-%COMP%]   mat-paginator[_ngcontent-%COMP%] {\n  width: 100%;\n}\n.loading-spinner[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: center;\n  padding: 32px;\n}\n.mat-column-acciones[_ngcontent-%COMP%] {\n  width: 90px;\n  text-align: center;\n}\n.mat-row[_ngcontent-%COMP%]   .mat-cell[colspan][_ngcontent-%COMP%] {\n  padding: 32px;\n  text-align: center;\n  color: #666;\n}\n.mat-mdc-row[_ngcontent-%COMP%]:hover {\n  background-color: #f5f5f5;\n}\n.contenido[_ngcontent-%COMP%] {\n  margin-left: 250px;\n  transition: margin-left 0.3s ease;\n  padding: 20px;\n}\n.contenido.expandido[_ngcontent-%COMP%] {\n  margin-left: 0;\n}\n.media-funcion[_ngcontent-%COMP%] {\n  float: left;\n  margin: 0 auto;\n  max-width: 100%;\n  height: 30px;\n  padding: 15px 15px;\n  font-size: 14px;\n  background: #0194fe;\n}\n.espaciador-flexible[_ngcontent-%COMP%] {\n  flex: 1 1 auto;\n}\n/*# sourceMappingURL=home-tec.css.map */"] });
+  }, dependencies: [CommonModule, NgForOf, MatToolbarModule, MatToolbar, MatButtonModule, MatButton, MatIconButton, MatIconModule, MatIcon, MatSidenavModule, MatSidenav, MatSidenavContainer, MatSidenavContent, MatDividerModule, MatDivider, MatTableModule, MatTable, MatHeaderCellDef, MatHeaderRowDef, MatColumnDef, MatCellDef, MatRowDef, MatHeaderCell, MatCell, MatHeaderRow, MatRow, MatNoDataRow, MatPaginatorModule, MatPaginator, MatFormFieldModule, MatFormField, MatLabel, MatInputModule, MatInput, MatProgressSpinnerModule, MatProgressSpinner, Profile], styles: ["\nmat-toolbar[_ngcontent-%COMP%] {\n  background: #0194fe;\n  color: white;\n  top: 0;\n  z-index: 2;\n}\nmat-sidenav[_ngcontent-%COMP%] {\n  margin: 16px;\n  width: 200px;\n  border-right: none;\n  background: #0194fe;\n  color: white;\n  border-radius: 10px;\n  padding: 16px;\n  text-align: center;\n}\n.content[_ngcontent-%COMP%] {\n  height: calc(100vh - 98px);\n  border-radius: 10px;\n  margin: 16px;\n  margin-left: 32px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  font-size: 2rem;\n  color: lightgray;\n}\nmat-sidenav-container[_ngcontent-%COMP%] {\n  height: calc(100vh - 65px);\n  margin-right: 10px;\n}\nmat-sidenav-container.oculto[_ngcontent-%COMP%] {\n  transform: translateX(-250px);\n}\n.span[_ngcontent-%COMP%] {\n  color: white;\n  font-size: 1rem;\n  margin-left: 8px;\n}\n.menu-button[_ngcontent-%COMP%] {\n  width: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: flex-start;\n  font-size: 1rem;\n}\n.menu-button[_ngcontent-%COMP%]   mat-icon[_ngcontent-%COMP%] {\n  margin-right: 8px;\n  color: white;\n}\n.avatar[_ngcontent-%COMP%] {\n  margin-top: 16px;\n  width: 100px;\n  height: 100px;\n  border-radius: 50%;\n}\n.name[_ngcontent-%COMP%] {\n  margin-top: 8px;\n  font-weight: normal;\n}\n.designation[_ngcontent-%COMP%] {\n  margin-top: 2px;\n  font-size: 0.7rem;\n  color: lightgrey;\n}\n.img-login[_ngcontent-%COMP%] {\n  width: auto;\n  height: 40px;\n  margin: 20px 5px;\n}\nmat-divider[_ngcontent-%COMP%] {\n  margin-top: 16px;\n  margin-bottom: 16px;\n  background-color: white;\n}\n.sidebar[_ngcontent-%COMP%] {\n  position: fixed;\n  left: 0;\n  top: 0;\n  width: 250px;\n  height: 100vh;\n  background-color: #2c3e50;\n  color: white;\n  transition: transform 0.3s ease;\n  transform: translateX(0);\n}\n.sidebar.oculto[_ngcontent-%COMP%] {\n  transform: translateX(-250px);\n}\n.table-container[_ngcontent-%COMP%] {\n  margin: 16px;\n  padding: 16px;\n  background-color: #ffffff;\n  border-radius: 10px;\n  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);\n  overflow-x: auto;\n}\n.table-container[_ngcontent-%COMP%]   mat-form-field[_ngcontent-%COMP%], \n.table-container[_ngcontent-%COMP%]   table[_ngcontent-%COMP%], \n.table-container[_ngcontent-%COMP%]   mat-paginator[_ngcontent-%COMP%] {\n  width: 100%;\n}\n.loading-spinner[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: center;\n  padding: 32px;\n}\n.load-error[_ngcontent-%COMP%] {\n  margin: 16px 0;\n  padding: 12px;\n  border-radius: 6px;\n  background: #ffebee;\n  color: #b71c1c;\n}\n.mat-column-acciones[_ngcontent-%COMP%] {\n  width: 90px;\n  text-align: center;\n}\n.mat-row[_ngcontent-%COMP%]   .mat-cell[colspan][_ngcontent-%COMP%] {\n  padding: 32px;\n  text-align: center;\n  color: #666;\n}\n.mat-mdc-row[_ngcontent-%COMP%]:hover {\n  background-color: #f5f5f5;\n}\n.contenido[_ngcontent-%COMP%] {\n  margin-left: 250px;\n  transition: margin-left 0.3s ease;\n  padding: 20px;\n}\n.contenido.expandido[_ngcontent-%COMP%] {\n  margin-left: 0;\n}\n.media-funcion[_ngcontent-%COMP%] {\n  float: left;\n  margin: 0 auto;\n  max-width: 100%;\n  height: 30px;\n  padding: 15px 15px;\n  font-size: 14px;\n  background: #0194fe;\n}\n.espaciador-flexible[_ngcontent-%COMP%] {\n  flex: 1 1 auto;\n}\n/*# sourceMappingURL=home-tec.css.map */"] });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(HomeTec, [{
@@ -76682,7 +77234,8 @@ var HomeTec = class _HomeTec {
       MatPaginatorModule,
       MatFormFieldModule,
       MatInputModule,
-      MatProgressSpinnerModule
+      MatProgressSpinnerModule,
+      Profile
     ], template: `<mat-toolbar>
     <button type="button" (click)="toggleMenu()" aria-label="Abrir o cerrar men\xFA">
         <mat-icon>menu</mat-icon>
@@ -76691,16 +77244,17 @@ var HomeTec = class _HomeTec {
     <img class="img-login" src="https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg"
         alt="Direcci\xF3n General de Tecnolog\xEDas de la Informaci\xF3n y Gobierno Digital">
     <span class="espaciador-flexible"></span>
-    <span>Bienvenido {{ user?.username }}</span>
+    <span>Bienvenido {{ user?.name }}</span>
 </mat-toolbar>
 
 <mat-sidenav-container>
     <mat-sidenav #drawer [mode]="isMobile ? 'over' : 'side'" [(opened)]="menuAbierto" class="mat-elevation-z8">
         <img class="avatar mat-elevation-z8" src="../../../../public/Lot.png" alt="Foto de perfil">
-        <h4 class="name">{{ user?.username }}</h4>
+        <h4 class="name">{{ user?.name }}</h4>
         <p class="designation">T\xE9cnico</p>
 
         <mat-divider></mat-divider>
+        <app-profile (profileUpdated)="user = $event"></app-profile>
         <button type="button" mat-button class="menu-button" (click)="cambiarVista('solicitudes')">
             <mat-icon>assignment</mat-icon>
             <span class="span">Solicitudes asignadas</span>
@@ -76731,6 +77285,8 @@ var HomeTec = class _HomeTec {
 
             @if (cargando) {
             <div class="loading-spinner"><mat-spinner></mat-spinner></div>
+            } @else if (errorCarga) {
+            <p class="load-error" role="alert">{{ errorCarga }}</p>
             } @else {
             <table mat-table [dataSource]="datos" class="mat-elevation-z8">
                 <ng-container matColumnDef="folio">
@@ -76787,41 +77343,53 @@ var HomeTec = class _HomeTec {
         </div>
     </mat-sidenav-content>
 </mat-sidenav-container>
-`, styles: ["/* src/app/auth/home-tec/home-tec.css */\nmat-toolbar {\n  background: #0194fe;\n  color: white;\n  top: 0;\n  z-index: 2;\n}\nmat-sidenav {\n  margin: 16px;\n  width: 200px;\n  border-right: none;\n  background: #0194fe;\n  color: white;\n  border-radius: 10px;\n  padding: 16px;\n  text-align: center;\n}\n.content {\n  height: calc(100vh - 98px);\n  border-radius: 10px;\n  margin: 16px;\n  margin-left: 32px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  font-size: 2rem;\n  color: lightgray;\n}\nmat-sidenav-container {\n  height: calc(100vh - 65px);\n  margin-right: 10px;\n}\nmat-sidenav-container.oculto {\n  transform: translateX(-250px);\n}\n.span {\n  color: white;\n  font-size: 1rem;\n  margin-left: 8px;\n}\n.menu-button {\n  width: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: flex-start;\n  font-size: 1rem;\n}\n.menu-button mat-icon {\n  margin-right: 8px;\n  color: white;\n}\n.avatar {\n  margin-top: 16px;\n  width: 100px;\n  height: 100px;\n  border-radius: 50%;\n}\n.name {\n  margin-top: 8px;\n  font-weight: normal;\n}\n.designation {\n  margin-top: 2px;\n  font-size: 0.7rem;\n  color: lightgrey;\n}\n.img-login {\n  width: auto;\n  height: 40px;\n  margin: 20px 5px;\n}\nmat-divider {\n  margin-top: 16px;\n  margin-bottom: 16px;\n  background-color: white;\n}\n.sidebar {\n  position: fixed;\n  left: 0;\n  top: 0;\n  width: 250px;\n  height: 100vh;\n  background-color: #2c3e50;\n  color: white;\n  transition: transform 0.3s ease;\n  transform: translateX(0);\n}\n.sidebar.oculto {\n  transform: translateX(-250px);\n}\n.table-container {\n  margin: 16px;\n  padding: 16px;\n  background-color: #ffffff;\n  border-radius: 10px;\n  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);\n  overflow-x: auto;\n}\n.table-container mat-form-field,\n.table-container table,\n.table-container mat-paginator {\n  width: 100%;\n}\n.loading-spinner {\n  display: flex;\n  justify-content: center;\n  padding: 32px;\n}\n.mat-column-acciones {\n  width: 90px;\n  text-align: center;\n}\n.mat-row .mat-cell[colspan] {\n  padding: 32px;\n  text-align: center;\n  color: #666;\n}\n.mat-mdc-row:hover {\n  background-color: #f5f5f5;\n}\n.contenido {\n  margin-left: 250px;\n  transition: margin-left 0.3s ease;\n  padding: 20px;\n}\n.contenido.expandido {\n  margin-left: 0;\n}\n.media-funcion {\n  float: left;\n  margin: 0 auto;\n  max-width: 100%;\n  height: 30px;\n  padding: 15px 15px;\n  font-size: 14px;\n  background: #0194fe;\n}\n.espaciador-flexible {\n  flex: 1 1 auto;\n}\n/*# sourceMappingURL=home-tec.css.map */\n"] }]
-  }], () => [{ type: AuthService }, { type: Router }, { type: BreakpointObserver }], { sidenav: [{
+`, styles: ["/* src/app/auth/home-tec/home-tec.css */\nmat-toolbar {\n  background: #0194fe;\n  color: white;\n  top: 0;\n  z-index: 2;\n}\nmat-sidenav {\n  margin: 16px;\n  width: 200px;\n  border-right: none;\n  background: #0194fe;\n  color: white;\n  border-radius: 10px;\n  padding: 16px;\n  text-align: center;\n}\n.content {\n  height: calc(100vh - 98px);\n  border-radius: 10px;\n  margin: 16px;\n  margin-left: 32px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  font-size: 2rem;\n  color: lightgray;\n}\nmat-sidenav-container {\n  height: calc(100vh - 65px);\n  margin-right: 10px;\n}\nmat-sidenav-container.oculto {\n  transform: translateX(-250px);\n}\n.span {\n  color: white;\n  font-size: 1rem;\n  margin-left: 8px;\n}\n.menu-button {\n  width: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: flex-start;\n  font-size: 1rem;\n}\n.menu-button mat-icon {\n  margin-right: 8px;\n  color: white;\n}\n.avatar {\n  margin-top: 16px;\n  width: 100px;\n  height: 100px;\n  border-radius: 50%;\n}\n.name {\n  margin-top: 8px;\n  font-weight: normal;\n}\n.designation {\n  margin-top: 2px;\n  font-size: 0.7rem;\n  color: lightgrey;\n}\n.img-login {\n  width: auto;\n  height: 40px;\n  margin: 20px 5px;\n}\nmat-divider {\n  margin-top: 16px;\n  margin-bottom: 16px;\n  background-color: white;\n}\n.sidebar {\n  position: fixed;\n  left: 0;\n  top: 0;\n  width: 250px;\n  height: 100vh;\n  background-color: #2c3e50;\n  color: white;\n  transition: transform 0.3s ease;\n  transform: translateX(0);\n}\n.sidebar.oculto {\n  transform: translateX(-250px);\n}\n.table-container {\n  margin: 16px;\n  padding: 16px;\n  background-color: #ffffff;\n  border-radius: 10px;\n  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);\n  overflow-x: auto;\n}\n.table-container mat-form-field,\n.table-container table,\n.table-container mat-paginator {\n  width: 100%;\n}\n.loading-spinner {\n  display: flex;\n  justify-content: center;\n  padding: 32px;\n}\n.load-error {\n  margin: 16px 0;\n  padding: 12px;\n  border-radius: 6px;\n  background: #ffebee;\n  color: #b71c1c;\n}\n.mat-column-acciones {\n  width: 90px;\n  text-align: center;\n}\n.mat-row .mat-cell[colspan] {\n  padding: 32px;\n  text-align: center;\n  color: #666;\n}\n.mat-mdc-row:hover {\n  background-color: #f5f5f5;\n}\n.contenido {\n  margin-left: 250px;\n  transition: margin-left 0.3s ease;\n  padding: 20px;\n}\n.contenido.expandido {\n  margin-left: 0;\n}\n.media-funcion {\n  float: left;\n  margin: 0 auto;\n  max-width: 100%;\n  height: 30px;\n  padding: 15px 15px;\n  font-size: 14px;\n  background: #0194fe;\n}\n.espaciador-flexible {\n  flex: 1 1 auto;\n}\n/*# sourceMappingURL=home-tec.css.map */\n"] }]
+  }], () => [{ type: AuthService }, { type: Router }, { type: BreakpointObserver }, { type: ChangeDetectorRef }], { sidenav: [{
     type: ViewChild,
     args: [MatSidenav]
   }] });
 })();
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(HomeTec, { className: "HomeTec", filePath: "app/auth/home-tec/home-tec.ts", lineNumber: 38 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(HomeTec, { className: "HomeTec", filePath: "app/auth/home-tec/home-tec.ts", lineNumber: 41 });
 })();
 
 // src/app/auth/home-sup/home-sup.ts
-var _c029 = ["assignmentDialog"];
+var _c030 = ["assignmentDialog"];
 var _c121 = () => [5, 10, 25, 100];
-function HomeSup_Conditional_56_Template(rf, ctx) {
+function HomeSup_Conditional_57_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275element(0, "app-users", 14);
+    \u0275\u0275element(0, "app-users", 15);
   }
 }
-function HomeSup_Conditional_57_Conditional_7_Template(rf, ctx) {
+function HomeSup_Conditional_58_Conditional_7_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 18);
+    \u0275\u0275elementStart(0, "div", 19);
     \u0275\u0275element(1, "mat-spinner");
     \u0275\u0275elementEnd();
   }
 }
-function HomeSup_Conditional_57_Conditional_8_th_2_Template(rf, ctx) {
+function HomeSup_Conditional_58_Conditional_8_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 33);
+    \u0275\u0275elementStart(0, "p", 20);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const ctx_r2 = \u0275\u0275nextContext(2);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(ctx_r2.errorCarga);
+  }
+}
+function HomeSup_Conditional_58_Conditional_9_th_2_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "th", 35);
     \u0275\u0275text(1, "Folio");
     \u0275\u0275elementEnd();
   }
 }
-function HomeSup_Conditional_57_Conditional_8_td_3_Template(rf, ctx) {
+function HomeSup_Conditional_58_Conditional_9_td_3_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 34);
+    \u0275\u0275elementStart(0, "td", 36);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -76831,16 +77399,16 @@ function HomeSup_Conditional_57_Conditional_8_td_3_Template(rf, ctx) {
     \u0275\u0275textInterpolate(solicitud_r4.folio);
   }
 }
-function HomeSup_Conditional_57_Conditional_8_th_5_Template(rf, ctx) {
+function HomeSup_Conditional_58_Conditional_9_th_5_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 33);
+    \u0275\u0275elementStart(0, "th", 35);
     \u0275\u0275text(1, "Tipo");
     \u0275\u0275elementEnd();
   }
 }
-function HomeSup_Conditional_57_Conditional_8_td_6_Template(rf, ctx) {
+function HomeSup_Conditional_58_Conditional_9_td_6_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 34);
+    \u0275\u0275elementStart(0, "td", 36);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -76850,16 +77418,16 @@ function HomeSup_Conditional_57_Conditional_8_td_6_Template(rf, ctx) {
     \u0275\u0275textInterpolate(solicitud_r5.tipo);
   }
 }
-function HomeSup_Conditional_57_Conditional_8_th_8_Template(rf, ctx) {
+function HomeSup_Conditional_58_Conditional_9_th_8_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 33);
+    \u0275\u0275elementStart(0, "th", 35);
     \u0275\u0275text(1, "Descripci\xF3n");
     \u0275\u0275elementEnd();
   }
 }
-function HomeSup_Conditional_57_Conditional_8_td_9_Template(rf, ctx) {
+function HomeSup_Conditional_58_Conditional_9_td_9_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 34);
+    \u0275\u0275elementStart(0, "td", 36);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -76869,16 +77437,16 @@ function HomeSup_Conditional_57_Conditional_8_td_9_Template(rf, ctx) {
     \u0275\u0275textInterpolate(solicitud_r6.descripcion);
   }
 }
-function HomeSup_Conditional_57_Conditional_8_th_11_Template(rf, ctx) {
+function HomeSup_Conditional_58_Conditional_9_th_11_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 33);
+    \u0275\u0275elementStart(0, "th", 35);
     \u0275\u0275text(1, "Prioridad");
     \u0275\u0275elementEnd();
   }
 }
-function HomeSup_Conditional_57_Conditional_8_td_12_Template(rf, ctx) {
+function HomeSup_Conditional_58_Conditional_9_td_12_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 34);
+    \u0275\u0275elementStart(0, "td", 36);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -76888,16 +77456,16 @@ function HomeSup_Conditional_57_Conditional_8_td_12_Template(rf, ctx) {
     \u0275\u0275textInterpolate(solicitud_r7.prioridad);
   }
 }
-function HomeSup_Conditional_57_Conditional_8_th_14_Template(rf, ctx) {
+function HomeSup_Conditional_58_Conditional_9_th_14_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 33);
+    \u0275\u0275elementStart(0, "th", 35);
     \u0275\u0275text(1, "Estado");
     \u0275\u0275elementEnd();
   }
 }
-function HomeSup_Conditional_57_Conditional_8_td_15_Template(rf, ctx) {
+function HomeSup_Conditional_58_Conditional_9_td_15_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 34);
+    \u0275\u0275elementStart(0, "td", 36);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -76907,16 +77475,16 @@ function HomeSup_Conditional_57_Conditional_8_td_15_Template(rf, ctx) {
     \u0275\u0275textInterpolate(solicitud_r8.estado);
   }
 }
-function HomeSup_Conditional_57_Conditional_8_th_17_Template(rf, ctx) {
+function HomeSup_Conditional_58_Conditional_9_th_17_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 33);
+    \u0275\u0275elementStart(0, "th", 35);
     \u0275\u0275text(1, "Comentarios");
     \u0275\u0275elementEnd();
   }
 }
-function HomeSup_Conditional_57_Conditional_8_td_18_Template(rf, ctx) {
+function HomeSup_Conditional_58_Conditional_9_td_18_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 34);
+    \u0275\u0275elementStart(0, "td", 36);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -76926,18 +77494,18 @@ function HomeSup_Conditional_57_Conditional_8_td_18_Template(rf, ctx) {
     \u0275\u0275textInterpolate(solicitud_r9.comentarios || "Sin comentarios");
   }
 }
-function HomeSup_Conditional_57_Conditional_8_th_20_Template(rf, ctx) {
+function HomeSup_Conditional_58_Conditional_9_th_20_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 33);
+    \u0275\u0275elementStart(0, "th", 35);
     \u0275\u0275text(1, "Acciones");
     \u0275\u0275elementEnd();
   }
 }
-function HomeSup_Conditional_57_Conditional_8_td_21_Template(rf, ctx) {
+function HomeSup_Conditional_58_Conditional_9_td_21_Template(rf, ctx) {
   if (rf & 1) {
     const _r10 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "td", 34)(1, "button", 35);
-    \u0275\u0275listener("click", function HomeSup_Conditional_57_Conditional_8_td_21_Template_button_click_1_listener() {
+    \u0275\u0275elementStart(0, "td", 36)(1, "button", 37);
+    \u0275\u0275listener("click", function HomeSup_Conditional_58_Conditional_9_td_21_Template_button_click_1_listener() {
       const solicitud_r11 = \u0275\u0275restoreView(_r10).$implicit;
       const ctx_r2 = \u0275\u0275nextContext(3);
       return \u0275\u0275resetView(ctx_r2.editarSolicitud(solicitud_r11));
@@ -76945,8 +77513,8 @@ function HomeSup_Conditional_57_Conditional_8_td_21_Template(rf, ctx) {
     \u0275\u0275elementStart(2, "mat-icon");
     \u0275\u0275text(3, "edit");
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(4, "button", 36);
-    \u0275\u0275listener("click", function HomeSup_Conditional_57_Conditional_8_td_21_Template_button_click_4_listener() {
+    \u0275\u0275elementStart(4, "button", 38);
+    \u0275\u0275listener("click", function HomeSup_Conditional_58_Conditional_9_td_21_Template_button_click_4_listener() {
       const solicitud_r11 = \u0275\u0275restoreView(_r10).$implicit;
       const ctx_r2 = \u0275\u0275nextContext(3);
       return \u0275\u0275resetView(ctx_r2.eliminarSolicitud(solicitud_r11));
@@ -76956,19 +77524,19 @@ function HomeSup_Conditional_57_Conditional_8_td_21_Template(rf, ctx) {
     \u0275\u0275elementEnd()()();
   }
 }
-function HomeSup_Conditional_57_Conditional_8_tr_22_Template(rf, ctx) {
+function HomeSup_Conditional_58_Conditional_9_tr_22_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275element(0, "tr", 37);
+    \u0275\u0275element(0, "tr", 39);
   }
 }
-function HomeSup_Conditional_57_Conditional_8_tr_23_Template(rf, ctx) {
+function HomeSup_Conditional_58_Conditional_9_tr_23_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275element(0, "tr", 38);
+    \u0275\u0275element(0, "tr", 40);
   }
 }
-function HomeSup_Conditional_57_Conditional_8_tr_24_Template(rf, ctx) {
+function HomeSup_Conditional_58_Conditional_9_tr_24_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "tr", 39)(1, "td", 40);
+    \u0275\u0275elementStart(0, "tr", 41)(1, "td", 42);
     \u0275\u0275text(2, "No hay solicitudes disponibles.");
     \u0275\u0275elementEnd()();
   }
@@ -76978,31 +77546,31 @@ function HomeSup_Conditional_57_Conditional_8_tr_24_Template(rf, ctx) {
     \u0275\u0275attribute("colspan", ctx_r2.columnasVisibles.length);
   }
 }
-function HomeSup_Conditional_57_Conditional_8_Template(rf, ctx) {
+function HomeSup_Conditional_58_Conditional_9_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "table", 19);
-    \u0275\u0275elementContainerStart(1, 21);
-    \u0275\u0275template(2, HomeSup_Conditional_57_Conditional_8_th_2_Template, 2, 0, "th", 22)(3, HomeSup_Conditional_57_Conditional_8_td_3_Template, 2, 1, "td", 23);
+    \u0275\u0275elementStart(0, "table", 21);
+    \u0275\u0275elementContainerStart(1, 23);
+    \u0275\u0275template(2, HomeSup_Conditional_58_Conditional_9_th_2_Template, 2, 0, "th", 24)(3, HomeSup_Conditional_58_Conditional_9_td_3_Template, 2, 1, "td", 25);
     \u0275\u0275elementContainerEnd();
-    \u0275\u0275elementContainerStart(4, 24);
-    \u0275\u0275template(5, HomeSup_Conditional_57_Conditional_8_th_5_Template, 2, 0, "th", 22)(6, HomeSup_Conditional_57_Conditional_8_td_6_Template, 2, 1, "td", 23);
+    \u0275\u0275elementContainerStart(4, 26);
+    \u0275\u0275template(5, HomeSup_Conditional_58_Conditional_9_th_5_Template, 2, 0, "th", 24)(6, HomeSup_Conditional_58_Conditional_9_td_6_Template, 2, 1, "td", 25);
     \u0275\u0275elementContainerEnd();
-    \u0275\u0275elementContainerStart(7, 25);
-    \u0275\u0275template(8, HomeSup_Conditional_57_Conditional_8_th_8_Template, 2, 0, "th", 22)(9, HomeSup_Conditional_57_Conditional_8_td_9_Template, 2, 1, "td", 23);
+    \u0275\u0275elementContainerStart(7, 27);
+    \u0275\u0275template(8, HomeSup_Conditional_58_Conditional_9_th_8_Template, 2, 0, "th", 24)(9, HomeSup_Conditional_58_Conditional_9_td_9_Template, 2, 1, "td", 25);
     \u0275\u0275elementContainerEnd();
-    \u0275\u0275elementContainerStart(10, 26);
-    \u0275\u0275template(11, HomeSup_Conditional_57_Conditional_8_th_11_Template, 2, 0, "th", 22)(12, HomeSup_Conditional_57_Conditional_8_td_12_Template, 2, 1, "td", 23);
+    \u0275\u0275elementContainerStart(10, 28);
+    \u0275\u0275template(11, HomeSup_Conditional_58_Conditional_9_th_11_Template, 2, 0, "th", 24)(12, HomeSup_Conditional_58_Conditional_9_td_12_Template, 2, 1, "td", 25);
     \u0275\u0275elementContainerEnd();
-    \u0275\u0275elementContainerStart(13, 27);
-    \u0275\u0275template(14, HomeSup_Conditional_57_Conditional_8_th_14_Template, 2, 0, "th", 22)(15, HomeSup_Conditional_57_Conditional_8_td_15_Template, 2, 1, "td", 23);
+    \u0275\u0275elementContainerStart(13, 29);
+    \u0275\u0275template(14, HomeSup_Conditional_58_Conditional_9_th_14_Template, 2, 0, "th", 24)(15, HomeSup_Conditional_58_Conditional_9_td_15_Template, 2, 1, "td", 25);
     \u0275\u0275elementContainerEnd();
-    \u0275\u0275elementContainerStart(16, 28);
-    \u0275\u0275template(17, HomeSup_Conditional_57_Conditional_8_th_17_Template, 2, 0, "th", 22)(18, HomeSup_Conditional_57_Conditional_8_td_18_Template, 2, 1, "td", 23);
+    \u0275\u0275elementContainerStart(16, 30);
+    \u0275\u0275template(17, HomeSup_Conditional_58_Conditional_9_th_17_Template, 2, 0, "th", 24)(18, HomeSup_Conditional_58_Conditional_9_td_18_Template, 2, 1, "td", 25);
     \u0275\u0275elementContainerEnd();
-    \u0275\u0275elementContainerStart(19, 29);
-    \u0275\u0275template(20, HomeSup_Conditional_57_Conditional_8_th_20_Template, 2, 0, "th", 22)(21, HomeSup_Conditional_57_Conditional_8_td_21_Template, 7, 0, "td", 23);
+    \u0275\u0275elementContainerStart(19, 31);
+    \u0275\u0275template(20, HomeSup_Conditional_58_Conditional_9_th_20_Template, 2, 0, "th", 24)(21, HomeSup_Conditional_58_Conditional_9_td_21_Template, 7, 0, "td", 25);
     \u0275\u0275elementContainerEnd();
-    \u0275\u0275template(22, HomeSup_Conditional_57_Conditional_8_tr_22_Template, 1, 0, "tr", 30)(23, HomeSup_Conditional_57_Conditional_8_tr_23_Template, 1, 0, "tr", 31)(24, HomeSup_Conditional_57_Conditional_8_tr_24_Template, 3, 1, "tr", 32);
+    \u0275\u0275template(22, HomeSup_Conditional_58_Conditional_9_tr_22_Template, 1, 0, "tr", 32)(23, HomeSup_Conditional_58_Conditional_9_tr_23_Template, 1, 0, "tr", 33)(24, HomeSup_Conditional_58_Conditional_9_tr_24_Template, 3, 1, "tr", 34);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -77014,25 +77582,25 @@ function HomeSup_Conditional_57_Conditional_8_Template(rf, ctx) {
     \u0275\u0275property("matRowDefColumns", ctx_r2.columnasVisibles);
   }
 }
-function HomeSup_Conditional_57_Template(rf, ctx) {
+function HomeSup_Conditional_58_Template(rf, ctx) {
   if (rf & 1) {
     const _r2 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "div", 15)(1, "h2");
+    \u0275\u0275elementStart(0, "div", 16)(1, "h2");
     \u0275\u0275text(2, "Solicitudes");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(3, "mat-form-field", 16)(4, "mat-label");
+    \u0275\u0275elementStart(3, "mat-form-field", 17)(4, "mat-label");
     \u0275\u0275text(5, "Buscar solicitud");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(6, "input", 17);
-    \u0275\u0275listener("keyup", function HomeSup_Conditional_57_Template_input_keyup_6_listener($event) {
+    \u0275\u0275elementStart(6, "input", 18);
+    \u0275\u0275listener("keyup", function HomeSup_Conditional_58_Template_input_keyup_6_listener($event) {
       \u0275\u0275restoreView(_r2);
       const ctx_r2 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r2.onFiltrar($event));
     });
     \u0275\u0275elementEnd()();
-    \u0275\u0275conditionalCreate(7, HomeSup_Conditional_57_Conditional_7_Template, 2, 0, "div", 18)(8, HomeSup_Conditional_57_Conditional_8_Template, 25, 3, "table", 19);
-    \u0275\u0275elementStart(9, "mat-paginator", 20);
-    \u0275\u0275listener("page", function HomeSup_Conditional_57_Template_mat_paginator_page_9_listener($event) {
+    \u0275\u0275conditionalCreate(7, HomeSup_Conditional_58_Conditional_7_Template, 2, 0, "div", 19)(8, HomeSup_Conditional_58_Conditional_8_Template, 2, 1, "p", 20)(9, HomeSup_Conditional_58_Conditional_9_Template, 25, 3, "table", 21);
+    \u0275\u0275elementStart(10, "mat-paginator", 22);
+    \u0275\u0275listener("page", function HomeSup_Conditional_58_Template_mat_paginator_page_10_listener($event) {
       \u0275\u0275restoreView(_r2);
       const ctx_r2 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r2.onCambiarPagina($event));
@@ -77042,28 +77610,40 @@ function HomeSup_Conditional_57_Template(rf, ctx) {
   if (rf & 2) {
     const ctx_r2 = \u0275\u0275nextContext();
     \u0275\u0275advance(7);
-    \u0275\u0275conditional(ctx_r2.cargando ? 7 : 8);
-    \u0275\u0275advance(2);
+    \u0275\u0275conditional(ctx_r2.cargando ? 7 : ctx_r2.errorCarga ? 8 : 9);
+    \u0275\u0275advance(3);
     \u0275\u0275property("length", ctx_r2.totalRegistros)("pageSize", ctx_r2.tamanoPagina)("pageIndex", ctx_r2.paginaActual)("pageSizeOptions", \u0275\u0275pureFunction0(5, _c121));
   }
 }
-function HomeSup_Conditional_58_Conditional_7_Template(rf, ctx) {
+function HomeSup_Conditional_59_Conditional_7_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "div", 18);
+    \u0275\u0275elementStart(0, "div", 19);
     \u0275\u0275element(1, "mat-spinner");
     \u0275\u0275elementEnd();
   }
 }
-function HomeSup_Conditional_58_Conditional_8_th_2_Template(rf, ctx) {
+function HomeSup_Conditional_59_Conditional_8_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 33);
+    \u0275\u0275elementStart(0, "p", 20);
+    \u0275\u0275text(1);
+    \u0275\u0275elementEnd();
+  }
+  if (rf & 2) {
+    const ctx_r2 = \u0275\u0275nextContext(2);
+    \u0275\u0275advance();
+    \u0275\u0275textInterpolate(ctx_r2.errorCarga);
+  }
+}
+function HomeSup_Conditional_59_Conditional_9_th_2_Template(rf, ctx) {
+  if (rf & 1) {
+    \u0275\u0275elementStart(0, "th", 35);
     \u0275\u0275text(1, "Folio");
     \u0275\u0275elementEnd();
   }
 }
-function HomeSup_Conditional_58_Conditional_8_td_3_Template(rf, ctx) {
+function HomeSup_Conditional_59_Conditional_9_td_3_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 34);
+    \u0275\u0275elementStart(0, "td", 36);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -77073,16 +77653,16 @@ function HomeSup_Conditional_58_Conditional_8_td_3_Template(rf, ctx) {
     \u0275\u0275textInterpolate(ticket_r13.folio);
   }
 }
-function HomeSup_Conditional_58_Conditional_8_th_5_Template(rf, ctx) {
+function HomeSup_Conditional_59_Conditional_9_th_5_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 33);
+    \u0275\u0275elementStart(0, "th", 35);
     \u0275\u0275text(1, "T\xEDtulo");
     \u0275\u0275elementEnd();
   }
 }
-function HomeSup_Conditional_58_Conditional_8_td_6_Template(rf, ctx) {
+function HomeSup_Conditional_59_Conditional_9_td_6_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 34);
+    \u0275\u0275elementStart(0, "td", 36);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -77092,16 +77672,16 @@ function HomeSup_Conditional_58_Conditional_8_td_6_Template(rf, ctx) {
     \u0275\u0275textInterpolate(ticket_r14.titulo);
   }
 }
-function HomeSup_Conditional_58_Conditional_8_th_8_Template(rf, ctx) {
+function HomeSup_Conditional_59_Conditional_9_th_8_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 33);
+    \u0275\u0275elementStart(0, "th", 35);
     \u0275\u0275text(1, "Descripci\xF3n");
     \u0275\u0275elementEnd();
   }
 }
-function HomeSup_Conditional_58_Conditional_8_td_9_Template(rf, ctx) {
+function HomeSup_Conditional_59_Conditional_9_td_9_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 34);
+    \u0275\u0275elementStart(0, "td", 36);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -77111,16 +77691,16 @@ function HomeSup_Conditional_58_Conditional_8_td_9_Template(rf, ctx) {
     \u0275\u0275textInterpolate(ticket_r15.descripcion);
   }
 }
-function HomeSup_Conditional_58_Conditional_8_th_11_Template(rf, ctx) {
+function HomeSup_Conditional_59_Conditional_9_th_11_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 33);
+    \u0275\u0275elementStart(0, "th", 35);
     \u0275\u0275text(1, "Prioridad");
     \u0275\u0275elementEnd();
   }
 }
-function HomeSup_Conditional_58_Conditional_8_td_12_Template(rf, ctx) {
+function HomeSup_Conditional_59_Conditional_9_td_12_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 34);
+    \u0275\u0275elementStart(0, "td", 36);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -77130,16 +77710,16 @@ function HomeSup_Conditional_58_Conditional_8_td_12_Template(rf, ctx) {
     \u0275\u0275textInterpolate(ticket_r16.prioridad);
   }
 }
-function HomeSup_Conditional_58_Conditional_8_th_14_Template(rf, ctx) {
+function HomeSup_Conditional_59_Conditional_9_th_14_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 33);
+    \u0275\u0275elementStart(0, "th", 35);
     \u0275\u0275text(1, "Estado");
     \u0275\u0275elementEnd();
   }
 }
-function HomeSup_Conditional_58_Conditional_8_td_15_Template(rf, ctx) {
+function HomeSup_Conditional_59_Conditional_9_td_15_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 34);
+    \u0275\u0275elementStart(0, "td", 36);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -77149,16 +77729,16 @@ function HomeSup_Conditional_58_Conditional_8_td_15_Template(rf, ctx) {
     \u0275\u0275textInterpolate(ticket_r17.estado);
   }
 }
-function HomeSup_Conditional_58_Conditional_8_th_17_Template(rf, ctx) {
+function HomeSup_Conditional_59_Conditional_9_th_17_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 33);
+    \u0275\u0275elementStart(0, "th", 35);
     \u0275\u0275text(1, "Comentarios");
     \u0275\u0275elementEnd();
   }
 }
-function HomeSup_Conditional_58_Conditional_8_td_18_Template(rf, ctx) {
+function HomeSup_Conditional_59_Conditional_9_td_18_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "td", 34);
+    \u0275\u0275elementStart(0, "td", 36);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -77168,18 +77748,18 @@ function HomeSup_Conditional_58_Conditional_8_td_18_Template(rf, ctx) {
     \u0275\u0275textInterpolate(ticket_r18.comentarios || "Sin comentarios");
   }
 }
-function HomeSup_Conditional_58_Conditional_8_th_20_Template(rf, ctx) {
+function HomeSup_Conditional_59_Conditional_9_th_20_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "th", 33);
+    \u0275\u0275elementStart(0, "th", 35);
     \u0275\u0275text(1, "Acciones");
     \u0275\u0275elementEnd();
   }
 }
-function HomeSup_Conditional_58_Conditional_8_td_21_Template(rf, ctx) {
+function HomeSup_Conditional_59_Conditional_9_td_21_Template(rf, ctx) {
   if (rf & 1) {
     const _r19 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "td", 34)(1, "button", 44);
-    \u0275\u0275listener("click", function HomeSup_Conditional_58_Conditional_8_td_21_Template_button_click_1_listener() {
+    \u0275\u0275elementStart(0, "td", 36)(1, "button", 46);
+    \u0275\u0275listener("click", function HomeSup_Conditional_59_Conditional_9_td_21_Template_button_click_1_listener() {
       const ticket_r20 = \u0275\u0275restoreView(_r19).$implicit;
       const ctx_r2 = \u0275\u0275nextContext(3);
       return \u0275\u0275resetView(ctx_r2.editarTicket(ticket_r20));
@@ -77187,8 +77767,8 @@ function HomeSup_Conditional_58_Conditional_8_td_21_Template(rf, ctx) {
     \u0275\u0275elementStart(2, "mat-icon");
     \u0275\u0275text(3, "edit");
     \u0275\u0275elementEnd()();
-    \u0275\u0275elementStart(4, "button", 45);
-    \u0275\u0275listener("click", function HomeSup_Conditional_58_Conditional_8_td_21_Template_button_click_4_listener() {
+    \u0275\u0275elementStart(4, "button", 47);
+    \u0275\u0275listener("click", function HomeSup_Conditional_59_Conditional_9_td_21_Template_button_click_4_listener() {
       const ticket_r20 = \u0275\u0275restoreView(_r19).$implicit;
       const ctx_r2 = \u0275\u0275nextContext(3);
       return \u0275\u0275resetView(ctx_r2.eliminarTicket(ticket_r20));
@@ -77198,19 +77778,19 @@ function HomeSup_Conditional_58_Conditional_8_td_21_Template(rf, ctx) {
     \u0275\u0275elementEnd()()();
   }
 }
-function HomeSup_Conditional_58_Conditional_8_tr_22_Template(rf, ctx) {
+function HomeSup_Conditional_59_Conditional_9_tr_22_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275element(0, "tr", 37);
+    \u0275\u0275element(0, "tr", 39);
   }
 }
-function HomeSup_Conditional_58_Conditional_8_tr_23_Template(rf, ctx) {
+function HomeSup_Conditional_59_Conditional_9_tr_23_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275element(0, "tr", 38);
+    \u0275\u0275element(0, "tr", 40);
   }
 }
-function HomeSup_Conditional_58_Conditional_8_tr_24_Template(rf, ctx) {
+function HomeSup_Conditional_59_Conditional_9_tr_24_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "tr", 39)(1, "td", 40);
+    \u0275\u0275elementStart(0, "tr", 41)(1, "td", 42);
     \u0275\u0275text(2, "No hay tickets disponibles.");
     \u0275\u0275elementEnd()();
   }
@@ -77220,31 +77800,31 @@ function HomeSup_Conditional_58_Conditional_8_tr_24_Template(rf, ctx) {
     \u0275\u0275attribute("colspan", ctx_r2.columnasTickets.length);
   }
 }
-function HomeSup_Conditional_58_Conditional_8_Template(rf, ctx) {
+function HomeSup_Conditional_59_Conditional_9_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "table", 19);
-    \u0275\u0275elementContainerStart(1, 21);
-    \u0275\u0275template(2, HomeSup_Conditional_58_Conditional_8_th_2_Template, 2, 0, "th", 22)(3, HomeSup_Conditional_58_Conditional_8_td_3_Template, 2, 1, "td", 23);
+    \u0275\u0275elementStart(0, "table", 21);
+    \u0275\u0275elementContainerStart(1, 23);
+    \u0275\u0275template(2, HomeSup_Conditional_59_Conditional_9_th_2_Template, 2, 0, "th", 24)(3, HomeSup_Conditional_59_Conditional_9_td_3_Template, 2, 1, "td", 25);
     \u0275\u0275elementContainerEnd();
-    \u0275\u0275elementContainerStart(4, 43);
-    \u0275\u0275template(5, HomeSup_Conditional_58_Conditional_8_th_5_Template, 2, 0, "th", 22)(6, HomeSup_Conditional_58_Conditional_8_td_6_Template, 2, 1, "td", 23);
+    \u0275\u0275elementContainerStart(4, 45);
+    \u0275\u0275template(5, HomeSup_Conditional_59_Conditional_9_th_5_Template, 2, 0, "th", 24)(6, HomeSup_Conditional_59_Conditional_9_td_6_Template, 2, 1, "td", 25);
     \u0275\u0275elementContainerEnd();
-    \u0275\u0275elementContainerStart(7, 25);
-    \u0275\u0275template(8, HomeSup_Conditional_58_Conditional_8_th_8_Template, 2, 0, "th", 22)(9, HomeSup_Conditional_58_Conditional_8_td_9_Template, 2, 1, "td", 23);
+    \u0275\u0275elementContainerStart(7, 27);
+    \u0275\u0275template(8, HomeSup_Conditional_59_Conditional_9_th_8_Template, 2, 0, "th", 24)(9, HomeSup_Conditional_59_Conditional_9_td_9_Template, 2, 1, "td", 25);
     \u0275\u0275elementContainerEnd();
-    \u0275\u0275elementContainerStart(10, 26);
-    \u0275\u0275template(11, HomeSup_Conditional_58_Conditional_8_th_11_Template, 2, 0, "th", 22)(12, HomeSup_Conditional_58_Conditional_8_td_12_Template, 2, 1, "td", 23);
+    \u0275\u0275elementContainerStart(10, 28);
+    \u0275\u0275template(11, HomeSup_Conditional_59_Conditional_9_th_11_Template, 2, 0, "th", 24)(12, HomeSup_Conditional_59_Conditional_9_td_12_Template, 2, 1, "td", 25);
     \u0275\u0275elementContainerEnd();
-    \u0275\u0275elementContainerStart(13, 27);
-    \u0275\u0275template(14, HomeSup_Conditional_58_Conditional_8_th_14_Template, 2, 0, "th", 22)(15, HomeSup_Conditional_58_Conditional_8_td_15_Template, 2, 1, "td", 23);
+    \u0275\u0275elementContainerStart(13, 29);
+    \u0275\u0275template(14, HomeSup_Conditional_59_Conditional_9_th_14_Template, 2, 0, "th", 24)(15, HomeSup_Conditional_59_Conditional_9_td_15_Template, 2, 1, "td", 25);
     \u0275\u0275elementContainerEnd();
-    \u0275\u0275elementContainerStart(16, 28);
-    \u0275\u0275template(17, HomeSup_Conditional_58_Conditional_8_th_17_Template, 2, 0, "th", 22)(18, HomeSup_Conditional_58_Conditional_8_td_18_Template, 2, 1, "td", 23);
+    \u0275\u0275elementContainerStart(16, 30);
+    \u0275\u0275template(17, HomeSup_Conditional_59_Conditional_9_th_17_Template, 2, 0, "th", 24)(18, HomeSup_Conditional_59_Conditional_9_td_18_Template, 2, 1, "td", 25);
     \u0275\u0275elementContainerEnd();
-    \u0275\u0275elementContainerStart(19, 29);
-    \u0275\u0275template(20, HomeSup_Conditional_58_Conditional_8_th_20_Template, 2, 0, "th", 22)(21, HomeSup_Conditional_58_Conditional_8_td_21_Template, 7, 0, "td", 23);
+    \u0275\u0275elementContainerStart(19, 31);
+    \u0275\u0275template(20, HomeSup_Conditional_59_Conditional_9_th_20_Template, 2, 0, "th", 24)(21, HomeSup_Conditional_59_Conditional_9_td_21_Template, 7, 0, "td", 25);
     \u0275\u0275elementContainerEnd();
-    \u0275\u0275template(22, HomeSup_Conditional_58_Conditional_8_tr_22_Template, 1, 0, "tr", 30)(23, HomeSup_Conditional_58_Conditional_8_tr_23_Template, 1, 0, "tr", 31)(24, HomeSup_Conditional_58_Conditional_8_tr_24_Template, 3, 1, "tr", 32);
+    \u0275\u0275template(22, HomeSup_Conditional_59_Conditional_9_tr_22_Template, 1, 0, "tr", 32)(23, HomeSup_Conditional_59_Conditional_9_tr_23_Template, 1, 0, "tr", 33)(24, HomeSup_Conditional_59_Conditional_9_tr_24_Template, 3, 1, "tr", 34);
     \u0275\u0275elementEnd();
   }
   if (rf & 2) {
@@ -77256,25 +77836,25 @@ function HomeSup_Conditional_58_Conditional_8_Template(rf, ctx) {
     \u0275\u0275property("matRowDefColumns", ctx_r2.columnasTickets);
   }
 }
-function HomeSup_Conditional_58_Template(rf, ctx) {
+function HomeSup_Conditional_59_Template(rf, ctx) {
   if (rf & 1) {
     const _r12 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "div", 15)(1, "h2");
+    \u0275\u0275elementStart(0, "div", 16)(1, "h2");
     \u0275\u0275text(2, "Tickets");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(3, "mat-form-field", 16)(4, "mat-label");
+    \u0275\u0275elementStart(3, "mat-form-field", 17)(4, "mat-label");
     \u0275\u0275text(5, "Buscar ticket");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(6, "input", 41);
-    \u0275\u0275listener("keyup", function HomeSup_Conditional_58_Template_input_keyup_6_listener($event) {
+    \u0275\u0275elementStart(6, "input", 43);
+    \u0275\u0275listener("keyup", function HomeSup_Conditional_59_Template_input_keyup_6_listener($event) {
       \u0275\u0275restoreView(_r12);
       const ctx_r2 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r2.onFiltrar($event));
     });
     \u0275\u0275elementEnd()();
-    \u0275\u0275conditionalCreate(7, HomeSup_Conditional_58_Conditional_7_Template, 2, 0, "div", 18)(8, HomeSup_Conditional_58_Conditional_8_Template, 25, 3, "table", 19);
-    \u0275\u0275elementStart(9, "mat-paginator", 42);
-    \u0275\u0275listener("page", function HomeSup_Conditional_58_Template_mat_paginator_page_9_listener($event) {
+    \u0275\u0275conditionalCreate(7, HomeSup_Conditional_59_Conditional_7_Template, 2, 0, "div", 19)(8, HomeSup_Conditional_59_Conditional_8_Template, 2, 1, "p", 20)(9, HomeSup_Conditional_59_Conditional_9_Template, 25, 3, "table", 21);
+    \u0275\u0275elementStart(10, "mat-paginator", 44);
+    \u0275\u0275listener("page", function HomeSup_Conditional_59_Template_mat_paginator_page_10_listener($event) {
       \u0275\u0275restoreView(_r12);
       const ctx_r2 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r2.onCambiarPagina($event));
@@ -77284,14 +77864,14 @@ function HomeSup_Conditional_58_Template(rf, ctx) {
   if (rf & 2) {
     const ctx_r2 = \u0275\u0275nextContext();
     \u0275\u0275advance(7);
-    \u0275\u0275conditional(ctx_r2.cargando ? 7 : 8);
-    \u0275\u0275advance(2);
+    \u0275\u0275conditional(ctx_r2.cargando ? 7 : ctx_r2.errorCarga ? 8 : 9);
+    \u0275\u0275advance(3);
     \u0275\u0275property("length", ctx_r2.totalRegistros)("pageSize", ctx_r2.tamanoPagina)("pageIndex", ctx_r2.paginaActual)("pageSizeOptions", \u0275\u0275pureFunction0(5, _c121));
   }
 }
-function HomeSup_ng_template_59_option_9_Template(rf, ctx) {
+function HomeSup_ng_template_60_option_9_Template(rf, ctx) {
   if (rf & 1) {
-    \u0275\u0275elementStart(0, "option", 57);
+    \u0275\u0275elementStart(0, "option", 59);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
   }
@@ -77302,48 +77882,48 @@ function HomeSup_ng_template_59_option_9_Template(rf, ctx) {
     \u0275\u0275textInterpolate3(" ", tecnico_r22.name, " ", tecnico_r22.last_name, " (", tecnico_r22.username, ") ");
   }
 }
-function HomeSup_ng_template_59_Template(rf, ctx) {
+function HomeSup_ng_template_60_Template(rf, ctx) {
   if (rf & 1) {
     const _r21 = \u0275\u0275getCurrentView();
-    \u0275\u0275elementStart(0, "h2", 46);
+    \u0275\u0275elementStart(0, "h2", 48);
     \u0275\u0275text(1);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(2, "mat-dialog-content")(3, "div", 47)(4, "label", 48);
+    \u0275\u0275elementStart(2, "mat-dialog-content")(3, "div", 49)(4, "label", 50);
     \u0275\u0275text(5, "T\xE9cnico asignado");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(6, "select", 49);
-    \u0275\u0275twoWayListener("ngModelChange", function HomeSup_ng_template_59_Template_select_ngModelChange_6_listener($event) {
+    \u0275\u0275elementStart(6, "select", 51);
+    \u0275\u0275twoWayListener("ngModelChange", function HomeSup_ng_template_60_Template_select_ngModelChange_6_listener($event) {
       \u0275\u0275restoreView(_r21);
       const ctx_r2 = \u0275\u0275nextContext();
       \u0275\u0275twoWayBindingSet(ctx_r2.tecnicoSeleccionado, $event) || (ctx_r2.tecnicoSeleccionado = $event);
       return \u0275\u0275resetView($event);
     });
-    \u0275\u0275elementStart(7, "option", 50);
+    \u0275\u0275elementStart(7, "option", 52);
     \u0275\u0275text(8, "Selecciona un t\xE9cnico");
     \u0275\u0275elementEnd();
-    \u0275\u0275template(9, HomeSup_ng_template_59_option_9_Template, 2, 4, "option", 51);
+    \u0275\u0275template(9, HomeSup_ng_template_60_option_9_Template, 2, 4, "option", 53);
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(10, "label", 52);
+    \u0275\u0275elementStart(10, "label", 54);
     \u0275\u0275text(11, "Comentarios");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(12, "textarea", 53);
-    \u0275\u0275twoWayListener("ngModelChange", function HomeSup_ng_template_59_Template_textarea_ngModelChange_12_listener($event) {
+    \u0275\u0275elementStart(12, "textarea", 55);
+    \u0275\u0275twoWayListener("ngModelChange", function HomeSup_ng_template_60_Template_textarea_ngModelChange_12_listener($event) {
       \u0275\u0275restoreView(_r21);
       const ctx_r2 = \u0275\u0275nextContext();
       \u0275\u0275twoWayBindingSet(ctx_r2.comentariosEditando, $event) || (ctx_r2.comentariosEditando = $event);
       return \u0275\u0275resetView($event);
     });
     \u0275\u0275elementEnd()()();
-    \u0275\u0275elementStart(13, "mat-dialog-actions", 54)(14, "button", 55);
-    \u0275\u0275listener("click", function HomeSup_ng_template_59_Template_button_click_14_listener() {
+    \u0275\u0275elementStart(13, "mat-dialog-actions", 56)(14, "button", 57);
+    \u0275\u0275listener("click", function HomeSup_ng_template_60_Template_button_click_14_listener() {
       \u0275\u0275restoreView(_r21);
       const ctx_r2 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r2.cerrarEditor());
     });
     \u0275\u0275text(15, " Cancelar ");
     \u0275\u0275elementEnd();
-    \u0275\u0275elementStart(16, "button", 56);
-    \u0275\u0275listener("click", function HomeSup_ng_template_59_Template_button_click_16_listener() {
+    \u0275\u0275elementStart(16, "button", 58);
+    \u0275\u0275listener("click", function HomeSup_ng_template_60_Template_button_click_16_listener() {
       \u0275\u0275restoreView(_r21);
       const ctx_r2 = \u0275\u0275nextContext();
       return \u0275\u0275resetView(ctx_r2.guardarAsignacion());
@@ -77373,15 +77953,17 @@ var HomeSup = class _HomeSup {
   authService;
   router;
   breakpointObserver;
+  changeDetectorRef;
   assignmentDialog;
   sidenav;
   user;
   isMobile = true;
   menuAbierto = true;
-  constructor(authService, router, breakpointObserver) {
+  constructor(authService, router, breakpointObserver, changeDetectorRef) {
     this.authService = authService;
     this.router = router;
     this.breakpointObserver = breakpointObserver;
+    this.changeDetectorRef = changeDetectorRef;
   }
   http = inject2(HttpClient);
   // Configuración de Tabla
@@ -77389,6 +77971,7 @@ var HomeSup = class _HomeSup {
   columnasTickets = ["folio", "titulo", "descripcion", "prioridad", "estado", "comentarios", "acciones"];
   datos = new MatTableDataSource([]);
   cargando = false;
+  errorCarga = "";
   vistaActiva = "users";
   // Estado de Paginación y Filtros (Servidor)
   totalRegistros = 0;
@@ -77441,19 +78024,34 @@ var HomeSup = class _HomeSup {
       this.menuAbierto = false;
   }
   cargarDatos() {
-    console.log("Se ejecuta la funci\xF3n de carga de datos");
     this.cargando = true;
+    this.errorCarga = "";
+    this.datos.data = [];
     const params = new HttpParams().set("page", (this.paginaActual + 1).toString()).set("limit", this.tamanoPagina.toString()).set("search", this.filtroBusqueda);
     const vistaSolicitada = this.vistaActiva;
     const request = vistaSolicitada === "tickets" ? this.authService.getTickets(params) : this.authService.getSolicitudes(params);
-    request.subscribe({
+    request.pipe(timeout(15e3), finalize(() => {
+      if (this.vistaActiva === vistaSolicitada) {
+        this.cargando = false;
+        this.changeDetectorRef.markForCheck();
+      }
+    })).subscribe({
       next: (respuesta) => {
+        if (this.vistaActiva !== vistaSolicitada)
+          return;
         const registros = vistaSolicitada === "tickets" ? respuesta.tickets ?? respuesta : respuesta.solicitudes ?? respuesta;
         this.datos.data = Array.isArray(registros) ? registros : [];
         this.totalRegistros = respuesta.total ?? this.datos.data.length;
-        this.cargando = false;
+        this.changeDetectorRef.markForCheck();
       },
-      error: () => this.cargando = false
+      error: (error) => {
+        if (this.vistaActiva !== vistaSolicitada)
+          return;
+        console.error(`No se pudieron cargar ${vistaSolicitada}:`, error);
+        this.errorCarga = error.error?.message ?? `No fue posible cargar ${vistaSolicitada}.`;
+        this.totalRegistros = 0;
+        this.changeDetectorRef.markForCheck();
+      }
     });
   }
   onFiltrar(evento) {
@@ -77546,18 +78144,18 @@ var HomeSup = class _HomeSup {
     });
   }
   static \u0275fac = function HomeSup_Factory(__ngFactoryType__) {
-    return new (__ngFactoryType__ || _HomeSup)(\u0275\u0275directiveInject(AuthService), \u0275\u0275directiveInject(Router), \u0275\u0275directiveInject(BreakpointObserver));
+    return new (__ngFactoryType__ || _HomeSup)(\u0275\u0275directiveInject(AuthService), \u0275\u0275directiveInject(Router), \u0275\u0275directiveInject(BreakpointObserver), \u0275\u0275directiveInject(ChangeDetectorRef));
   };
   static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _HomeSup, selectors: [["app-home-sup"]], viewQuery: function HomeSup_Query(rf, ctx) {
     if (rf & 1) {
-      \u0275\u0275viewQuery(_c029, 5)(MatSidenav, 5);
+      \u0275\u0275viewQuery(_c030, 5)(MatSidenav, 5);
     }
     if (rf & 2) {
       let _t;
       \u0275\u0275queryRefresh(_t = \u0275\u0275loadQuery()) && (ctx.assignmentDialog = _t.first);
       \u0275\u0275queryRefresh(_t = \u0275\u0275loadQuery()) && (ctx.sidenav = _t.first);
     }
-  }, decls: 61, vars: 5, consts: [["drawer", ""], ["assignmentDialog", ""], [3, "click"], ["src", "https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg", "alt", "Direcci\xF3n General de Tecnolog\xEDas de la Informaci\xF3n y Gobierno Digital", 1, "img-login"], [1, "espaciador-flexible"], ["mat-button", "", 1, "menu-button"], [1, "mat-elevation-z8", 3, "openedChange", "mode", "opened"], ["src", "../../../../public/Lot.png", 1, "avatar", "mat-elevation-z8"], [1, "name"], [1, "designation"], ["mat-button", "", 1, "menu-button", 3, "click"], [1, "span"], [1, "main-container"], [1, "contenido-dinamico"], ["roleFilter", "tecnico", "titulo", "T\xE9cnicos"], [1, "table-container"], ["appearance", "outline"], ["matInput", "", "placeholder", "Folio, tipo o descripci\xF3n", 3, "keyup"], [1, "loading-spinner"], ["mat-table", "", 1, "mat-elevation-z8", 3, "dataSource"], ["aria-label", "Seleccionar p\xE1gina de solicitudes", 3, "page", "length", "pageSize", "pageIndex", "pageSizeOptions"], ["matColumnDef", "folio"], ["mat-header-cell", "", 4, "matHeaderCellDef"], ["mat-cell", "", 4, "matCellDef"], ["matColumnDef", "tipo"], ["matColumnDef", "descripcion"], ["matColumnDef", "prioridad"], ["matColumnDef", "estado"], ["matColumnDef", "comentarios"], ["matColumnDef", "acciones"], ["mat-header-row", "", 4, "matHeaderRowDef"], ["mat-row", "", 4, "matRowDef", "matRowDefColumns"], ["class", "mat-row", 4, "matNoDataRow"], ["mat-header-cell", ""], ["mat-cell", ""], ["type", "button", "mat-icon-button", "", "color", "primary", "aria-label", "Editar solicitud", 3, "click"], ["type", "button", "mat-icon-button", "", "aria-label", "Eliminar solicitud", 1, "deleteButton", 3, "click"], ["mat-header-row", ""], ["mat-row", ""], [1, "mat-row"], [1, "mat-cell"], ["matInput", "", "placeholder", "Folio, t\xEDtulo o descripci\xF3n", 3, "keyup"], ["aria-label", "Seleccionar p\xE1gina de tickets", 3, "page", "length", "pageSize", "pageIndex", "pageSizeOptions"], ["matColumnDef", "titulo"], ["type", "button", "mat-icon-button", "", "color", "primary", "aria-label", "Editar ticket", 3, "click"], ["type", "button", "mat-icon-button", "", "aria-label", "Eliminar ticket", 1, "deleteButton", 3, "click"], ["mat-dialog-title", ""], [1, "assignment-form"], ["for", "tecnico"], ["id", "tecnico", "required", "", 3, "ngModelChange", "ngModel"], ["value", "", "disabled", ""], [3, "value", 4, "ngFor", "ngForOf"], ["for", "comentariosEdicion"], ["id", "comentariosEdicion", "rows", "4", "placeholder", "Comentarios para el t\xE9cnico", 3, "ngModelChange", "ngModel"], ["align", "end"], ["type", "button", "mat-button", "", 3, "click", "disabled"], ["type", "button", "mat-flat-button", "", "color", "primary", 3, "click", "disabled"], [3, "value"]], template: function HomeSup_Template(rf, ctx) {
+  }, decls: 62, vars: 5, consts: [["drawer", ""], ["assignmentDialog", ""], [3, "click"], ["src", "https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg", "alt", "Direcci\xF3n General de Tecnolog\xEDas de la Informaci\xF3n y Gobierno Digital", 1, "img-login"], [1, "espaciador-flexible"], ["mat-button", "", 1, "menu-button"], [1, "mat-elevation-z8", 3, "openedChange", "mode", "opened"], ["src", "../../../../public/Lot.png", 1, "avatar", "mat-elevation-z8"], [1, "name"], [1, "designation"], [3, "profileUpdated"], ["mat-button", "", 1, "menu-button", 3, "click"], [1, "span"], [1, "main-container"], [1, "contenido-dinamico"], ["roleFilter", "tecnico", "titulo", "T\xE9cnicos"], [1, "table-container"], ["appearance", "outline"], ["matInput", "", "placeholder", "Folio, tipo o descripci\xF3n", 3, "keyup"], [1, "loading-spinner"], ["role", "alert", 1, "load-error"], ["mat-table", "", 1, "mat-elevation-z8", 3, "dataSource"], ["aria-label", "Seleccionar p\xE1gina de solicitudes", 3, "page", "length", "pageSize", "pageIndex", "pageSizeOptions"], ["matColumnDef", "folio"], ["mat-header-cell", "", 4, "matHeaderCellDef"], ["mat-cell", "", 4, "matCellDef"], ["matColumnDef", "tipo"], ["matColumnDef", "descripcion"], ["matColumnDef", "prioridad"], ["matColumnDef", "estado"], ["matColumnDef", "comentarios"], ["matColumnDef", "acciones"], ["mat-header-row", "", 4, "matHeaderRowDef"], ["mat-row", "", 4, "matRowDef", "matRowDefColumns"], ["class", "mat-row", 4, "matNoDataRow"], ["mat-header-cell", ""], ["mat-cell", ""], ["type", "button", "mat-icon-button", "", "color", "primary", "aria-label", "Editar solicitud", 3, "click"], ["type", "button", "mat-icon-button", "", "aria-label", "Eliminar solicitud", 1, "deleteButton", 3, "click"], ["mat-header-row", ""], ["mat-row", ""], [1, "mat-row"], [1, "mat-cell"], ["matInput", "", "placeholder", "Folio, t\xEDtulo o descripci\xF3n", 3, "keyup"], ["aria-label", "Seleccionar p\xE1gina de tickets", 3, "page", "length", "pageSize", "pageIndex", "pageSizeOptions"], ["matColumnDef", "titulo"], ["type", "button", "mat-icon-button", "", "color", "primary", "aria-label", "Editar ticket", 3, "click"], ["type", "button", "mat-icon-button", "", "aria-label", "Eliminar ticket", 1, "deleteButton", 3, "click"], ["mat-dialog-title", ""], [1, "assignment-form"], ["for", "tecnico"], ["id", "tecnico", "required", "", 3, "ngModelChange", "ngModel"], ["value", "", "disabled", ""], [3, "value", 4, "ngFor", "ngForOf"], ["for", "comentariosEdicion"], ["id", "comentariosEdicion", "rows", "4", "placeholder", "Comentarios para el t\xE9cnico", 3, "ngModelChange", "ngModel"], ["align", "end"], ["type", "button", "mat-button", "", 3, "click", "disabled"], ["type", "button", "mat-flat-button", "", "color", "primary", 3, "click", "disabled"], [3, "value"]], template: function HomeSup_Template(rf, ctx) {
     if (rf & 1) {
       const _r1 = \u0275\u0275getCurrentView();
       \u0275\u0275elementStart(0, "mat-toolbar")(1, "button", 2);
@@ -77591,67 +78189,72 @@ var HomeSup = class _HomeSup {
       \u0275\u0275text(21, "Software Engineer");
       \u0275\u0275elementEnd();
       \u0275\u0275element(22, "mat-divider");
-      \u0275\u0275elementStart(23, "button", 10);
-      \u0275\u0275listener("click", function HomeSup_Template_button_click_23_listener() {
+      \u0275\u0275elementStart(23, "app-profile", 10);
+      \u0275\u0275listener("profileUpdated", function HomeSup_Template_app_profile_profileUpdated_23_listener($event) {
+        return ctx.user = $event;
+      });
+      \u0275\u0275elementEnd();
+      \u0275\u0275elementStart(24, "button", 11);
+      \u0275\u0275listener("click", function HomeSup_Template_button_click_24_listener() {
         return ctx.cambiarVista("users");
       });
-      \u0275\u0275elementStart(24, "mat-icon");
-      \u0275\u0275text(25, "person");
+      \u0275\u0275elementStart(25, "mat-icon");
+      \u0275\u0275text(26, "person");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(26, "span", 11);
-      \u0275\u0275text(27, "T\xE9cnicos");
+      \u0275\u0275elementStart(27, "span", 12);
+      \u0275\u0275text(28, "T\xE9cnicos");
       \u0275\u0275elementEnd()();
-      \u0275\u0275elementStart(28, "button", 10);
-      \u0275\u0275listener("click", function HomeSup_Template_button_click_28_listener() {
+      \u0275\u0275elementStart(29, "button", 11);
+      \u0275\u0275listener("click", function HomeSup_Template_button_click_29_listener() {
         return ctx.cambiarVista("solicitud");
       });
-      \u0275\u0275elementStart(29, "mat-icon");
-      \u0275\u0275text(30, "assignment");
+      \u0275\u0275elementStart(30, "mat-icon");
+      \u0275\u0275text(31, "assignment");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(31, "span", 11);
-      \u0275\u0275text(32, "Solicitudes");
+      \u0275\u0275elementStart(32, "span", 12);
+      \u0275\u0275text(33, "Solicitudes");
       \u0275\u0275elementEnd()();
-      \u0275\u0275elementStart(33, "button", 10);
-      \u0275\u0275listener("click", function HomeSup_Template_button_click_33_listener() {
+      \u0275\u0275elementStart(34, "button", 11);
+      \u0275\u0275listener("click", function HomeSup_Template_button_click_34_listener() {
         return ctx.cambiarVista("tickets");
       });
-      \u0275\u0275elementStart(34, "mat-icon");
-      \u0275\u0275text(35, "assignment");
+      \u0275\u0275elementStart(35, "mat-icon");
+      \u0275\u0275text(36, "assignment");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(36, "span", 11);
-      \u0275\u0275text(37, "Tickets");
+      \u0275\u0275elementStart(37, "span", 12);
+      \u0275\u0275text(38, "Tickets");
       \u0275\u0275elementEnd()();
-      \u0275\u0275elementStart(38, "button", 10);
-      \u0275\u0275listener("click", function HomeSup_Template_button_click_38_listener() {
+      \u0275\u0275elementStart(39, "button", 11);
+      \u0275\u0275listener("click", function HomeSup_Template_button_click_39_listener() {
         return ctx.cambiarVista("reportes");
       });
-      \u0275\u0275elementStart(39, "mat-icon");
-      \u0275\u0275text(40, "inbox");
+      \u0275\u0275elementStart(40, "mat-icon");
+      \u0275\u0275text(41, "inbox");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(41, "span", 11);
-      \u0275\u0275text(42, "Reportes");
+      \u0275\u0275elementStart(42, "span", 12);
+      \u0275\u0275text(43, "Reportes");
       \u0275\u0275elementEnd()();
-      \u0275\u0275element(43, "mat-divider");
-      \u0275\u0275elementStart(44, "button", 5)(45, "mat-icon");
-      \u0275\u0275text(46, "help");
+      \u0275\u0275element(44, "mat-divider");
+      \u0275\u0275elementStart(45, "button", 5)(46, "mat-icon");
+      \u0275\u0275text(47, "help");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(47, "span", 11);
-      \u0275\u0275text(48, "Ayuda");
+      \u0275\u0275elementStart(48, "span", 12);
+      \u0275\u0275text(49, "Ayuda");
       \u0275\u0275elementEnd()();
-      \u0275\u0275elementStart(49, "button", 10);
-      \u0275\u0275listener("click", function HomeSup_Template_button_click_49_listener() {
+      \u0275\u0275elementStart(50, "button", 11);
+      \u0275\u0275listener("click", function HomeSup_Template_button_click_50_listener() {
         return ctx.logout();
       });
-      \u0275\u0275elementStart(50, "mat-icon");
-      \u0275\u0275text(51, "exit_to_app");
+      \u0275\u0275elementStart(51, "mat-icon");
+      \u0275\u0275text(52, "exit_to_app");
       \u0275\u0275elementEnd();
-      \u0275\u0275elementStart(52, "span", 11);
-      \u0275\u0275text(53, "Salir");
+      \u0275\u0275elementStart(53, "span", 12);
+      \u0275\u0275text(54, "Salir");
       \u0275\u0275elementEnd()()();
-      \u0275\u0275elementStart(54, "mat-sidenav-content", 12)(55, "div", 13);
-      \u0275\u0275conditionalCreate(56, HomeSup_Conditional_56_Template, 1, 0, "app-users", 14)(57, HomeSup_Conditional_57_Template, 10, 6, "div", 15)(58, HomeSup_Conditional_58_Template, 10, 6, "div", 15);
+      \u0275\u0275elementStart(55, "mat-sidenav-content", 13)(56, "div", 14);
+      \u0275\u0275conditionalCreate(57, HomeSup_Conditional_57_Template, 1, 0, "app-users", 15)(58, HomeSup_Conditional_58_Template, 11, 6, "div", 16)(59, HomeSup_Conditional_59_Template, 11, 6, "div", 16);
       \u0275\u0275elementEnd()()();
-      \u0275\u0275template(59, HomeSup_ng_template_59_Template, 18, 8, "ng-template", null, 1, \u0275\u0275templateRefExtractor);
+      \u0275\u0275template(60, HomeSup_ng_template_60_Template, 18, 8, "ng-template", null, 1, \u0275\u0275templateRefExtractor);
     }
     if (rf & 2) {
       \u0275\u0275advance(9);
@@ -77661,8 +78264,8 @@ var HomeSup = class _HomeSup {
       \u0275\u0275twoWayProperty("opened", ctx.menuAbierto);
       \u0275\u0275advance(4);
       \u0275\u0275textInterpolate(ctx.user == null ? null : ctx.user.username);
-      \u0275\u0275advance(37);
-      \u0275\u0275conditional(ctx.vistaActiva === "users" ? 56 : ctx.vistaActiva === "solicitud" ? 57 : ctx.vistaActiva === "tickets" ? 58 : -1);
+      \u0275\u0275advance(38);
+      \u0275\u0275conditional(ctx.vistaActiva === "users" ? 57 : ctx.vistaActiva === "solicitud" ? 58 : ctx.vistaActiva === "tickets" ? 59 : -1);
     }
   }, dependencies: [
     CommonModule,
@@ -77709,8 +78312,9 @@ var HomeSup = class _HomeSup {
     SelectControlValueAccessor,
     NgControlStatus,
     RequiredValidator,
-    NgModel
-  ], styles: ["\nmat-toolbar[_ngcontent-%COMP%] {\n  background: #0194fe;\n  color: white;\n  top: 0;\n  z-index: 2;\n}\nmat-sidenav[_ngcontent-%COMP%] {\n  margin: 16px;\n  width: 200px;\n  border-right: none;\n  background: #0194fe;\n  color: white;\n  border-radius: 10px;\n  padding: 16px;\n  text-align: center;\n}\n.content[_ngcontent-%COMP%] {\n  height: calc(100vh - 98px);\n  border-radius: 10px;\n  margin: 16px;\n  margin-left: 32px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  font-size: 2rem;\n  color: lightgray;\n}\nmat-sidenav-container[_ngcontent-%COMP%] {\n  height: calc(100vh - 65px);\n  margin-right: 10;\n}\nmat-sidenav-container.oculto[_ngcontent-%COMP%] {\n  transform: translateX(-250px);\n}\nmat-toolbar[_ngcontent-%COMP%]   mat-icon[_ngcontent-%COMP%], \nmat-sidenav[_ngcontent-%COMP%]   .menu-button[_ngcontent-%COMP%]   mat-icon[_ngcontent-%COMP%] {\n  margin-right: 8px;\n  color: white;\n}\n.span[_ngcontent-%COMP%] {\n  color: white;\n  font-size: 1rem;\n  margin-left: 8px;\n}\n.menu-button[_ngcontent-%COMP%] {\n  width: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: flex-start;\n  font-size: 1rem;\n}\n.menu-button[_ngcontent-%COMP%]   .icon[_ngcontent-%COMP%] {\n  margin-right: 8px;\n  color: white;\n}\n.avatar[_ngcontent-%COMP%] {\n  margin-top: 16px;\n  width: 100px;\n  height: 100px;\n  border-radius: 50%;\n}\n.name[_ngcontent-%COMP%] {\n  margin-top: 8px;\n  font-weight: normal;\n}\n.designation[_ngcontent-%COMP%] {\n  margin-top: 2px;\n  font-size: 0.7rem;\n  color: lightgrey;\n}\n.img-login[_ngcontent-%COMP%] {\n  width: auto;\n  height: 40px;\n  margin: 20px 5px;\n}\nmat-divider[_ngcontent-%COMP%] {\n  margin-top: 16px;\n  margin-bottom: 16px;\n  background-color: white;\n}\n.sidebar[_ngcontent-%COMP%] {\n  position: fixed;\n  left: 0;\n  top: 0;\n  width: 250px;\n  height: 100vh;\n  background-color: #2c3e50;\n  color: white;\n  transition: transform 0.3s ease;\n  transform: translateX(0);\n}\n.sidebar.oculto[_ngcontent-%COMP%] {\n  transform: translateX(-250px);\n}\n.table-container[_ngcontent-%COMP%] {\n  margin: 16px;\n  padding: 16px;\n  background-color: #ffffff;\n  border-radius: 10px;\n  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);\n  overflow-x: auto;\n}\n.table-container[_ngcontent-%COMP%]   mat-form-field[_ngcontent-%COMP%], \n.table-container[_ngcontent-%COMP%]   table[_ngcontent-%COMP%], \n.table-container[_ngcontent-%COMP%]   mat-paginator[_ngcontent-%COMP%] {\n  width: 100%;\n}\n.loading-spinner[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: center;\n  padding: 32px;\n}\n.assignment-form[_ngcontent-%COMP%] {\n  display: grid;\n  gap: 10px;\n  padding-top: 8px;\n}\n.assignment-form[_ngcontent-%COMP%]   select[_ngcontent-%COMP%], \n.assignment-form[_ngcontent-%COMP%]   textarea[_ngcontent-%COMP%] {\n  width: 100%;\n  box-sizing: border-box;\n  border: 1px solid #bdbdbd;\n  border-radius: 6px;\n  padding: 10px;\n  font: inherit;\n}\n.mat-row[_ngcontent-%COMP%]   .mat-cell[colspan][_ngcontent-%COMP%] {\n  padding: 32px;\n  text-align: center;\n  color: #666;\n}\n.mat-mdc-row[_ngcontent-%COMP%]:hover {\n  background-color: #f5f5f5;\n}\n.contenido[_ngcontent-%COMP%] {\n  margin-left: 250px;\n  transition: margin-left 0.3s ease;\n  padding: 20px;\n}\n.contenido.expandido[_ngcontent-%COMP%] {\n  margin-left: 0;\n}\n.media-funcion[_ngcontent-%COMP%] {\n  float: left;\n  margin: 0 auto;\n  max-width: 100%;\n  height: 30px;\n  padding: 15px 15px;\n  font-size: 14px;\n  background: #0194fe;\n}\n.espaciador-flexible[_ngcontent-%COMP%] {\n  flex: 1 1 auto;\n}\n/*# sourceMappingURL=home-sup.css.map */"] });
+    NgModel,
+    Profile
+  ], styles: ["\nmat-toolbar[_ngcontent-%COMP%] {\n  background: #0194fe;\n  color: white;\n  top: 0;\n  z-index: 2;\n}\nmat-sidenav[_ngcontent-%COMP%] {\n  margin: 16px;\n  width: 200px;\n  border-right: none;\n  background: #0194fe;\n  color: white;\n  border-radius: 10px;\n  padding: 16px;\n  text-align: center;\n}\n.content[_ngcontent-%COMP%] {\n  height: calc(100vh - 98px);\n  border-radius: 10px;\n  margin: 16px;\n  margin-left: 32px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  font-size: 2rem;\n  color: lightgray;\n}\nmat-sidenav-container[_ngcontent-%COMP%] {\n  height: calc(100vh - 65px);\n  margin-right: 10;\n}\nmat-sidenav-container.oculto[_ngcontent-%COMP%] {\n  transform: translateX(-250px);\n}\nmat-toolbar[_ngcontent-%COMP%]   mat-icon[_ngcontent-%COMP%], \nmat-sidenav[_ngcontent-%COMP%]   .menu-button[_ngcontent-%COMP%]   mat-icon[_ngcontent-%COMP%] {\n  margin-right: 8px;\n  color: white;\n}\n.span[_ngcontent-%COMP%] {\n  color: white;\n  font-size: 1rem;\n  margin-left: 8px;\n}\n.menu-button[_ngcontent-%COMP%] {\n  width: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: flex-start;\n  font-size: 1rem;\n}\n.menu-button[_ngcontent-%COMP%]   .icon[_ngcontent-%COMP%] {\n  margin-right: 8px;\n  color: white;\n}\n.avatar[_ngcontent-%COMP%] {\n  margin-top: 16px;\n  width: 100px;\n  height: 100px;\n  border-radius: 50%;\n}\n.name[_ngcontent-%COMP%] {\n  margin-top: 8px;\n  font-weight: normal;\n}\n.designation[_ngcontent-%COMP%] {\n  margin-top: 2px;\n  font-size: 0.7rem;\n  color: lightgrey;\n}\n.img-login[_ngcontent-%COMP%] {\n  width: auto;\n  height: 40px;\n  margin: 20px 5px;\n}\nmat-divider[_ngcontent-%COMP%] {\n  margin-top: 16px;\n  margin-bottom: 16px;\n  background-color: white;\n}\n.sidebar[_ngcontent-%COMP%] {\n  position: fixed;\n  left: 0;\n  top: 0;\n  width: 250px;\n  height: 100vh;\n  background-color: #2c3e50;\n  color: white;\n  transition: transform 0.3s ease;\n  transform: translateX(0);\n}\n.sidebar.oculto[_ngcontent-%COMP%] {\n  transform: translateX(-250px);\n}\n.table-container[_ngcontent-%COMP%] {\n  margin: 16px;\n  padding: 16px;\n  background-color: #ffffff;\n  border-radius: 10px;\n  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);\n  overflow-x: auto;\n}\n.table-container[_ngcontent-%COMP%]   mat-form-field[_ngcontent-%COMP%], \n.table-container[_ngcontent-%COMP%]   table[_ngcontent-%COMP%], \n.table-container[_ngcontent-%COMP%]   mat-paginator[_ngcontent-%COMP%] {\n  width: 100%;\n}\n.loading-spinner[_ngcontent-%COMP%] {\n  display: flex;\n  justify-content: center;\n  padding: 32px;\n}\n.load-error[_ngcontent-%COMP%] {\n  margin: 16px 0;\n  padding: 12px;\n  border-radius: 6px;\n  background: #ffebee;\n  color: #b71c1c;\n}\n.assignment-form[_ngcontent-%COMP%] {\n  display: grid;\n  gap: 10px;\n  padding-top: 8px;\n}\n.assignment-form[_ngcontent-%COMP%]   select[_ngcontent-%COMP%], \n.assignment-form[_ngcontent-%COMP%]   textarea[_ngcontent-%COMP%] {\n  width: 100%;\n  box-sizing: border-box;\n  border: 1px solid #bdbdbd;\n  border-radius: 6px;\n  padding: 10px;\n  font: inherit;\n}\n.mat-row[_ngcontent-%COMP%]   .mat-cell[colspan][_ngcontent-%COMP%] {\n  padding: 32px;\n  text-align: center;\n  color: #666;\n}\n.mat-mdc-row[_ngcontent-%COMP%]:hover {\n  background-color: #f5f5f5;\n}\n.contenido[_ngcontent-%COMP%] {\n  margin-left: 250px;\n  transition: margin-left 0.3s ease;\n  padding: 20px;\n}\n.contenido.expandido[_ngcontent-%COMP%] {\n  margin-left: 0;\n}\n.media-funcion[_ngcontent-%COMP%] {\n  float: left;\n  margin: 0 auto;\n  max-width: 100%;\n  height: 30px;\n  padding: 15px 15px;\n  font-size: 14px;\n  background: #0194fe;\n}\n.espaciador-flexible[_ngcontent-%COMP%] {\n  flex: 1 1 auto;\n}\n/*# sourceMappingURL=home-sup.css.map */"] });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(HomeSup, [{
@@ -77731,7 +78335,8 @@ var HomeSup = class _HomeSup {
       MatInputModule,
       MatProgressSpinnerModule,
       MatDialogModule,
-      FormsModule
+      FormsModule,
+      Profile
     ], template: `<mat-toolbar>
     <button (click)="toggleMenu()">
         <mat-icon>menu</mat-icon>
@@ -77757,6 +78362,7 @@ var HomeSup = class _HomeSup {
         <p class="designation">Software Engineer</p>
 
         <mat-divider></mat-divider>
+        <app-profile (profileUpdated)="user = $event"></app-profile>
         <button mat-button class="menu-button" (click)="cambiarVista('users')">
             <mat-icon>person</mat-icon>
             <span class="span">T\xE9cnicos</span>
@@ -77800,6 +78406,8 @@ var HomeSup = class _HomeSup {
 
                 @if (cargando) {
                 <div class="loading-spinner"><mat-spinner></mat-spinner></div>
+                } @else if (errorCarga) {
+                <p class="load-error" role="alert">{{ errorCarga }}</p>
                 } @else {
                 <table mat-table [dataSource]="datos" class="mat-elevation-z8">
                     <ng-container matColumnDef="folio">
@@ -77863,6 +78471,8 @@ var HomeSup = class _HomeSup {
 
                 @if (cargando) {
                 <div class="loading-spinner"><mat-spinner></mat-spinner></div>
+                } @else if (errorCarga) {
+                <p class="load-error" role="alert">{{ errorCarga }}</p>
                 } @else {
                 <table mat-table [dataSource]="datos" class="mat-elevation-z8">
                     <ng-container matColumnDef="folio">
@@ -77952,8 +78562,8 @@ var HomeSup = class _HomeSup {
         </button>
     </mat-dialog-actions>
 </ng-template>
-`, styles: ["/* src/app/auth/home-sup/home-sup.css */\nmat-toolbar {\n  background: #0194fe;\n  color: white;\n  top: 0;\n  z-index: 2;\n}\nmat-sidenav {\n  margin: 16px;\n  width: 200px;\n  border-right: none;\n  background: #0194fe;\n  color: white;\n  border-radius: 10px;\n  padding: 16px;\n  text-align: center;\n}\n.content {\n  height: calc(100vh - 98px);\n  border-radius: 10px;\n  margin: 16px;\n  margin-left: 32px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  font-size: 2rem;\n  color: lightgray;\n}\nmat-sidenav-container {\n  height: calc(100vh - 65px);\n  margin-right: 10;\n}\nmat-sidenav-container.oculto {\n  transform: translateX(-250px);\n}\nmat-toolbar mat-icon,\nmat-sidenav .menu-button mat-icon {\n  margin-right: 8px;\n  color: white;\n}\n.span {\n  color: white;\n  font-size: 1rem;\n  margin-left: 8px;\n}\n.menu-button {\n  width: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: flex-start;\n  font-size: 1rem;\n}\n.menu-button .icon {\n  margin-right: 8px;\n  color: white;\n}\n.avatar {\n  margin-top: 16px;\n  width: 100px;\n  height: 100px;\n  border-radius: 50%;\n}\n.name {\n  margin-top: 8px;\n  font-weight: normal;\n}\n.designation {\n  margin-top: 2px;\n  font-size: 0.7rem;\n  color: lightgrey;\n}\n.img-login {\n  width: auto;\n  height: 40px;\n  margin: 20px 5px;\n}\nmat-divider {\n  margin-top: 16px;\n  margin-bottom: 16px;\n  background-color: white;\n}\n.sidebar {\n  position: fixed;\n  left: 0;\n  top: 0;\n  width: 250px;\n  height: 100vh;\n  background-color: #2c3e50;\n  color: white;\n  transition: transform 0.3s ease;\n  transform: translateX(0);\n}\n.sidebar.oculto {\n  transform: translateX(-250px);\n}\n.table-container {\n  margin: 16px;\n  padding: 16px;\n  background-color: #ffffff;\n  border-radius: 10px;\n  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);\n  overflow-x: auto;\n}\n.table-container mat-form-field,\n.table-container table,\n.table-container mat-paginator {\n  width: 100%;\n}\n.loading-spinner {\n  display: flex;\n  justify-content: center;\n  padding: 32px;\n}\n.assignment-form {\n  display: grid;\n  gap: 10px;\n  padding-top: 8px;\n}\n.assignment-form select,\n.assignment-form textarea {\n  width: 100%;\n  box-sizing: border-box;\n  border: 1px solid #bdbdbd;\n  border-radius: 6px;\n  padding: 10px;\n  font: inherit;\n}\n.mat-row .mat-cell[colspan] {\n  padding: 32px;\n  text-align: center;\n  color: #666;\n}\n.mat-mdc-row:hover {\n  background-color: #f5f5f5;\n}\n.contenido {\n  margin-left: 250px;\n  transition: margin-left 0.3s ease;\n  padding: 20px;\n}\n.contenido.expandido {\n  margin-left: 0;\n}\n.media-funcion {\n  float: left;\n  margin: 0 auto;\n  max-width: 100%;\n  height: 30px;\n  padding: 15px 15px;\n  font-size: 14px;\n  background: #0194fe;\n}\n.espaciador-flexible {\n  flex: 1 1 auto;\n}\n/*# sourceMappingURL=home-sup.css.map */\n"] }]
-  }], () => [{ type: AuthService }, { type: Router }, { type: BreakpointObserver }], { assignmentDialog: [{
+`, styles: ["/* src/app/auth/home-sup/home-sup.css */\nmat-toolbar {\n  background: #0194fe;\n  color: white;\n  top: 0;\n  z-index: 2;\n}\nmat-sidenav {\n  margin: 16px;\n  width: 200px;\n  border-right: none;\n  background: #0194fe;\n  color: white;\n  border-radius: 10px;\n  padding: 16px;\n  text-align: center;\n}\n.content {\n  height: calc(100vh - 98px);\n  border-radius: 10px;\n  margin: 16px;\n  margin-left: 32px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  font-size: 2rem;\n  color: lightgray;\n}\nmat-sidenav-container {\n  height: calc(100vh - 65px);\n  margin-right: 10;\n}\nmat-sidenav-container.oculto {\n  transform: translateX(-250px);\n}\nmat-toolbar mat-icon,\nmat-sidenav .menu-button mat-icon {\n  margin-right: 8px;\n  color: white;\n}\n.span {\n  color: white;\n  font-size: 1rem;\n  margin-left: 8px;\n}\n.menu-button {\n  width: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: flex-start;\n  font-size: 1rem;\n}\n.menu-button .icon {\n  margin-right: 8px;\n  color: white;\n}\n.avatar {\n  margin-top: 16px;\n  width: 100px;\n  height: 100px;\n  border-radius: 50%;\n}\n.name {\n  margin-top: 8px;\n  font-weight: normal;\n}\n.designation {\n  margin-top: 2px;\n  font-size: 0.7rem;\n  color: lightgrey;\n}\n.img-login {\n  width: auto;\n  height: 40px;\n  margin: 20px 5px;\n}\nmat-divider {\n  margin-top: 16px;\n  margin-bottom: 16px;\n  background-color: white;\n}\n.sidebar {\n  position: fixed;\n  left: 0;\n  top: 0;\n  width: 250px;\n  height: 100vh;\n  background-color: #2c3e50;\n  color: white;\n  transition: transform 0.3s ease;\n  transform: translateX(0);\n}\n.sidebar.oculto {\n  transform: translateX(-250px);\n}\n.table-container {\n  margin: 16px;\n  padding: 16px;\n  background-color: #ffffff;\n  border-radius: 10px;\n  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);\n  overflow-x: auto;\n}\n.table-container mat-form-field,\n.table-container table,\n.table-container mat-paginator {\n  width: 100%;\n}\n.loading-spinner {\n  display: flex;\n  justify-content: center;\n  padding: 32px;\n}\n.load-error {\n  margin: 16px 0;\n  padding: 12px;\n  border-radius: 6px;\n  background: #ffebee;\n  color: #b71c1c;\n}\n.assignment-form {\n  display: grid;\n  gap: 10px;\n  padding-top: 8px;\n}\n.assignment-form select,\n.assignment-form textarea {\n  width: 100%;\n  box-sizing: border-box;\n  border: 1px solid #bdbdbd;\n  border-radius: 6px;\n  padding: 10px;\n  font: inherit;\n}\n.mat-row .mat-cell[colspan] {\n  padding: 32px;\n  text-align: center;\n  color: #666;\n}\n.mat-mdc-row:hover {\n  background-color: #f5f5f5;\n}\n.contenido {\n  margin-left: 250px;\n  transition: margin-left 0.3s ease;\n  padding: 20px;\n}\n.contenido.expandido {\n  margin-left: 0;\n}\n.media-funcion {\n  float: left;\n  margin: 0 auto;\n  max-width: 100%;\n  height: 30px;\n  padding: 15px 15px;\n  font-size: 14px;\n  background: #0194fe;\n}\n.espaciador-flexible {\n  flex: 1 1 auto;\n}\n/*# sourceMappingURL=home-sup.css.map */\n"] }]
+  }], () => [{ type: AuthService }, { type: Router }, { type: BreakpointObserver }, { type: ChangeDetectorRef }], { assignmentDialog: [{
     type: ViewChild,
     args: ["assignmentDialog"]
   }], sidenav: [{
@@ -77962,7 +78572,7 @@ var HomeSup = class _HomeSup {
   }] });
 })();
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(HomeSup, { className: "HomeSup", filePath: "app/auth/home-sup/home-sup.ts", lineNumber: 46 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(HomeSup, { className: "HomeSup", filePath: "app/auth/home-sup/home-sup.ts", lineNumber: 49 });
 })();
 
 // src/app/auth.guard.ts
@@ -77989,7 +78599,6 @@ var routes = [
   { path: "area", component: Area, canActivate: [authGuard] },
   { path: "categoria", component: Category, canActivate: [authGuard] },
   { path: "role", component: Role, canActivate: [authGuard] },
-  { path: "rol", redirectTo: "/role", pathMatch: "full" },
   { path: "inventario", component: Inventory, canActivate: [authGuard] },
   { path: "asignaciones", component: Assignments, canActivate: [authGuard] },
   { path: "**", redirectTo: "/login" }

@@ -41,7 +41,19 @@
             <input type="text" id="solucion" formControlName="solucion" placeholder="Describa la solución">
         </div>
 
-        <button type="submit" [disabled]="ticketForm.invalid" class="submit-btn">Generar Ticket</button>
+        <div class="form-group">
+            <label for="ticket-archivo">Archivo adjunto (opcional)</label>
+            <input id="ticket-archivo" type="file"
+                accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,application/pdf,image/jpeg,image/png,image/gif,image/webp"
+                (change)="onFileSelected($event)">
+            <small class="file-help">PDF o imagen, máximo 10 MB.</small>
+            <small class="file-error" *ngIf="fileError">{{ fileError }}</small>
+            <small class="selected-file" *ngIf="selectedFile">Seleccionado: {{ selectedFile.name }}</small>
+        </div>
+
+        <button type="submit" [disabled]="ticketForm.invalid || !!fileError || submitting" class="submit-btn">
+            {{ submitting ? 'Guardando...' : 'Generar Ticket' }}
+        </button>
         <button type="button" mat-raised-button color="accent" class="cancel-btn" (click)="loadChildren('hometick')">Cancelar</button>
     </form>
 </div>

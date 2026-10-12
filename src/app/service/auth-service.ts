@@ -7,7 +7,7 @@ import { tap } from 'rxjs/operators';
     providedIn: 'root',
 })
 export class AuthService {
-    baseUrl = 'https://apiswsi.onrender.com/api';
+    readonly baseUrl = 'https://apiswsi.onrender.com/api';
 
     constructor(private http: HttpClient) {}
 
@@ -147,6 +147,35 @@ export class AuthService {
         return this.http.delete(`${this.baseUrl}/tickets/${id}`, { withCredentials: true });
     }
 
+    uploadAttachment(
+        file: File,
+        parent: { solicitud_id?: string; ticket_id?: string },
+    ): Observable<any> {
+        const formData = new FormData();
+        formData.append('file', file);
+        if (parent.solicitud_id) formData.append('solicitud_id', parent.solicitud_id);
+        if (parent.ticket_id) formData.append('ticket_id', parent.ticket_id);
+        return this.http.post(`${this.baseUrl}/attachments`, formData, { withCredentials: true });
+    }
+
+    getAttachments(parent: { solicitud_id?: string; ticket_id?: string }): Observable<any> {
+        return this.http.get(`${this.baseUrl}/attachments`, {
+            params: parent,
+            withCredentials: true,
+        });
+    }
+
+    downloadAttachment(id: string): Observable<Blob> {
+        return this.http.get(`${this.baseUrl}/attachments/${id}/file`, {
+            responseType: 'blob',
+            withCredentials: true,
+        });
+    }
+
+    deleteAttachment(id: string): Observable<any> {
+        return this.http.delete(`${this.baseUrl}/attachments/${id}`, { withCredentials: true });
+    }
+
     getAssignments(params?: any): Observable<any> {
         return this.http.get(`${this.baseUrl}/assignments`, { params, withCredentials: true });
     }
@@ -170,7 +199,6 @@ export class AuthService {
             { withCredentials: true },
         );
     }
-
     logout(): Observable<any> {
         return this.http
             .post(`${this.baseUrl}/logout`, {}, { withCredentials: true })

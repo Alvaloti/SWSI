@@ -75,6 +75,18 @@ mat-icon {
   outline: none;
 }
 
+.file-help,
+.file-error,
+.selected-file {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+}
+
+.file-help { color: #666666; }
+.file-error { color: #b00020; }
+.selected-file { color: #1b5e20; overflow-wrap: anywhere; }
+
 .submit-btn {
   width: 100%;
   padding: 0.8rem;

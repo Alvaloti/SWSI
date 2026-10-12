@@ -46,14 +46,24 @@
                 Prioridad es requerida.
             </small>
         </div>
+        <div class="form-group">
+            <label for="solicitud-archivo">Archivo adjunto (opcional)</label>
+            <input id="solicitud-archivo" type="file"
+                accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,application/pdf,image/jpeg,image/png,image/gif,image/webp"
+                (change)="onFileSelected($event)">
+            <small class="file-help">PDF o imagen, máximo 10 MB.</small>
+            <small class="file-error" *ngIf="fileError">{{ fileError }}</small>
+            <small class="selected-file" *ngIf="selectedFile">Seleccionado: {{ selectedFile.name }}</small>
+        </div>
 
         <div class="form-group">
             <label for="comentarios">Comentarios</label>
             <input type="text" id="comentarios" formControlName="comentarios" placeholder="Comentarios">
         </div>
 
-        <button type="submit" mat-raised-button color="primary" class="submit-btn" [disabled]="solicitudForm.invalid">
-            Enviar Solicitud</button>
+        <button type="submit" mat-raised-button color="primary" class="submit-btn"
+            [disabled]="solicitudForm.invalid || !!fileError || submitting">
+            {{ submitting ? 'Guardando...' : 'Enviar Solicitud' }}</button>
         <button type="button" mat-raised-button color="accent" class="cancel-btn" (click)="loadChildren('homesol')">Cancelar</button>
     </form>
 </div>
