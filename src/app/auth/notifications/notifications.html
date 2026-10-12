@@ -1,0 +1,32 @@
+<button type="button" mat-button class="notification-trigger"
+    [matMenuTriggerFor]="notificationMenu" (menuOpened)="loadNotifications()"
+    [attr.aria-label]="unreadCount ? unreadCount + ' notificaciones sin leer' : 'Notificaciones'">
+    <mat-icon>{{ unreadCount ? 'notifications_active' : 'notifications_none' }}</mat-icon>
+    <span class="notification-badge" *ngIf="unreadCount">{{ unreadCount > 99 ? '99+' : unreadCount }}</span>
+</button>
+
+<mat-menu #notificationMenu="matMenu" class="notification-menu" xPosition="before">
+    <div class="notification-header" (click)="$event.stopPropagation()">
+        <strong>Notificaciones</strong>
+        <button type="button" mat-button (click)="markAllAsRead($event)" [disabled]="!unreadCount">
+            Marcar todas como leídas
+        </button>
+    </div>
+
+    <div class="notification-state" *ngIf="loading">Cargando...</div>
+    <div class="notification-state error" *ngIf="!loading && loadError">{{ loadError }}</div>
+    <div class="notification-state" *ngIf="!loading && !loadError && !notifications.length">
+        No tienes notificaciones.
+    </div>
+
+    <button type="button" mat-menu-item class="notification-item"
+        *ngFor="let notification of notifications"
+        [class.unread]="!notification.read_at" (click)="markAsRead(notification)">
+        <mat-icon>{{ notification.type === 'assignment' ? 'assignment_ind' : 'update' }}</mat-icon>
+        <span class="notification-content">
+            <strong>{{ notification.title }}</strong>
+            <span>{{ notification.message }}</span>
+            <small>{{ notification.createdAt | date:'short' }}</small>
+        </span>
+    </button>
+</mat-menu>
