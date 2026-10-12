@@ -25,6 +25,7 @@ import { Role } from '../role/role';
 import { Inventory } from '../inventory/inventory';
 import { Assignments } from '../assignments/assignments';
 import { Profile } from '../profile/profile';
+import { Notifications } from '../notifications/notifications';
 
 @Component({
     selector: 'app-sidebar',
@@ -51,8 +52,9 @@ import { Profile } from '../profile/profile';
     Category,
     Role,
     Inventory,
-    Assignments
-    ,Profile
+    Assignments,
+    Profile,
+    Notifications
 ],
     templateUrl: './home.html',
     styleUrls: ['./home.css'],

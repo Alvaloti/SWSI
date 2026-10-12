@@ -21,6 +21,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { HomeSol } from "../home-sol/home-sol";
 import { Users } from "../users/users";
 import { Profile } from '../profile/profile';
+import { Notifications } from '../notifications/notifications';
 
 @Component({
     selector: 'app-home-sup',
@@ -41,7 +42,8 @@ import { Profile } from '../profile/profile';
     MatProgressSpinnerModule,
     MatDialogModule,
     FormsModule,
-    Profile
+    Profile,
+    Notifications
 ],
     templateUrl: './home-sup.html',
     styleUrl: './home-sup.css',

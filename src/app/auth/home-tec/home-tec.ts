@@ -16,6 +16,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../service/auth-service';
 import { finalize, timeout } from 'rxjs';
 import { Profile } from '../profile/profile';
+import { Notifications } from '../notifications/notifications';
 
 type TipoAsignacion = 'solicitudes' | 'tickets';
 
@@ -34,6 +35,7 @@ type TipoAsignacion = 'solicitudes' | 'tickets';
         MatInputModule,
         MatProgressSpinnerModule,
         Profile,
+        Notifications,
     ],
     templateUrl: './home-tec.html',
     styleUrl: './home-tec.css',

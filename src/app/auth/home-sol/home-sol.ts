@@ -20,6 +20,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { Profile } from '../profile/profile';
+import { Notifications } from '../notifications/notifications';
 
 @Component({
     selector: 'app-home-sol',
@@ -71,7 +72,8 @@ import { Profile } from '../profile/profile';
     MatProgressSpinnerModule,
     MatIcon,
     RouterLink,
-    Profile
+    Profile,
+    Notifications
 ],
     templateUrl: './home-sol.html',
     styleUrl: './home-sol.css',

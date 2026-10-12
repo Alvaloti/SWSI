@@ -134,6 +134,15 @@ export class AuthService {
     deleteAttachment(id) {
         return this.http.delete(`${this.baseUrl}/attachments/${id}`, { withCredentials: true });
     }
+    getNotifications() {
+        return this.http.get(`${this.baseUrl}/notifications`, { withCredentials: true });
+    }
+    markNotificationAsRead(id) {
+        return this.http.patch(`${this.baseUrl}/notifications/${id}/read`, {}, { withCredentials: true });
+    }
+    markAllNotificationsAsRead() {
+        return this.http.patch(`${this.baseUrl}/notifications/read-all`, {}, { withCredentials: true });
+    }
     getAssignments(params) {
         return this.http.get(`${this.baseUrl}/assignments`, { params, withCredentials: true });
     }

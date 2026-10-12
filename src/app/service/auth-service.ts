@@ -176,6 +176,18 @@ export class AuthService {
         return this.http.delete(`${this.baseUrl}/attachments/${id}`, { withCredentials: true });
     }
 
+    getNotifications(): Observable<any> {
+        return this.http.get(`${this.baseUrl}/notifications`, { withCredentials: true });
+    }
+
+    markNotificationAsRead(id: string): Observable<any> {
+        return this.http.patch(`${this.baseUrl}/notifications/${id}/read`, {}, { withCredentials: true });
+    }
+
+    markAllNotificationsAsRead(): Observable<any> {
+        return this.http.patch(`${this.baseUrl}/notifications/read-all`, {}, { withCredentials: true });
+    }
+
     getAssignments(params?: any): Observable<any> {
         return this.http.get(`${this.baseUrl}/assignments`, { params, withCredentials: true });
     }
