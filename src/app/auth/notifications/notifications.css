@@ -37,11 +37,11 @@
 
 .notification-item { height: auto; min-height: 76px; }
 .notification-item.unread { background: #eaf4ff; }
-.notification-item mat-icon { color: #0194fe; margin-right: 12px; }
+.notification-item mat-icon { color: white; margin-right: 12px; }
 .notification-content { display: flex; flex-direction: column; padding: 8px 0; white-space: normal; line-height: 1.25; }
-.notification-content strong { color: #212121; }
-.notification-content span { color: #424242; font-size: 13px; }
-.notification-content small { color: #757575; margin-top: 4px; }
+.notification-content strong { color: white; }
+.notification-content span { color: white; font-size: 13px; }
+.notification-content small { color: white; margin-top: 4px; }
 
 @media (max-width: 480px) {
     .notification-header { min-width: 280px; }
