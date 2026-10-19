@@ -5,7 +5,7 @@
     <span class="notification-badge" *ngIf="unreadCount">{{ unreadCount > 99 ? '99+' : unreadCount }}</span>
 </button>
 
-<mat-menu #notificationMenu="matMenu" class="notification-menu" xPosition="before">
+<mat-menu #notificationMenu="matMenu" panelClass="notification-menu" xPosition="before">
     <div class="notification-header" (click)="$event.stopPropagation()">
         <strong>Notificaciones</strong>
         <button type="button" mat-button (click)="markAllAsRead($event)" [disabled]="!unreadCount">

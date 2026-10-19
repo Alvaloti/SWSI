@@ -6,6 +6,10 @@
     color: white;
 }
 
+.notification-trigger mat-icon {
+    color: white;
+}
+
 .notification-badge {
     position: absolute;
     top: 2px;
@@ -28,15 +32,16 @@
     gap: 16px;
     padding: 8px 12px;
     min-width: 340px;
-    border-bottom: 1px solid #eeeeee;
+    color: white;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.35);
 }
 
-.notification-header button { font-size: 12px; }
-.notification-state { padding: 20px 16px; text-align: center; color: #616161; }
-.notification-state.error { color: #b00020; }
+.notification-header button { color: white; font-size: 12px; }
+.notification-state { padding: 20px 16px; text-align: center; color: white; }
+.notification-state.error { color: #ffffff; font-weight: 600; }
 
 .notification-item { height: auto; min-height: 76px; }
-.notification-item.unread { background: #eaf4ff; }
+.notification-item.unread { background: rgba(255, 255, 255, 0.16); }
 .notification-item mat-icon { color: white; margin-right: 12px; }
 .notification-content { display: flex; flex-direction: column; padding: 8px 0; white-space: normal; line-height: 1.25; }
 .notification-content strong { color: white; }

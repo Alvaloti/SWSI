@@ -4,3 +4,38 @@
 .deleteButton {
     color: #f44336 !important;
 }
+
+/* El menú de notificaciones se renderiza en el overlay global de Angular Material. */
+.notification-menu.mat-mdc-menu-panel {
+    max-width: 380px !important;
+    background-color: #0194fe !important;
+    color: white !important;
+}
+
+.notification-menu .mat-mdc-menu-content,
+.notification-menu .mat-mdc-menu-item,
+.notification-menu .mat-mdc-menu-item mat-icon,
+.notification-menu .mat-mdc-menu-item-text,
+.notification-menu .notification-header,
+.notification-menu .notification-header strong,
+.notification-menu .notification-header button,
+.notification-menu .notification-state,
+.notification-menu .notification-content,
+.notification-menu .notification-content strong,
+.notification-menu .notification-content span,
+.notification-menu .notification-content small {
+    color: white !important;
+}
+
+.notification-menu .mat-mdc-menu-item.unread {
+    background-color: rgba(255, 255, 255, 0.16) !important;
+}
+
+.notification-menu .mat-mdc-menu-item:hover,
+.notification-menu .mat-mdc-menu-item:focus {
+    background-color: rgba(255, 255, 255, 0.24) !important;
+}
+
+.notification-menu .notification-header button:disabled {
+    color: rgba(255, 255, 255, 0.55) !important;
+}
