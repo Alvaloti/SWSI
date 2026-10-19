@@ -7,24 +7,35 @@
 
 /* El menú de notificaciones se renderiza en el overlay global de Angular Material. */
 .notification-menu.mat-mdc-menu-panel {
+    --mat-menu-container-color: #0194fe;
+    --mat-menu-item-label-text-color: #ffffff;
+    --mat-menu-item-icon-color: #ffffff;
+    --mat-menu-item-hover-state-layer-color: rgba(255, 255, 255, 0.24);
+    --mat-menu-item-focus-state-layer-color: rgba(255, 255, 255, 0.24);
     max-width: 380px !important;
     background-color: #0194fe !important;
     color: white !important;
 }
 
-.notification-menu .mat-mdc-menu-content,
-.notification-menu .mat-mdc-menu-item,
-.notification-menu .mat-mdc-menu-item mat-icon,
-.notification-menu .mat-mdc-menu-item-text,
-.notification-menu .notification-header,
-.notification-menu .notification-header strong,
-.notification-menu .notification-header button,
-.notification-menu .notification-state,
-.notification-menu .notification-content,
-.notification-menu .notification-content strong,
-.notification-menu .notification-content span,
-.notification-menu .notification-content small {
+.cdk-overlay-container .notification-menu .mat-mdc-menu-content,
+.cdk-overlay-container .notification-menu .mat-mdc-menu-item,
+.cdk-overlay-container .notification-menu .mat-mdc-menu-item mat-icon,
+.cdk-overlay-container .notification-menu .mat-mdc-menu-item-text,
+.cdk-overlay-container .notification-menu .notification-header,
+.cdk-overlay-container .notification-menu .notification-header strong,
+.cdk-overlay-container .notification-menu .notification-header button,
+.cdk-overlay-container .notification-menu .notification-header button .mdc-button__label,
+.cdk-overlay-container .notification-menu .notification-state,
+.cdk-overlay-container .notification-menu .notification-content,
+.cdk-overlay-container .notification-menu .notification-content strong,
+.cdk-overlay-container .notification-menu .notification-content span,
+.cdk-overlay-container .notification-menu .notification-content small {
     color: white !important;
+}
+
+.cdk-overlay-container .notification-menu mat-icon {
+    color: white !important;
+    fill: white !important;
 }
 
 .notification-menu .mat-mdc-menu-item.unread {
