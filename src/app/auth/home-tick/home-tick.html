@@ -16,7 +16,7 @@
     <mat-sidenav #drawer [mode]="isMobile ? 'over' : 'side'" [(opened)]="menuAbierto" class="mat-elevation-z8">
         <img class="avatar mat-elevation-z8" src="../../../../public/Lot.png" alt="Foto de perfil">
         <h4 class="name">{{ user?.name }}</h4>
-        <p class="designation">Software Engineer</p>
+        <p class="designation">{{user?.last_name}}</p>
 
         <mat-divider></mat-divider>
         <app-profile (profileUpdated)="user = $event"></app-profile>
