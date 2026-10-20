@@ -53,6 +53,8 @@
         <div class="contenido-dinamico">
         @if (vistaActiva === 'users') {
             <app-users roleFilter="tecnico" titulo="Técnicos"></app-users>
+        } @else if (vistaActiva === 'reportes') {
+            <app-reports></app-reports>
         } @else if (vistaActiva === 'solicitud') {
             <div class="table-container">
                 <h2>Solicitudes</h2>

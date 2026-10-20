@@ -22,6 +22,7 @@ import { HomeSol } from "../home-sol/home-sol";
 import { Users } from "../users/users";
 import { Profile } from '../profile/profile';
 import { Notifications } from '../notifications/notifications';
+import { Reports } from '../reports/reports';
 
 @Component({
     selector: 'app-home-sup',
@@ -43,7 +44,8 @@ import { Notifications } from '../notifications/notifications';
     MatDialogModule,
     FormsModule,
     Profile,
-    Notifications
+    Notifications,
+    Reports
 ],
     templateUrl: './home-sup.html',
     styleUrl: './home-sup.css',

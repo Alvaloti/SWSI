@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -186,6 +186,10 @@ export class AuthService {
 
     markAllNotificationsAsRead(): Observable<any> {
         return this.http.patch(`${this.baseUrl}/notifications/read-all`, {}, { withCredentials: true });
+    }
+
+    getReports(params: HttpParams): Observable<any> {
+        return this.http.get(`${this.baseUrl}/reports`, { params, withCredentials: true });
     }
 
     getAssignments(params?: any): Observable<any> {

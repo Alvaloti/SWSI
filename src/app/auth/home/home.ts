@@ -26,6 +26,7 @@ import { Inventory } from '../inventory/inventory';
 import { Assignments } from '../assignments/assignments';
 import { Profile } from '../profile/profile';
 import { Notifications } from '../notifications/notifications';
+import { Reports } from '../reports/reports';
 
 @Component({
     selector: 'app-sidebar',
@@ -54,7 +55,8 @@ import { Notifications } from '../notifications/notifications';
     Inventory,
     Assignments,
     Profile,
-    Notifications
+    Notifications,
+    Reports
 ],
     templateUrl: './home.html',
     styleUrls: ['./home.css'],

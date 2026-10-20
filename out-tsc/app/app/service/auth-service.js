@@ -143,6 +143,9 @@ export class AuthService {
     markAllNotificationsAsRead() {
         return this.http.patch(`${this.baseUrl}/notifications/read-all`, {}, { withCredentials: true });
     }
+    getReports(params) {
+        return this.http.get(`${this.baseUrl}/reports`, { params, withCredentials: true });
+    }
     getAssignments(params) {
         return this.http.get(`${this.baseUrl}/assignments`, { params, withCredentials: true });
     }

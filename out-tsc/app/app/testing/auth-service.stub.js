@@ -22,6 +22,12 @@ export const authServiceStub = {
     getNotifications: () => of({ status: 'success', notifications: [], unreadCount: 0 }),
     markNotificationAsRead: () => of({ status: 'success', notification: {} }),
     markAllNotificationsAsRead: () => of({ status: 'success' }),
+    getReports: () => of({
+        status: 'success',
+        rows: [],
+        total: 0,
+        summary: { solicitudes: 0, tickets: 0, sin_asignar: 0, cerrados: 0, estados_solicitudes: [], estados_tickets: [] },
+    }),
     createAssignment: () => of({ status: 'success' }),
     returnAssignment: () => of({ status: 'success' }),
     updateUser: () => of({ status: 'success' }),
