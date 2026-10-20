@@ -11,6 +11,7 @@ import { HomeSup } from './auth/home-sup/home-sup';
 import { Users } from './auth/users/users';
 import { Area } from './auth/area/area';
 import { Category } from './auth/category/category';
+import { Reports } from './auth/reports/reports';
 import { Role } from './auth/role/role';
 import { Inventory } from './auth/inventory/inventory';
 import { authGuard } from './auth.guard';
@@ -33,5 +34,6 @@ export const routes = [
     { path: 'role', component: Role, canActivate: [authGuard] },
     { path: 'inventario', component: Inventory, canActivate: [authGuard] },
     { path: 'asignaciones', component: Assignments, canActivate: [authGuard] },
+    { path: 'reportes', component: Reports, canActivate: [authGuard] },
     { path: '**', redirectTo: '/login' },
 ];
