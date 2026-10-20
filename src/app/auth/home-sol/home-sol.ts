@@ -1,4 +1,4 @@
-import { Component, inject, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatSidenavContainer, MatSidenav,} from '@angular/material/sidenav';
 import { MatDivider, MatDividerModule } from '@angular/material/divider';
@@ -21,6 +21,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { Profile } from '../profile/profile';
 import { Notifications } from '../notifications/notifications';
+import { finalize } from 'rxjs';
 
 @Component({
     selector: 'app-home-sol',
@@ -106,6 +107,7 @@ export class HomeSol {
         private authService: AuthService,
         private router: Router,
         private breakpointObserver: BreakpointObserver,
+        private changeDetectorRef: ChangeDetectorRef,
     ) {}
 
     private http = inject(HttpClient);
@@ -127,6 +129,7 @@ export class HomeSol {
         this.authService.getUser().subscribe({
             next: (response) => {
                 if (response.status === 'success') this.user = response.user;
+                this.changeDetectorRef.markForCheck();
             },
             error: (error) => console.error('No se pudo cargar el usuario:', error),
         });
@@ -142,6 +145,7 @@ export class HomeSol {
     cargarDatos() {
         console.log('Se ejecuta la función de carga de datos');
         this.cargando = true;
+        this.changeDetectorRef.markForCheck();
 
         // Configurar parámetros de la URL para el backend
         const params = new HttpParams()
@@ -149,14 +153,19 @@ export class HomeSol {
             .set('limit', this.tamanoPagina.toString())
             .set('search', this.filtroBusqueda);
 
-        this.authService.getSolicitudes(params).subscribe({
+        this.authService.getSolicitudes(params).pipe(
+            finalize(() => {
+                this.cargando = false;
+                this.changeDetectorRef.markForCheck();
+            }),
+        ).subscribe({
             next: (respuesta) => {
                 const solicitudes = respuesta.solicitudes ?? respuesta;
                 this.datos.data = Array.isArray(solicitudes) ? solicitudes : [];
                 this.totalRegistros = respuesta.total ?? this.datos.data.length;
-                this.cargando = false;
+                this.changeDetectorRef.markForCheck();
             },
-            error: () => (this.cargando = false),
+            error: (error) => console.error('No se pudieron cargar las solicitudes:', error),
         });
     }
 

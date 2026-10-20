@@ -1,5 +1,5 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { Component, inject, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
@@ -19,6 +19,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { Profile } from '../profile/profile';
 import { Notifications } from '../notifications/notifications';
+import { finalize } from 'rxjs';
 
 @Component({
     selector: 'app-home-tick',
@@ -63,6 +64,7 @@ export class HomeTick {
         private authService: AuthService,
         private router: Router,
         private breakpointObserver: BreakpointObserver,
+        private changeDetectorRef: ChangeDetectorRef,
     ) {}
 
     private http = inject(HttpClient);
@@ -73,6 +75,7 @@ export class HomeTick {
         this.authService.getUser().subscribe({
             next: (response) => {
                 if (response.status === 'success') this.user = response.user;
+                this.changeDetectorRef.markForCheck();
             },
             error: (error) => console.error('No se pudo cargar el usuario:', error),
         });
@@ -87,21 +90,26 @@ export class HomeTick {
 
     cargarDatos() {
         this.cargando = true;
+        this.changeDetectorRef.markForCheck();
         const params = new HttpParams()
             .set('page', (this.paginaActual + 1).toString())
             .set('limit', this.tamanoPagina.toString())
             .set('search', this.filtroBusqueda);
 
-        this.authService.getTickets(params).subscribe({
+        this.authService.getTickets(params).pipe(
+            finalize(() => {
+                this.cargando = false;
+                this.changeDetectorRef.markForCheck();
+            }),
+        ).subscribe({
             next: (respuesta) => {
                 const tickets = respuesta.tickets ?? respuesta;
                 this.datos.data = Array.isArray(tickets) ? tickets : [];
                 this.totalRegistros = respuesta.total ?? this.datos.data.length;
-                this.cargando = false;
+                this.changeDetectorRef.markForCheck();
             },
             error: (error) => {
                 console.error('No se pudieron cargar los tickets:', error);
-                this.cargando = false;
             },
         });
     }
