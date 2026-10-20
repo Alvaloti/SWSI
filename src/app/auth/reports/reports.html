@@ -1,0 +1,130 @@
+<section class="reports-container">
+    <header class="reports-header">
+        <div>
+            <h2>Reportes</h2>
+            <p>Consulta solicitudes, tickets y carga de trabajo de los técnicos.</p>
+        </div>
+    </header>
+
+    <form class="report-filters" (ngSubmit)="generateReport()">
+        <label>
+            Tipo de reporte
+            <select name="reportType" [(ngModel)]="reportType" (change)="changeType()">
+                <option value="solicitudes">Solicitudes</option>
+                <option value="tickets">Tickets</option>
+                <option value="tecnicos">Técnicos</option>
+            </select>
+        </label>
+        <label>
+            Desde
+            <input name="from" type="date" [(ngModel)]="from">
+        </label>
+        <label>
+            Hasta
+            <input name="to" type="date" [(ngModel)]="to">
+        </label>
+        <label class="search-field">
+            Buscar
+            <input name="search" type="search" [(ngModel)]="search"
+                [placeholder]="reportType === 'tecnicos' ? 'Nombre, usuario o correo' : 'Folio, asunto o descripción'">
+        </label>
+        <button type="submit" mat-flat-button class="generate-button" [disabled]="loading">
+            <mat-icon>assessment</mat-icon>
+            {{ loading ? 'Generando...' : 'Generar reporte' }}
+        </button>
+    </form>
+
+    <div class="summary-grid">
+        <article class="summary-card">
+            <mat-icon>assignment</mat-icon><span>Solicitudes</span><strong>{{ summary.solicitudes }}</strong>
+        </article>
+        <article class="summary-card">
+            <mat-icon>confirmation_number</mat-icon><span>Tickets</span><strong>{{ summary.tickets }}</strong>
+        </article>
+        <article class="summary-card warning">
+            <mat-icon>person_off</mat-icon><span>Sin asignar</span><strong>{{ summary.sin_asignar }}</strong>
+        </article>
+        <article class="summary-card success">
+            <mat-icon>task_alt</mat-icon><span>Resueltos o cerrados</span><strong>{{ summary.cerrados }}</strong>
+        </article>
+    </div>
+
+    <div class="status-summary" *ngIf="reportType !== 'tecnicos'">
+        <span *ngFor="let item of (reportType === 'solicitudes' ? summary.estados_solicitudes : summary.estados_tickets)">
+            {{ item.estado }}: <strong>{{ item.total }}</strong>
+        </span>
+    </div>
+
+    <div class="loading-container" *ngIf="loading"><mat-spinner diameter="48"></mat-spinner></div>
+    <p class="report-error" role="alert" *ngIf="!loading && errorMessage">{{ errorMessage }}</p>
+
+    <div class="table-wrapper" *ngIf="!loading && !errorMessage">
+        <table mat-table [dataSource]="rows" class="mat-elevation-z2">
+            <ng-container matColumnDef="folio">
+                <th mat-header-cell *matHeaderCellDef>Folio</th>
+                <td mat-cell *matCellDef="let row">{{ row.folio }}</td>
+            </ng-container>
+            <ng-container matColumnDef="asunto">
+                <th mat-header-cell *matHeaderCellDef>Asunto</th>
+                <td mat-cell *matCellDef="let row">{{ subject(row) }}</td>
+            </ng-container>
+            <ng-container matColumnDef="estado">
+                <th mat-header-cell *matHeaderCellDef>Estado</th>
+                <td mat-cell *matCellDef="let row"><span class="status-pill">{{ row.estado }}</span></td>
+            </ng-container>
+            <ng-container matColumnDef="prioridad">
+                <th mat-header-cell *matHeaderCellDef>Prioridad</th>
+                <td mat-cell *matCellDef="let row">{{ row.prioridad }}</td>
+            </ng-container>
+            <ng-container matColumnDef="solicitante">
+                <th mat-header-cell *matHeaderCellDef>Solicitante</th>
+                <td mat-cell *matCellDef="let row">{{ personName(row.solicitante_id) }}</td>
+            </ng-container>
+            <ng-container matColumnDef="fecha">
+                <th mat-header-cell *matHeaderCellDef>Fecha</th>
+                <td mat-cell *matCellDef="let row">{{ row.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+            </ng-container>
+            <ng-container matColumnDef="tecnico">
+                <th mat-header-cell *matHeaderCellDef>Técnico</th>
+                <td mat-cell *matCellDef="let row">
+                    {{ reportType === 'tecnicos' ? personName(row) : personName(row.tecnico_id) }}
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="email">
+                <th mat-header-cell *matHeaderCellDef>Correo</th>
+                <td mat-cell *matCellDef="let row">{{ row.email }}</td>
+            </ng-container>
+            <ng-container matColumnDef="area">
+                <th mat-header-cell *matHeaderCellDef>Área</th>
+                <td mat-cell *matCellDef="let row">{{ row.area?.name ?? 'Sin área' }}</td>
+            </ng-container>
+            <ng-container matColumnDef="asignados">
+                <th mat-header-cell *matHeaderCellDef>Asignados</th>
+                <td mat-cell *matCellDef="let row">{{ row.asignados }}</td>
+            </ng-container>
+            <ng-container matColumnDef="cerrados">
+                <th mat-header-cell *matHeaderCellDef>Cerrados</th>
+                <td mat-cell *matCellDef="let row">{{ row.cerrados }}</td>
+            </ng-container>
+            <ng-container matColumnDef="pendientes">
+                <th mat-header-cell *matHeaderCellDef>Pendientes</th>
+                <td mat-cell *matCellDef="let row">{{ pending(row) }}</td>
+            </ng-container>
+            <ng-container matColumnDef="activo">
+                <th mat-header-cell *matHeaderCellDef>Estado</th>
+                <td mat-cell *matCellDef="let row">{{ row.active === false ? 'Inactivo' : 'Activo' }}</td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell empty-row" [attr.colspan]="displayedColumns.length">No hay datos para los filtros seleccionados.</td>
+            </tr>
+        </table>
+
+        <mat-paginator [length]="total" [pageIndex]="pageIndex" [pageSize]="pageSize"
+            [pageSizeOptions]="[5, 10, 25, 50, 100]" (page)="changePage($event)"
+            aria-label="Paginación del reporte">
+        </mat-paginator>
+    </div>
+</section>
