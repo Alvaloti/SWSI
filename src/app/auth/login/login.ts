@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../service/auth-service';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
+import { finalize } from 'rxjs';
 
 @Component({
     selector: 'app-login',
@@ -16,7 +17,12 @@ export class Login {
     loginError = '';
     submitting = false;
 
-  constructor(private fb: FormBuilder,private authService: AuthService, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router,
+    private changeDetectorRef: ChangeDetectorRef,
+  ) {
     this.loginForm = this.fb.group({
       email: ["", [Validators.required, Validators.email]],
       password: ["", [Validators.required, Validators.minLength(8)]]
@@ -31,12 +37,18 @@ export class Login {
 
       this.loginError = '';
       this.submitting = true;
+      this.changeDetectorRef.markForCheck();
       const formData = this.loginForm.getRawValue();
-      this.authService.login(formData).subscribe({
-        next: (response) => {
+      this.authService.login(formData).pipe(
+        finalize(() => {
           this.submitting = false;
+          this.changeDetectorRef.markForCheck();
+        }),
+      ).subscribe({
+        next: (response) => {
           if (response.status !== 'success') {
             this.loginError = response.message ?? 'No fue posible iniciar sesión.';
+            this.changeDetectorRef.markForCheck();
             return;
           }
 
@@ -56,6 +68,7 @@ export class Login {
 
           if (!destination) {
             this.loginError = 'Tu cuenta no tiene un rol válido para acceder al sistema.';
+            this.changeDetectorRef.markForCheck();
             this.authService.logout().subscribe();
             return;
           }
@@ -63,8 +76,8 @@ export class Login {
           this.router.navigateByUrl(destination, { replaceUrl: true });
         },
         error: (error) => {
-          this.submitting = false;
           this.loginError = error.error?.message ?? 'No fue posible iniciar sesión. Verifica tus credenciales.';
+          this.changeDetectorRef.markForCheck();
         }
       });
   }
