@@ -46,7 +46,6 @@ import { Reports } from '../reports/reports';
     MatFormFieldModule,
     MatProgressSpinnerModule,
     MatIcon,
-    Register,
     Users,
     HomeSol,
     Area,
