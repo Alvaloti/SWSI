@@ -1,4 +1,4 @@
-import { Component, inject, TemplateRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, TemplateRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../service/auth-service';
@@ -13,6 +13,7 @@ import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dial
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
+import { finalize } from 'rxjs';
 
 @Component({
     selector: 'app-inventory',
@@ -46,6 +47,7 @@ export class Inventory {
     constructor(
         private authService: AuthService,
         private router: Router,
+        private changeDetectorRef: ChangeDetectorRef,
     ) {
         this.inventoryForm = new FormGroup({
             type: new FormControl('', Validators.required),
@@ -90,6 +92,7 @@ export class Inventory {
     cargarDatos() {
         console.log('Se ejecuta la función de carga de categorías');
         this.cargando = true;
+        this.changeDetectorRef.markForCheck();
 
         // Configurar parámetros de la URL para el backend
         const params = new HttpParams()
@@ -97,16 +100,26 @@ export class Inventory {
             .set('limit', this.tamanoPagina.toString())
             .set('search', this.filtroBusqueda);
 
-        this.authService.getItems(params).subscribe({
+        this.authService.getItems(params).pipe(
+            finalize(() => {
+                this.cargando = false;
+                this.changeDetectorRef.markForCheck();
+            }),
+        ).subscribe({
             next: (respuesta) => {
                 const items = respuesta.items ?? respuesta;
                 console.log('Aquí la respuesta:', items);
                 // Tu API debe retornar los renglones y el total general de coincidencias
                 this.datos.data = Array.isArray(items) ? items : [];
                 this.totalRegistros = respuesta.total ?? this.datos.data.length;
-                this.cargando = false;
+                this.changeDetectorRef.markForCheck();
             },
-            error: () => (this.cargando = false),
+            error: (error) => {
+                console.error('No fue posible cargar el inventario:', error);
+                this.datos.data = [];
+                this.totalRegistros = 0;
+                this.changeDetectorRef.markForCheck();
+            },
         });
     }
 
