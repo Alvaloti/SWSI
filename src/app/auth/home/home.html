@@ -24,10 +24,6 @@
             <mat-icon>person</mat-icon>
             <span class="span">Usuarios</span>
         </button>
-        <button mat-button class="menu-button" (click)="cambiarVista('register')">
-            <mat-icon>assignment</mat-icon>
-            <span class="span">Nuevo usuario</span>
-        </button>
         <button mat-button class="menu-button" (click)="cambiarVista('reportes')">
             <mat-icon>inbox</mat-icon>
             <span class="span">Reportes</span>
@@ -79,8 +75,6 @@
         <div class="contenido-dinamico">
             @if (vistaActiva === '') {
             <app-home-sol></app-home-sol>
-            } @else if (vistaActiva === 'register') {
-            <app-register></app-register>
             } @else if (vistaActiva === 'area') {
             <app-area></app-area>
             }@else if (vistaActiva === 'categoria') {
