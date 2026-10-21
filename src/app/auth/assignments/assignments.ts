@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, TemplateRef } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, TemplateRef } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpParams } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,6 +11,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { AuthService } from '../../service/auth-service';
+import { finalize } from 'rxjs';
 
 @Component({
     selector: 'app-assignments',
@@ -49,7 +50,10 @@ export class Assignments {
     private dialog = inject(MatDialog);
     private dialogRef?: MatDialogRef<unknown>;
 
-    constructor(private authService: AuthService) {
+    constructor(
+        private authService: AuthService,
+        private changeDetectorRef: ChangeDetectorRef,
+    ) {
         this.datos.filterPredicate = (assignment, filter) => {
             const searchable = [
                 assignment.inventory_id?.brand,
@@ -72,19 +76,27 @@ export class Assignments {
 
     cargarDatos() {
         this.cargando = true;
+        this.changeDetectorRef.markForCheck();
         let params = new HttpParams()
             .set('page', String(this.paginaActual + 1))
             .set('limit', String(this.tamanoPagina));
         if (this.activeFilter) params = params.set('active', this.activeFilter);
 
-        this.authService.getAssignments(params).subscribe({
+        this.authService.getAssignments(params).pipe(
+            finalize(() => {
+                this.cargando = false;
+                this.changeDetectorRef.markForCheck();
+            }),
+        ).subscribe({
             next: (response) => {
                 this.datos.data = response.assignments ?? [];
                 this.totalRegistros = response.total ?? this.datos.data.length;
-                this.cargando = false;
+                this.changeDetectorRef.markForCheck();
             },
             error: (error) => {
-                this.cargando = false;
+                this.datos.data = [];
+                this.totalRegistros = 0;
+                this.changeDetectorRef.markForCheck();
                 window.alert(error.error?.message ?? 'No fue posible cargar las asignaciones.');
             },
         });
