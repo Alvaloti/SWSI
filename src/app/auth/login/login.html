@@ -47,7 +47,7 @@
                         <h1>Iniciar sesión</h1>
                         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
                             <div class="input-usuario">
-                                <input type="email" name="email" formControlName="email" placeholder="Usuario" required
+                                <input type="email" name="email" formControlName="email" placeholder="Correo electrónico" required
                                     email>
                             </div><!--usuario-->
                             <div class="caja-input"></div>
@@ -65,7 +65,7 @@
 
                             <div class="centrar-boton-sesion">
                                 <input class="boton-sesion" type="submit" [value]="submitting ? 'Ingresando…' : 'Entrar'"
-                                    [disabled]="loginForm.invalid || submitting">
+                                    [disabled]="submitting">
                             </div><!--botón enviar-->
 
                             <p class="login-error" *ngIf="loginError" role="alert">{{ loginError }}</p>

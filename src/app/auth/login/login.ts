@@ -30,8 +30,24 @@ export class Login {
   }
 
   onSubmit() {
-      if (this.loginForm.invalid || this.submitting) {
+      if (this.submitting) return;
+
+      if (this.loginForm.invalid) {
         this.loginForm.markAllAsTouched();
+        const email = this.loginForm.get('email');
+        const password = this.loginForm.get('password');
+        if (email?.hasError('required')) {
+          this.loginError = 'El correo electrónico es obligatorio.';
+        } else if (email?.hasError('email')) {
+          this.loginError = 'Ingresa un correo electrónico válido.';
+        } else if (password?.hasError('required')) {
+          this.loginError = 'La contraseña es obligatoria.';
+        } else if (password?.hasError('minlength')) {
+          this.loginError = 'La contraseña debe contener al menos 8 caracteres.';
+        } else {
+          this.loginError = 'Revisa los datos ingresados.';
+        }
+        this.changeDetectorRef.markForCheck();
         return;
       }
 
