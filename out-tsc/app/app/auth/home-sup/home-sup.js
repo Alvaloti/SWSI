@@ -32,19 +32,19 @@ import * as i10 from "@angular/material/dialog";
 import * as i11 from "@angular/forms";
 const _c0 = ["assignmentDialog"];
 const _c1 = () => [5, 10, 25, 100];
-function HomeSup_Conditional_54_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelement(0, "app-users", 15);
+function HomeSup_Conditional_53_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelement(0, "app-users", 14);
 } }
-function HomeSup_Conditional_55_Template(rf, ctx) { if (rf & 1) {
+function HomeSup_Conditional_54_Template(rf, ctx) { if (rf & 1) {
     i0.ɵɵelement(0, "app-reports");
 } }
-function HomeSup_Conditional_56_Conditional_7_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "div", 19);
+function HomeSup_Conditional_55_Conditional_7_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "div", 18);
     i0.ɵɵelement(1, "mat-spinner");
     i0.ɵɵelementEnd();
 } }
-function HomeSup_Conditional_56_Conditional_8_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "p", 20);
+function HomeSup_Conditional_55_Conditional_8_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "p", 19);
     i0.ɵɵtext(1);
     i0.ɵɵelementEnd();
 } if (rf & 2) {
@@ -52,13 +52,13 @@ function HomeSup_Conditional_56_Conditional_8_Template(rf, ctx) { if (rf & 1) {
     i0.ɵɵadvance();
     i0.ɵɵtextInterpolate(ctx_r2.errorCarga);
 } }
-function HomeSup_Conditional_56_Conditional_9_th_2_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "th", 35);
+function HomeSup_Conditional_55_Conditional_9_th_2_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "th", 34);
     i0.ɵɵtext(1, "Folio");
     i0.ɵɵelementEnd();
 } }
-function HomeSup_Conditional_56_Conditional_9_td_3_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "td", 36);
+function HomeSup_Conditional_55_Conditional_9_td_3_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "td", 35);
     i0.ɵɵtext(1);
     i0.ɵɵelementEnd();
 } if (rf & 2) {
@@ -66,13 +66,13 @@ function HomeSup_Conditional_56_Conditional_9_td_3_Template(rf, ctx) { if (rf & 
     i0.ɵɵadvance();
     i0.ɵɵtextInterpolate(solicitud_r4.folio);
 } }
-function HomeSup_Conditional_56_Conditional_9_th_5_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "th", 35);
+function HomeSup_Conditional_55_Conditional_9_th_5_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "th", 34);
     i0.ɵɵtext(1, "Tipo");
     i0.ɵɵelementEnd();
 } }
-function HomeSup_Conditional_56_Conditional_9_td_6_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "td", 36);
+function HomeSup_Conditional_55_Conditional_9_td_6_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "td", 35);
     i0.ɵɵtext(1);
     i0.ɵɵelementEnd();
 } if (rf & 2) {
@@ -80,13 +80,13 @@ function HomeSup_Conditional_56_Conditional_9_td_6_Template(rf, ctx) { if (rf & 
     i0.ɵɵadvance();
     i0.ɵɵtextInterpolate(solicitud_r5.tipo);
 } }
-function HomeSup_Conditional_56_Conditional_9_th_8_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "th", 35);
+function HomeSup_Conditional_55_Conditional_9_th_8_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "th", 34);
     i0.ɵɵtext(1, "Descripci\u00F3n");
     i0.ɵɵelementEnd();
 } }
-function HomeSup_Conditional_56_Conditional_9_td_9_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "td", 36);
+function HomeSup_Conditional_55_Conditional_9_td_9_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "td", 35);
     i0.ɵɵtext(1);
     i0.ɵɵelementEnd();
 } if (rf & 2) {
@@ -94,13 +94,13 @@ function HomeSup_Conditional_56_Conditional_9_td_9_Template(rf, ctx) { if (rf & 
     i0.ɵɵadvance();
     i0.ɵɵtextInterpolate(solicitud_r6.descripcion);
 } }
-function HomeSup_Conditional_56_Conditional_9_th_11_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "th", 35);
+function HomeSup_Conditional_55_Conditional_9_th_11_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "th", 34);
     i0.ɵɵtext(1, "Prioridad");
     i0.ɵɵelementEnd();
 } }
-function HomeSup_Conditional_56_Conditional_9_td_12_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "td", 36);
+function HomeSup_Conditional_55_Conditional_9_td_12_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "td", 35);
     i0.ɵɵtext(1);
     i0.ɵɵelementEnd();
 } if (rf & 2) {
@@ -108,13 +108,13 @@ function HomeSup_Conditional_56_Conditional_9_td_12_Template(rf, ctx) { if (rf &
     i0.ɵɵadvance();
     i0.ɵɵtextInterpolate(solicitud_r7.prioridad);
 } }
-function HomeSup_Conditional_56_Conditional_9_th_14_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "th", 35);
+function HomeSup_Conditional_55_Conditional_9_th_14_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "th", 34);
     i0.ɵɵtext(1, "Estado");
     i0.ɵɵelementEnd();
 } }
-function HomeSup_Conditional_56_Conditional_9_td_15_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "td", 36);
+function HomeSup_Conditional_55_Conditional_9_td_15_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "td", 35);
     i0.ɵɵtext(1);
     i0.ɵɵelementEnd();
 } if (rf & 2) {
@@ -122,13 +122,13 @@ function HomeSup_Conditional_56_Conditional_9_td_15_Template(rf, ctx) { if (rf &
     i0.ɵɵadvance();
     i0.ɵɵtextInterpolate(solicitud_r8.estado);
 } }
-function HomeSup_Conditional_56_Conditional_9_th_17_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "th", 35);
+function HomeSup_Conditional_55_Conditional_9_th_17_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "th", 34);
     i0.ɵɵtext(1, "Comentarios");
     i0.ɵɵelementEnd();
 } }
-function HomeSup_Conditional_56_Conditional_9_td_18_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "td", 36);
+function HomeSup_Conditional_55_Conditional_9_td_18_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "td", 35);
     i0.ɵɵtext(1);
     i0.ɵɵelementEnd();
 } if (rf & 2) {
@@ -136,32 +136,32 @@ function HomeSup_Conditional_56_Conditional_9_td_18_Template(rf, ctx) { if (rf &
     i0.ɵɵadvance();
     i0.ɵɵtextInterpolate(solicitud_r9.comentarios || "Sin comentarios");
 } }
-function HomeSup_Conditional_56_Conditional_9_th_20_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "th", 35);
+function HomeSup_Conditional_55_Conditional_9_th_20_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "th", 34);
     i0.ɵɵtext(1, "Acciones");
     i0.ɵɵelementEnd();
 } }
-function HomeSup_Conditional_56_Conditional_9_td_21_Template(rf, ctx) { if (rf & 1) {
+function HomeSup_Conditional_55_Conditional_9_td_21_Template(rf, ctx) { if (rf & 1) {
     const _r10 = i0.ɵɵgetCurrentView();
-    i0.ɵɵelementStart(0, "td", 36)(1, "button", 37);
-    i0.ɵɵlistener("click", function HomeSup_Conditional_56_Conditional_9_td_21_Template_button_click_1_listener() { const solicitud_r11 = i0.ɵɵrestoreView(_r10).$implicit; const ctx_r2 = i0.ɵɵnextContext(3); return i0.ɵɵresetView(ctx_r2.editarSolicitud(solicitud_r11)); });
+    i0.ɵɵelementStart(0, "td", 35)(1, "button", 36);
+    i0.ɵɵlistener("click", function HomeSup_Conditional_55_Conditional_9_td_21_Template_button_click_1_listener() { const solicitud_r11 = i0.ɵɵrestoreView(_r10).$implicit; const ctx_r2 = i0.ɵɵnextContext(3); return i0.ɵɵresetView(ctx_r2.editarSolicitud(solicitud_r11)); });
     i0.ɵɵelementStart(2, "mat-icon");
     i0.ɵɵtext(3, "edit");
     i0.ɵɵelementEnd()();
-    i0.ɵɵelementStart(4, "button", 38);
-    i0.ɵɵlistener("click", function HomeSup_Conditional_56_Conditional_9_td_21_Template_button_click_4_listener() { const solicitud_r11 = i0.ɵɵrestoreView(_r10).$implicit; const ctx_r2 = i0.ɵɵnextContext(3); return i0.ɵɵresetView(ctx_r2.eliminarSolicitud(solicitud_r11)); });
+    i0.ɵɵelementStart(4, "button", 37);
+    i0.ɵɵlistener("click", function HomeSup_Conditional_55_Conditional_9_td_21_Template_button_click_4_listener() { const solicitud_r11 = i0.ɵɵrestoreView(_r10).$implicit; const ctx_r2 = i0.ɵɵnextContext(3); return i0.ɵɵresetView(ctx_r2.eliminarSolicitud(solicitud_r11)); });
     i0.ɵɵelementStart(5, "mat-icon");
     i0.ɵɵtext(6, "delete");
     i0.ɵɵelementEnd()()();
 } }
-function HomeSup_Conditional_56_Conditional_9_tr_22_Template(rf, ctx) { if (rf & 1) {
+function HomeSup_Conditional_55_Conditional_9_tr_22_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelement(0, "tr", 38);
+} }
+function HomeSup_Conditional_55_Conditional_9_tr_23_Template(rf, ctx) { if (rf & 1) {
     i0.ɵɵelement(0, "tr", 39);
 } }
-function HomeSup_Conditional_56_Conditional_9_tr_23_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelement(0, "tr", 40);
-} }
-function HomeSup_Conditional_56_Conditional_9_tr_24_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "tr", 41)(1, "td", 42);
+function HomeSup_Conditional_55_Conditional_9_tr_24_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "tr", 40)(1, "td", 41);
     i0.ɵɵtext(2, "No hay solicitudes disponibles.");
     i0.ɵɵelementEnd()();
 } if (rf & 2) {
@@ -169,30 +169,30 @@ function HomeSup_Conditional_56_Conditional_9_tr_24_Template(rf, ctx) { if (rf &
     i0.ɵɵadvance();
     i0.ɵɵattribute("colspan", ctx_r2.columnasVisibles.length);
 } }
-function HomeSup_Conditional_56_Conditional_9_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "table", 21);
-    i0.ɵɵelementContainerStart(1, 23);
-    i0.ɵɵtemplate(2, HomeSup_Conditional_56_Conditional_9_th_2_Template, 2, 0, "th", 24)(3, HomeSup_Conditional_56_Conditional_9_td_3_Template, 2, 1, "td", 25);
+function HomeSup_Conditional_55_Conditional_9_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "table", 20);
+    i0.ɵɵelementContainerStart(1, 22);
+    i0.ɵɵtemplate(2, HomeSup_Conditional_55_Conditional_9_th_2_Template, 2, 0, "th", 23)(3, HomeSup_Conditional_55_Conditional_9_td_3_Template, 2, 1, "td", 24);
     i0.ɵɵelementContainerEnd();
-    i0.ɵɵelementContainerStart(4, 26);
-    i0.ɵɵtemplate(5, HomeSup_Conditional_56_Conditional_9_th_5_Template, 2, 0, "th", 24)(6, HomeSup_Conditional_56_Conditional_9_td_6_Template, 2, 1, "td", 25);
+    i0.ɵɵelementContainerStart(4, 25);
+    i0.ɵɵtemplate(5, HomeSup_Conditional_55_Conditional_9_th_5_Template, 2, 0, "th", 23)(6, HomeSup_Conditional_55_Conditional_9_td_6_Template, 2, 1, "td", 24);
     i0.ɵɵelementContainerEnd();
-    i0.ɵɵelementContainerStart(7, 27);
-    i0.ɵɵtemplate(8, HomeSup_Conditional_56_Conditional_9_th_8_Template, 2, 0, "th", 24)(9, HomeSup_Conditional_56_Conditional_9_td_9_Template, 2, 1, "td", 25);
+    i0.ɵɵelementContainerStart(7, 26);
+    i0.ɵɵtemplate(8, HomeSup_Conditional_55_Conditional_9_th_8_Template, 2, 0, "th", 23)(9, HomeSup_Conditional_55_Conditional_9_td_9_Template, 2, 1, "td", 24);
     i0.ɵɵelementContainerEnd();
-    i0.ɵɵelementContainerStart(10, 28);
-    i0.ɵɵtemplate(11, HomeSup_Conditional_56_Conditional_9_th_11_Template, 2, 0, "th", 24)(12, HomeSup_Conditional_56_Conditional_9_td_12_Template, 2, 1, "td", 25);
+    i0.ɵɵelementContainerStart(10, 27);
+    i0.ɵɵtemplate(11, HomeSup_Conditional_55_Conditional_9_th_11_Template, 2, 0, "th", 23)(12, HomeSup_Conditional_55_Conditional_9_td_12_Template, 2, 1, "td", 24);
     i0.ɵɵelementContainerEnd();
-    i0.ɵɵelementContainerStart(13, 29);
-    i0.ɵɵtemplate(14, HomeSup_Conditional_56_Conditional_9_th_14_Template, 2, 0, "th", 24)(15, HomeSup_Conditional_56_Conditional_9_td_15_Template, 2, 1, "td", 25);
+    i0.ɵɵelementContainerStart(13, 28);
+    i0.ɵɵtemplate(14, HomeSup_Conditional_55_Conditional_9_th_14_Template, 2, 0, "th", 23)(15, HomeSup_Conditional_55_Conditional_9_td_15_Template, 2, 1, "td", 24);
     i0.ɵɵelementContainerEnd();
-    i0.ɵɵelementContainerStart(16, 30);
-    i0.ɵɵtemplate(17, HomeSup_Conditional_56_Conditional_9_th_17_Template, 2, 0, "th", 24)(18, HomeSup_Conditional_56_Conditional_9_td_18_Template, 2, 1, "td", 25);
+    i0.ɵɵelementContainerStart(16, 29);
+    i0.ɵɵtemplate(17, HomeSup_Conditional_55_Conditional_9_th_17_Template, 2, 0, "th", 23)(18, HomeSup_Conditional_55_Conditional_9_td_18_Template, 2, 1, "td", 24);
     i0.ɵɵelementContainerEnd();
-    i0.ɵɵelementContainerStart(19, 31);
-    i0.ɵɵtemplate(20, HomeSup_Conditional_56_Conditional_9_th_20_Template, 2, 0, "th", 24)(21, HomeSup_Conditional_56_Conditional_9_td_21_Template, 7, 0, "td", 25);
+    i0.ɵɵelementContainerStart(19, 30);
+    i0.ɵɵtemplate(20, HomeSup_Conditional_55_Conditional_9_th_20_Template, 2, 0, "th", 23)(21, HomeSup_Conditional_55_Conditional_9_td_21_Template, 7, 0, "td", 24);
     i0.ɵɵelementContainerEnd();
-    i0.ɵɵtemplate(22, HomeSup_Conditional_56_Conditional_9_tr_22_Template, 1, 0, "tr", 32)(23, HomeSup_Conditional_56_Conditional_9_tr_23_Template, 1, 0, "tr", 33)(24, HomeSup_Conditional_56_Conditional_9_tr_24_Template, 3, 1, "tr", 34);
+    i0.ɵɵtemplate(22, HomeSup_Conditional_55_Conditional_9_tr_22_Template, 1, 0, "tr", 31)(23, HomeSup_Conditional_55_Conditional_9_tr_23_Template, 1, 0, "tr", 32)(24, HomeSup_Conditional_55_Conditional_9_tr_24_Template, 3, 1, "tr", 33);
     i0.ɵɵelementEnd();
 } if (rf & 2) {
     const ctx_r2 = i0.ɵɵnextContext(2);
@@ -202,20 +202,20 @@ function HomeSup_Conditional_56_Conditional_9_Template(rf, ctx) { if (rf & 1) {
     i0.ɵɵadvance();
     i0.ɵɵproperty("matRowDefColumns", ctx_r2.columnasVisibles);
 } }
-function HomeSup_Conditional_56_Template(rf, ctx) { if (rf & 1) {
+function HomeSup_Conditional_55_Template(rf, ctx) { if (rf & 1) {
     const _r2 = i0.ɵɵgetCurrentView();
-    i0.ɵɵelementStart(0, "div", 16)(1, "h2");
+    i0.ɵɵelementStart(0, "div", 15)(1, "h2");
     i0.ɵɵtext(2, "Solicitudes");
     i0.ɵɵelementEnd();
-    i0.ɵɵelementStart(3, "mat-form-field", 17)(4, "mat-label");
+    i0.ɵɵelementStart(3, "mat-form-field", 16)(4, "mat-label");
     i0.ɵɵtext(5, "Buscar solicitud");
     i0.ɵɵelementEnd();
-    i0.ɵɵelementStart(6, "input", 18);
-    i0.ɵɵlistener("keyup", function HomeSup_Conditional_56_Template_input_keyup_6_listener($event) { i0.ɵɵrestoreView(_r2); const ctx_r2 = i0.ɵɵnextContext(); return i0.ɵɵresetView(ctx_r2.onFiltrar($event)); });
+    i0.ɵɵelementStart(6, "input", 17);
+    i0.ɵɵlistener("keyup", function HomeSup_Conditional_55_Template_input_keyup_6_listener($event) { i0.ɵɵrestoreView(_r2); const ctx_r2 = i0.ɵɵnextContext(); return i0.ɵɵresetView(ctx_r2.onFiltrar($event)); });
     i0.ɵɵelementEnd()();
-    i0.ɵɵconditionalCreate(7, HomeSup_Conditional_56_Conditional_7_Template, 2, 0, "div", 19)(8, HomeSup_Conditional_56_Conditional_8_Template, 2, 1, "p", 20)(9, HomeSup_Conditional_56_Conditional_9_Template, 25, 3, "table", 21);
-    i0.ɵɵelementStart(10, "mat-paginator", 22);
-    i0.ɵɵlistener("page", function HomeSup_Conditional_56_Template_mat_paginator_page_10_listener($event) { i0.ɵɵrestoreView(_r2); const ctx_r2 = i0.ɵɵnextContext(); return i0.ɵɵresetView(ctx_r2.onCambiarPagina($event)); });
+    i0.ɵɵconditionalCreate(7, HomeSup_Conditional_55_Conditional_7_Template, 2, 0, "div", 18)(8, HomeSup_Conditional_55_Conditional_8_Template, 2, 1, "p", 19)(9, HomeSup_Conditional_55_Conditional_9_Template, 25, 3, "table", 20);
+    i0.ɵɵelementStart(10, "mat-paginator", 21);
+    i0.ɵɵlistener("page", function HomeSup_Conditional_55_Template_mat_paginator_page_10_listener($event) { i0.ɵɵrestoreView(_r2); const ctx_r2 = i0.ɵɵnextContext(); return i0.ɵɵresetView(ctx_r2.onCambiarPagina($event)); });
     i0.ɵɵelementEnd()();
 } if (rf & 2) {
     const ctx_r2 = i0.ɵɵnextContext();
@@ -224,13 +224,13 @@ function HomeSup_Conditional_56_Template(rf, ctx) { if (rf & 1) {
     i0.ɵɵadvance(3);
     i0.ɵɵproperty("length", ctx_r2.totalRegistros)("pageSize", ctx_r2.tamanoPagina)("pageIndex", ctx_r2.paginaActual)("pageSizeOptions", i0.ɵɵpureFunction0(5, _c1));
 } }
-function HomeSup_Conditional_57_Conditional_7_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "div", 19);
+function HomeSup_Conditional_56_Conditional_7_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "div", 18);
     i0.ɵɵelement(1, "mat-spinner");
     i0.ɵɵelementEnd();
 } }
-function HomeSup_Conditional_57_Conditional_8_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "p", 20);
+function HomeSup_Conditional_56_Conditional_8_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "p", 19);
     i0.ɵɵtext(1);
     i0.ɵɵelementEnd();
 } if (rf & 2) {
@@ -238,13 +238,13 @@ function HomeSup_Conditional_57_Conditional_8_Template(rf, ctx) { if (rf & 1) {
     i0.ɵɵadvance();
     i0.ɵɵtextInterpolate(ctx_r2.errorCarga);
 } }
-function HomeSup_Conditional_57_Conditional_9_th_2_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "th", 35);
+function HomeSup_Conditional_56_Conditional_9_th_2_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "th", 34);
     i0.ɵɵtext(1, "Folio");
     i0.ɵɵelementEnd();
 } }
-function HomeSup_Conditional_57_Conditional_9_td_3_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "td", 36);
+function HomeSup_Conditional_56_Conditional_9_td_3_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "td", 35);
     i0.ɵɵtext(1);
     i0.ɵɵelementEnd();
 } if (rf & 2) {
@@ -252,13 +252,13 @@ function HomeSup_Conditional_57_Conditional_9_td_3_Template(rf, ctx) { if (rf & 
     i0.ɵɵadvance();
     i0.ɵɵtextInterpolate(ticket_r13.folio);
 } }
-function HomeSup_Conditional_57_Conditional_9_th_5_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "th", 35);
+function HomeSup_Conditional_56_Conditional_9_th_5_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "th", 34);
     i0.ɵɵtext(1, "T\u00EDtulo");
     i0.ɵɵelementEnd();
 } }
-function HomeSup_Conditional_57_Conditional_9_td_6_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "td", 36);
+function HomeSup_Conditional_56_Conditional_9_td_6_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "td", 35);
     i0.ɵɵtext(1);
     i0.ɵɵelementEnd();
 } if (rf & 2) {
@@ -266,13 +266,13 @@ function HomeSup_Conditional_57_Conditional_9_td_6_Template(rf, ctx) { if (rf & 
     i0.ɵɵadvance();
     i0.ɵɵtextInterpolate(ticket_r14.titulo);
 } }
-function HomeSup_Conditional_57_Conditional_9_th_8_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "th", 35);
+function HomeSup_Conditional_56_Conditional_9_th_8_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "th", 34);
     i0.ɵɵtext(1, "Descripci\u00F3n");
     i0.ɵɵelementEnd();
 } }
-function HomeSup_Conditional_57_Conditional_9_td_9_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "td", 36);
+function HomeSup_Conditional_56_Conditional_9_td_9_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "td", 35);
     i0.ɵɵtext(1);
     i0.ɵɵelementEnd();
 } if (rf & 2) {
@@ -280,13 +280,13 @@ function HomeSup_Conditional_57_Conditional_9_td_9_Template(rf, ctx) { if (rf & 
     i0.ɵɵadvance();
     i0.ɵɵtextInterpolate(ticket_r15.descripcion);
 } }
-function HomeSup_Conditional_57_Conditional_9_th_11_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "th", 35);
+function HomeSup_Conditional_56_Conditional_9_th_11_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "th", 34);
     i0.ɵɵtext(1, "Prioridad");
     i0.ɵɵelementEnd();
 } }
-function HomeSup_Conditional_57_Conditional_9_td_12_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "td", 36);
+function HomeSup_Conditional_56_Conditional_9_td_12_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "td", 35);
     i0.ɵɵtext(1);
     i0.ɵɵelementEnd();
 } if (rf & 2) {
@@ -294,13 +294,13 @@ function HomeSup_Conditional_57_Conditional_9_td_12_Template(rf, ctx) { if (rf &
     i0.ɵɵadvance();
     i0.ɵɵtextInterpolate(ticket_r16.prioridad);
 } }
-function HomeSup_Conditional_57_Conditional_9_th_14_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "th", 35);
+function HomeSup_Conditional_56_Conditional_9_th_14_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "th", 34);
     i0.ɵɵtext(1, "Estado");
     i0.ɵɵelementEnd();
 } }
-function HomeSup_Conditional_57_Conditional_9_td_15_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "td", 36);
+function HomeSup_Conditional_56_Conditional_9_td_15_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "td", 35);
     i0.ɵɵtext(1);
     i0.ɵɵelementEnd();
 } if (rf & 2) {
@@ -308,13 +308,13 @@ function HomeSup_Conditional_57_Conditional_9_td_15_Template(rf, ctx) { if (rf &
     i0.ɵɵadvance();
     i0.ɵɵtextInterpolate(ticket_r17.estado);
 } }
-function HomeSup_Conditional_57_Conditional_9_th_17_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "th", 35);
+function HomeSup_Conditional_56_Conditional_9_th_17_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "th", 34);
     i0.ɵɵtext(1, "Comentarios");
     i0.ɵɵelementEnd();
 } }
-function HomeSup_Conditional_57_Conditional_9_td_18_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "td", 36);
+function HomeSup_Conditional_56_Conditional_9_td_18_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "td", 35);
     i0.ɵɵtext(1);
     i0.ɵɵelementEnd();
 } if (rf & 2) {
@@ -322,32 +322,32 @@ function HomeSup_Conditional_57_Conditional_9_td_18_Template(rf, ctx) { if (rf &
     i0.ɵɵadvance();
     i0.ɵɵtextInterpolate(ticket_r18.comentarios || "Sin comentarios");
 } }
-function HomeSup_Conditional_57_Conditional_9_th_20_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "th", 35);
+function HomeSup_Conditional_56_Conditional_9_th_20_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "th", 34);
     i0.ɵɵtext(1, "Acciones");
     i0.ɵɵelementEnd();
 } }
-function HomeSup_Conditional_57_Conditional_9_td_21_Template(rf, ctx) { if (rf & 1) {
+function HomeSup_Conditional_56_Conditional_9_td_21_Template(rf, ctx) { if (rf & 1) {
     const _r19 = i0.ɵɵgetCurrentView();
-    i0.ɵɵelementStart(0, "td", 36)(1, "button", 46);
-    i0.ɵɵlistener("click", function HomeSup_Conditional_57_Conditional_9_td_21_Template_button_click_1_listener() { const ticket_r20 = i0.ɵɵrestoreView(_r19).$implicit; const ctx_r2 = i0.ɵɵnextContext(3); return i0.ɵɵresetView(ctx_r2.editarTicket(ticket_r20)); });
+    i0.ɵɵelementStart(0, "td", 35)(1, "button", 45);
+    i0.ɵɵlistener("click", function HomeSup_Conditional_56_Conditional_9_td_21_Template_button_click_1_listener() { const ticket_r20 = i0.ɵɵrestoreView(_r19).$implicit; const ctx_r2 = i0.ɵɵnextContext(3); return i0.ɵɵresetView(ctx_r2.editarTicket(ticket_r20)); });
     i0.ɵɵelementStart(2, "mat-icon");
     i0.ɵɵtext(3, "edit");
     i0.ɵɵelementEnd()();
-    i0.ɵɵelementStart(4, "button", 47);
-    i0.ɵɵlistener("click", function HomeSup_Conditional_57_Conditional_9_td_21_Template_button_click_4_listener() { const ticket_r20 = i0.ɵɵrestoreView(_r19).$implicit; const ctx_r2 = i0.ɵɵnextContext(3); return i0.ɵɵresetView(ctx_r2.eliminarTicket(ticket_r20)); });
+    i0.ɵɵelementStart(4, "button", 46);
+    i0.ɵɵlistener("click", function HomeSup_Conditional_56_Conditional_9_td_21_Template_button_click_4_listener() { const ticket_r20 = i0.ɵɵrestoreView(_r19).$implicit; const ctx_r2 = i0.ɵɵnextContext(3); return i0.ɵɵresetView(ctx_r2.eliminarTicket(ticket_r20)); });
     i0.ɵɵelementStart(5, "mat-icon");
     i0.ɵɵtext(6, "delete");
     i0.ɵɵelementEnd()()();
 } }
-function HomeSup_Conditional_57_Conditional_9_tr_22_Template(rf, ctx) { if (rf & 1) {
+function HomeSup_Conditional_56_Conditional_9_tr_22_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelement(0, "tr", 38);
+} }
+function HomeSup_Conditional_56_Conditional_9_tr_23_Template(rf, ctx) { if (rf & 1) {
     i0.ɵɵelement(0, "tr", 39);
 } }
-function HomeSup_Conditional_57_Conditional_9_tr_23_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelement(0, "tr", 40);
-} }
-function HomeSup_Conditional_57_Conditional_9_tr_24_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "tr", 41)(1, "td", 42);
+function HomeSup_Conditional_56_Conditional_9_tr_24_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "tr", 40)(1, "td", 41);
     i0.ɵɵtext(2, "No hay tickets disponibles.");
     i0.ɵɵelementEnd()();
 } if (rf & 2) {
@@ -355,30 +355,30 @@ function HomeSup_Conditional_57_Conditional_9_tr_24_Template(rf, ctx) { if (rf &
     i0.ɵɵadvance();
     i0.ɵɵattribute("colspan", ctx_r2.columnasTickets.length);
 } }
-function HomeSup_Conditional_57_Conditional_9_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "table", 21);
-    i0.ɵɵelementContainerStart(1, 23);
-    i0.ɵɵtemplate(2, HomeSup_Conditional_57_Conditional_9_th_2_Template, 2, 0, "th", 24)(3, HomeSup_Conditional_57_Conditional_9_td_3_Template, 2, 1, "td", 25);
+function HomeSup_Conditional_56_Conditional_9_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "table", 20);
+    i0.ɵɵelementContainerStart(1, 22);
+    i0.ɵɵtemplate(2, HomeSup_Conditional_56_Conditional_9_th_2_Template, 2, 0, "th", 23)(3, HomeSup_Conditional_56_Conditional_9_td_3_Template, 2, 1, "td", 24);
     i0.ɵɵelementContainerEnd();
-    i0.ɵɵelementContainerStart(4, 45);
-    i0.ɵɵtemplate(5, HomeSup_Conditional_57_Conditional_9_th_5_Template, 2, 0, "th", 24)(6, HomeSup_Conditional_57_Conditional_9_td_6_Template, 2, 1, "td", 25);
+    i0.ɵɵelementContainerStart(4, 44);
+    i0.ɵɵtemplate(5, HomeSup_Conditional_56_Conditional_9_th_5_Template, 2, 0, "th", 23)(6, HomeSup_Conditional_56_Conditional_9_td_6_Template, 2, 1, "td", 24);
     i0.ɵɵelementContainerEnd();
-    i0.ɵɵelementContainerStart(7, 27);
-    i0.ɵɵtemplate(8, HomeSup_Conditional_57_Conditional_9_th_8_Template, 2, 0, "th", 24)(9, HomeSup_Conditional_57_Conditional_9_td_9_Template, 2, 1, "td", 25);
+    i0.ɵɵelementContainerStart(7, 26);
+    i0.ɵɵtemplate(8, HomeSup_Conditional_56_Conditional_9_th_8_Template, 2, 0, "th", 23)(9, HomeSup_Conditional_56_Conditional_9_td_9_Template, 2, 1, "td", 24);
     i0.ɵɵelementContainerEnd();
-    i0.ɵɵelementContainerStart(10, 28);
-    i0.ɵɵtemplate(11, HomeSup_Conditional_57_Conditional_9_th_11_Template, 2, 0, "th", 24)(12, HomeSup_Conditional_57_Conditional_9_td_12_Template, 2, 1, "td", 25);
+    i0.ɵɵelementContainerStart(10, 27);
+    i0.ɵɵtemplate(11, HomeSup_Conditional_56_Conditional_9_th_11_Template, 2, 0, "th", 23)(12, HomeSup_Conditional_56_Conditional_9_td_12_Template, 2, 1, "td", 24);
     i0.ɵɵelementContainerEnd();
-    i0.ɵɵelementContainerStart(13, 29);
-    i0.ɵɵtemplate(14, HomeSup_Conditional_57_Conditional_9_th_14_Template, 2, 0, "th", 24)(15, HomeSup_Conditional_57_Conditional_9_td_15_Template, 2, 1, "td", 25);
+    i0.ɵɵelementContainerStart(13, 28);
+    i0.ɵɵtemplate(14, HomeSup_Conditional_56_Conditional_9_th_14_Template, 2, 0, "th", 23)(15, HomeSup_Conditional_56_Conditional_9_td_15_Template, 2, 1, "td", 24);
     i0.ɵɵelementContainerEnd();
-    i0.ɵɵelementContainerStart(16, 30);
-    i0.ɵɵtemplate(17, HomeSup_Conditional_57_Conditional_9_th_17_Template, 2, 0, "th", 24)(18, HomeSup_Conditional_57_Conditional_9_td_18_Template, 2, 1, "td", 25);
+    i0.ɵɵelementContainerStart(16, 29);
+    i0.ɵɵtemplate(17, HomeSup_Conditional_56_Conditional_9_th_17_Template, 2, 0, "th", 23)(18, HomeSup_Conditional_56_Conditional_9_td_18_Template, 2, 1, "td", 24);
     i0.ɵɵelementContainerEnd();
-    i0.ɵɵelementContainerStart(19, 31);
-    i0.ɵɵtemplate(20, HomeSup_Conditional_57_Conditional_9_th_20_Template, 2, 0, "th", 24)(21, HomeSup_Conditional_57_Conditional_9_td_21_Template, 7, 0, "td", 25);
+    i0.ɵɵelementContainerStart(19, 30);
+    i0.ɵɵtemplate(20, HomeSup_Conditional_56_Conditional_9_th_20_Template, 2, 0, "th", 23)(21, HomeSup_Conditional_56_Conditional_9_td_21_Template, 7, 0, "td", 24);
     i0.ɵɵelementContainerEnd();
-    i0.ɵɵtemplate(22, HomeSup_Conditional_57_Conditional_9_tr_22_Template, 1, 0, "tr", 32)(23, HomeSup_Conditional_57_Conditional_9_tr_23_Template, 1, 0, "tr", 33)(24, HomeSup_Conditional_57_Conditional_9_tr_24_Template, 3, 1, "tr", 34);
+    i0.ɵɵtemplate(22, HomeSup_Conditional_56_Conditional_9_tr_22_Template, 1, 0, "tr", 31)(23, HomeSup_Conditional_56_Conditional_9_tr_23_Template, 1, 0, "tr", 32)(24, HomeSup_Conditional_56_Conditional_9_tr_24_Template, 3, 1, "tr", 33);
     i0.ɵɵelementEnd();
 } if (rf & 2) {
     const ctx_r2 = i0.ɵɵnextContext(2);
@@ -388,20 +388,20 @@ function HomeSup_Conditional_57_Conditional_9_Template(rf, ctx) { if (rf & 1) {
     i0.ɵɵadvance();
     i0.ɵɵproperty("matRowDefColumns", ctx_r2.columnasTickets);
 } }
-function HomeSup_Conditional_57_Template(rf, ctx) { if (rf & 1) {
+function HomeSup_Conditional_56_Template(rf, ctx) { if (rf & 1) {
     const _r12 = i0.ɵɵgetCurrentView();
-    i0.ɵɵelementStart(0, "div", 16)(1, "h2");
+    i0.ɵɵelementStart(0, "div", 15)(1, "h2");
     i0.ɵɵtext(2, "Tickets");
     i0.ɵɵelementEnd();
-    i0.ɵɵelementStart(3, "mat-form-field", 17)(4, "mat-label");
+    i0.ɵɵelementStart(3, "mat-form-field", 16)(4, "mat-label");
     i0.ɵɵtext(5, "Buscar ticket");
     i0.ɵɵelementEnd();
-    i0.ɵɵelementStart(6, "input", 43);
-    i0.ɵɵlistener("keyup", function HomeSup_Conditional_57_Template_input_keyup_6_listener($event) { i0.ɵɵrestoreView(_r12); const ctx_r2 = i0.ɵɵnextContext(); return i0.ɵɵresetView(ctx_r2.onFiltrar($event)); });
+    i0.ɵɵelementStart(6, "input", 42);
+    i0.ɵɵlistener("keyup", function HomeSup_Conditional_56_Template_input_keyup_6_listener($event) { i0.ɵɵrestoreView(_r12); const ctx_r2 = i0.ɵɵnextContext(); return i0.ɵɵresetView(ctx_r2.onFiltrar($event)); });
     i0.ɵɵelementEnd()();
-    i0.ɵɵconditionalCreate(7, HomeSup_Conditional_57_Conditional_7_Template, 2, 0, "div", 19)(8, HomeSup_Conditional_57_Conditional_8_Template, 2, 1, "p", 20)(9, HomeSup_Conditional_57_Conditional_9_Template, 25, 3, "table", 21);
-    i0.ɵɵelementStart(10, "mat-paginator", 44);
-    i0.ɵɵlistener("page", function HomeSup_Conditional_57_Template_mat_paginator_page_10_listener($event) { i0.ɵɵrestoreView(_r12); const ctx_r2 = i0.ɵɵnextContext(); return i0.ɵɵresetView(ctx_r2.onCambiarPagina($event)); });
+    i0.ɵɵconditionalCreate(7, HomeSup_Conditional_56_Conditional_7_Template, 2, 0, "div", 18)(8, HomeSup_Conditional_56_Conditional_8_Template, 2, 1, "p", 19)(9, HomeSup_Conditional_56_Conditional_9_Template, 25, 3, "table", 20);
+    i0.ɵɵelementStart(10, "mat-paginator", 43);
+    i0.ɵɵlistener("page", function HomeSup_Conditional_56_Template_mat_paginator_page_10_listener($event) { i0.ɵɵrestoreView(_r12); const ctx_r2 = i0.ɵɵnextContext(); return i0.ɵɵresetView(ctx_r2.onCambiarPagina($event)); });
     i0.ɵɵelementEnd()();
 } if (rf & 2) {
     const ctx_r2 = i0.ɵɵnextContext();
@@ -410,8 +410,8 @@ function HomeSup_Conditional_57_Template(rf, ctx) { if (rf & 1) {
     i0.ɵɵadvance(3);
     i0.ɵɵproperty("length", ctx_r2.totalRegistros)("pageSize", ctx_r2.tamanoPagina)("pageIndex", ctx_r2.paginaActual)("pageSizeOptions", i0.ɵɵpureFunction0(5, _c1));
 } }
-function HomeSup_ng_template_58_option_9_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "option", 59);
+function HomeSup_ng_template_57_option_9_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "option", 58);
     i0.ɵɵtext(1);
     i0.ɵɵelementEnd();
 } if (rf & 2) {
@@ -420,33 +420,33 @@ function HomeSup_ng_template_58_option_9_Template(rf, ctx) { if (rf & 1) {
     i0.ɵɵadvance();
     i0.ɵɵtextInterpolate3(" ", tecnico_r22.name, " ", tecnico_r22.last_name, " (", tecnico_r22.username, ") ");
 } }
-function HomeSup_ng_template_58_Template(rf, ctx) { if (rf & 1) {
+function HomeSup_ng_template_57_Template(rf, ctx) { if (rf & 1) {
     const _r21 = i0.ɵɵgetCurrentView();
-    i0.ɵɵelementStart(0, "h2", 48);
+    i0.ɵɵelementStart(0, "h2", 47);
     i0.ɵɵtext(1);
     i0.ɵɵelementEnd();
-    i0.ɵɵelementStart(2, "mat-dialog-content")(3, "div", 49)(4, "label", 50);
+    i0.ɵɵelementStart(2, "mat-dialog-content")(3, "div", 48)(4, "label", 49);
     i0.ɵɵtext(5, "T\u00E9cnico asignado");
     i0.ɵɵelementEnd();
-    i0.ɵɵelementStart(6, "select", 51);
-    i0.ɵɵtwoWayListener("ngModelChange", function HomeSup_ng_template_58_Template_select_ngModelChange_6_listener($event) { i0.ɵɵrestoreView(_r21); const ctx_r2 = i0.ɵɵnextContext(); i0.ɵɵtwoWayBindingSet(ctx_r2.tecnicoSeleccionado, $event) || (ctx_r2.tecnicoSeleccionado = $event); return i0.ɵɵresetView($event); });
-    i0.ɵɵelementStart(7, "option", 52);
+    i0.ɵɵelementStart(6, "select", 50);
+    i0.ɵɵtwoWayListener("ngModelChange", function HomeSup_ng_template_57_Template_select_ngModelChange_6_listener($event) { i0.ɵɵrestoreView(_r21); const ctx_r2 = i0.ɵɵnextContext(); i0.ɵɵtwoWayBindingSet(ctx_r2.tecnicoSeleccionado, $event) || (ctx_r2.tecnicoSeleccionado = $event); return i0.ɵɵresetView($event); });
+    i0.ɵɵelementStart(7, "option", 51);
     i0.ɵɵtext(8, "Selecciona un t\u00E9cnico");
     i0.ɵɵelementEnd();
-    i0.ɵɵtemplate(9, HomeSup_ng_template_58_option_9_Template, 2, 4, "option", 53);
+    i0.ɵɵtemplate(9, HomeSup_ng_template_57_option_9_Template, 2, 4, "option", 52);
     i0.ɵɵelementEnd();
-    i0.ɵɵelementStart(10, "label", 54);
+    i0.ɵɵelementStart(10, "label", 53);
     i0.ɵɵtext(11, "Comentarios");
     i0.ɵɵelementEnd();
-    i0.ɵɵelementStart(12, "textarea", 55);
-    i0.ɵɵtwoWayListener("ngModelChange", function HomeSup_ng_template_58_Template_textarea_ngModelChange_12_listener($event) { i0.ɵɵrestoreView(_r21); const ctx_r2 = i0.ɵɵnextContext(); i0.ɵɵtwoWayBindingSet(ctx_r2.comentariosEditando, $event) || (ctx_r2.comentariosEditando = $event); return i0.ɵɵresetView($event); });
+    i0.ɵɵelementStart(12, "textarea", 54);
+    i0.ɵɵtwoWayListener("ngModelChange", function HomeSup_ng_template_57_Template_textarea_ngModelChange_12_listener($event) { i0.ɵɵrestoreView(_r21); const ctx_r2 = i0.ɵɵnextContext(); i0.ɵɵtwoWayBindingSet(ctx_r2.comentariosEditando, $event) || (ctx_r2.comentariosEditando = $event); return i0.ɵɵresetView($event); });
     i0.ɵɵelementEnd()()();
-    i0.ɵɵelementStart(13, "mat-dialog-actions", 56)(14, "button", 57);
-    i0.ɵɵlistener("click", function HomeSup_ng_template_58_Template_button_click_14_listener() { i0.ɵɵrestoreView(_r21); const ctx_r2 = i0.ɵɵnextContext(); return i0.ɵɵresetView(ctx_r2.cerrarEditor()); });
+    i0.ɵɵelementStart(13, "mat-dialog-actions", 55)(14, "button", 56);
+    i0.ɵɵlistener("click", function HomeSup_ng_template_57_Template_button_click_14_listener() { i0.ɵɵrestoreView(_r21); const ctx_r2 = i0.ɵɵnextContext(); return i0.ɵɵresetView(ctx_r2.cerrarEditor()); });
     i0.ɵɵtext(15, " Cancelar ");
     i0.ɵɵelementEnd();
-    i0.ɵɵelementStart(16, "button", 58);
-    i0.ɵɵlistener("click", function HomeSup_ng_template_58_Template_button_click_16_listener() { i0.ɵɵrestoreView(_r21); const ctx_r2 = i0.ɵɵnextContext(); return i0.ɵɵresetView(ctx_r2.guardarAsignacion()); });
+    i0.ɵɵelementStart(16, "button", 57);
+    i0.ɵɵlistener("click", function HomeSup_ng_template_57_Template_button_click_16_listener() { i0.ɵɵrestoreView(_r21); const ctx_r2 = i0.ɵɵnextContext(); return i0.ɵɵresetView(ctx_r2.guardarAsignacion()); });
     i0.ɵɵtext(17);
     i0.ɵɵelementEnd()();
 } if (rf & 2) {
@@ -679,7 +679,7 @@ export class HomeSup {
             let _t;
             i0.ɵɵqueryRefresh(_t = i0.ɵɵloadQuery()) && (ctx.assignmentDialog = _t.first);
             i0.ɵɵqueryRefresh(_t = i0.ɵɵloadQuery()) && (ctx.sidenav = _t.first);
-        } }, decls: 60, vars: 5, consts: [["drawer", ""], ["assignmentDialog", ""], [3, "click"], ["src", "https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg", "alt", "Direcci\u00F3n General de Tecnolog\u00EDas de la Informaci\u00F3n y Gobierno Digital", 1, "img-login"], [1, "espaciador-flexible"], [1, "mat-elevation-z8", 3, "openedChange", "mode", "opened"], ["src", "../../../../public/Lot.png", 1, "avatar", "mat-elevation-z8"], [1, "name"], [1, "designation"], [3, "profileUpdated"], ["mat-button", "", 1, "menu-button", 3, "click"], [1, "span"], ["mat-button", "", 1, "menu-button"], [1, "main-container"], [1, "contenido-dinamico"], ["roleFilter", "tecnico", "titulo", "T\u00E9cnicos"], [1, "table-container"], ["appearance", "outline"], ["matInput", "", "placeholder", "Folio, tipo o descripci\u00F3n", 3, "keyup"], [1, "loading-spinner"], ["role", "alert", 1, "load-error"], ["mat-table", "", 1, "mat-elevation-z8", 3, "dataSource"], ["aria-label", "Seleccionar p\u00E1gina de solicitudes", 3, "page", "length", "pageSize", "pageIndex", "pageSizeOptions"], ["matColumnDef", "folio"], ["mat-header-cell", "", 4, "matHeaderCellDef"], ["mat-cell", "", 4, "matCellDef"], ["matColumnDef", "tipo"], ["matColumnDef", "descripcion"], ["matColumnDef", "prioridad"], ["matColumnDef", "estado"], ["matColumnDef", "comentarios"], ["matColumnDef", "acciones"], ["mat-header-row", "", 4, "matHeaderRowDef"], ["mat-row", "", 4, "matRowDef", "matRowDefColumns"], ["class", "mat-row", 4, "matNoDataRow"], ["mat-header-cell", ""], ["mat-cell", ""], ["type", "button", "mat-icon-button", "", "color", "primary", "aria-label", "Editar solicitud", 3, "click"], ["type", "button", "mat-icon-button", "", "aria-label", "Eliminar solicitud", 1, "deleteButton", 3, "click"], ["mat-header-row", ""], ["mat-row", ""], [1, "mat-row"], [1, "mat-cell"], ["matInput", "", "placeholder", "Folio, t\u00EDtulo o descripci\u00F3n", 3, "keyup"], ["aria-label", "Seleccionar p\u00E1gina de tickets", 3, "page", "length", "pageSize", "pageIndex", "pageSizeOptions"], ["matColumnDef", "titulo"], ["type", "button", "mat-icon-button", "", "color", "primary", "aria-label", "Editar ticket", 3, "click"], ["type", "button", "mat-icon-button", "", "aria-label", "Eliminar ticket", 1, "deleteButton", 3, "click"], ["mat-dialog-title", ""], [1, "assignment-form"], ["for", "tecnico"], ["id", "tecnico", "required", "", 3, "ngModelChange", "ngModel"], ["value", "", "disabled", ""], [3, "value", 4, "ngFor", "ngForOf"], ["for", "comentariosEdicion"], ["id", "comentariosEdicion", "rows", "4", "placeholder", "Comentarios para el t\u00E9cnico", 3, "ngModelChange", "ngModel"], ["align", "end"], ["type", "button", "mat-button", "", 3, "click", "disabled"], ["type", "button", "mat-flat-button", "", "color", "primary", 3, "click", "disabled"], [3, "value"]], template: function HomeSup_Template(rf, ctx) { if (rf & 1) {
+        } }, decls: 59, vars: 6, consts: [["drawer", ""], ["assignmentDialog", ""], [3, "click"], ["src", "https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg", "alt", "Direcci\u00F3n General de Tecnolog\u00EDas de la Informaci\u00F3n y Gobierno Digital", 1, "img-login"], [1, "espaciador-flexible"], [1, "mat-elevation-z8", 3, "openedChange", "mode", "opened"], [1, "name"], [1, "designation"], [3, "profileUpdated"], ["mat-button", "", 1, "menu-button", 3, "click"], [1, "span"], ["mat-button", "", 1, "menu-button"], [1, "main-container"], [1, "contenido-dinamico"], ["roleFilter", "tecnico", "titulo", "T\u00E9cnicos"], [1, "table-container"], ["appearance", "outline"], ["matInput", "", "placeholder", "Folio, tipo o descripci\u00F3n", 3, "keyup"], [1, "loading-spinner"], ["role", "alert", 1, "load-error"], ["mat-table", "", 1, "mat-elevation-z8", 3, "dataSource"], ["aria-label", "Seleccionar p\u00E1gina de solicitudes", 3, "page", "length", "pageSize", "pageIndex", "pageSizeOptions"], ["matColumnDef", "folio"], ["mat-header-cell", "", 4, "matHeaderCellDef"], ["mat-cell", "", 4, "matCellDef"], ["matColumnDef", "tipo"], ["matColumnDef", "descripcion"], ["matColumnDef", "prioridad"], ["matColumnDef", "estado"], ["matColumnDef", "comentarios"], ["matColumnDef", "acciones"], ["mat-header-row", "", 4, "matHeaderRowDef"], ["mat-row", "", 4, "matRowDef", "matRowDefColumns"], ["class", "mat-row", 4, "matNoDataRow"], ["mat-header-cell", ""], ["mat-cell", ""], ["type", "button", "mat-icon-button", "", "color", "primary", "aria-label", "Editar solicitud", 3, "click"], ["type", "button", "mat-icon-button", "", "aria-label", "Eliminar solicitud", 1, "deleteButton", 3, "click"], ["mat-header-row", ""], ["mat-row", ""], [1, "mat-row"], [1, "mat-cell"], ["matInput", "", "placeholder", "Folio, t\u00EDtulo o descripci\u00F3n", 3, "keyup"], ["aria-label", "Seleccionar p\u00E1gina de tickets", 3, "page", "length", "pageSize", "pageIndex", "pageSizeOptions"], ["matColumnDef", "titulo"], ["type", "button", "mat-icon-button", "", "color", "primary", "aria-label", "Editar ticket", 3, "click"], ["type", "button", "mat-icon-button", "", "aria-label", "Eliminar ticket", 1, "deleteButton", 3, "click"], ["mat-dialog-title", ""], [1, "assignment-form"], ["for", "tecnico"], ["id", "tecnico", "required", "", 3, "ngModelChange", "ngModel"], ["value", "", "disabled", ""], [3, "value", 4, "ngFor", "ngForOf"], ["for", "comentariosEdicion"], ["id", "comentariosEdicion", "rows", "4", "placeholder", "Comentarios para el t\u00E9cnico", 3, "ngModelChange", "ngModel"], ["align", "end"], ["type", "button", "mat-button", "", 3, "click", "disabled"], ["type", "button", "mat-flat-button", "", "color", "primary", 3, "click", "disabled"], [3, "value"]], template: function HomeSup_Template(rf, ctx) { if (rf & 1) {
             const _r1 = i0.ɵɵgetCurrentView();
             i0.ɵɵelementStart(0, "mat-toolbar")(1, "button", 2);
             i0.ɵɵlistener("click", function HomeSup_Template_button_click_1_listener() { return ctx.toggleMenu(); });
@@ -697,78 +697,79 @@ export class HomeSup {
             i0.ɵɵelementEnd();
             i0.ɵɵelementStart(11, "mat-sidenav-container")(12, "mat-sidenav", 5, 0);
             i0.ɵɵtwoWayListener("openedChange", function HomeSup_Template_mat_sidenav_openedChange_12_listener($event) { i0.ɵɵrestoreView(_r1); i0.ɵɵtwoWayBindingSet(ctx.menuAbierto, $event) || (ctx.menuAbierto = $event); return i0.ɵɵresetView($event); });
-            i0.ɵɵelement(14, "img", 6);
-            i0.ɵɵelementStart(15, "h4", 7);
-            i0.ɵɵtext(16);
+            i0.ɵɵelementStart(14, "h4", 6);
+            i0.ɵɵtext(15);
             i0.ɵɵelementEnd();
-            i0.ɵɵelementStart(17, "p", 8);
-            i0.ɵɵtext(18, "Software Engineer");
+            i0.ɵɵelementStart(16, "p", 7);
+            i0.ɵɵtext(17);
             i0.ɵɵelementEnd();
-            i0.ɵɵelement(19, "mat-divider");
-            i0.ɵɵelementStart(20, "app-profile", 9);
-            i0.ɵɵlistener("profileUpdated", function HomeSup_Template_app_profile_profileUpdated_20_listener($event) { return ctx.user = $event; });
+            i0.ɵɵelement(18, "mat-divider");
+            i0.ɵɵelementStart(19, "app-profile", 8);
+            i0.ɵɵlistener("profileUpdated", function HomeSup_Template_app_profile_profileUpdated_19_listener($event) { return ctx.user = $event; });
             i0.ɵɵelementEnd();
-            i0.ɵɵelementStart(21, "button", 10);
-            i0.ɵɵlistener("click", function HomeSup_Template_button_click_21_listener() { return ctx.cambiarVista("users"); });
-            i0.ɵɵelementStart(22, "mat-icon");
-            i0.ɵɵtext(23, "person");
+            i0.ɵɵelementStart(20, "button", 9);
+            i0.ɵɵlistener("click", function HomeSup_Template_button_click_20_listener() { return ctx.cambiarVista("users"); });
+            i0.ɵɵelementStart(21, "mat-icon");
+            i0.ɵɵtext(22, "person");
             i0.ɵɵelementEnd();
-            i0.ɵɵelementStart(24, "span", 11);
-            i0.ɵɵtext(25, "T\u00E9cnicos");
+            i0.ɵɵelementStart(23, "span", 10);
+            i0.ɵɵtext(24, "T\u00E9cnicos");
             i0.ɵɵelementEnd()();
-            i0.ɵɵelementStart(26, "button", 10);
-            i0.ɵɵlistener("click", function HomeSup_Template_button_click_26_listener() { return ctx.cambiarVista("solicitud"); });
-            i0.ɵɵelementStart(27, "mat-icon");
-            i0.ɵɵtext(28, "assignment");
+            i0.ɵɵelementStart(25, "button", 9);
+            i0.ɵɵlistener("click", function HomeSup_Template_button_click_25_listener() { return ctx.cambiarVista("solicitud"); });
+            i0.ɵɵelementStart(26, "mat-icon");
+            i0.ɵɵtext(27, "assignment");
             i0.ɵɵelementEnd();
-            i0.ɵɵelementStart(29, "span", 11);
-            i0.ɵɵtext(30, "Solicitudes");
+            i0.ɵɵelementStart(28, "span", 10);
+            i0.ɵɵtext(29, "Solicitudes");
             i0.ɵɵelementEnd()();
-            i0.ɵɵelementStart(31, "button", 10);
-            i0.ɵɵlistener("click", function HomeSup_Template_button_click_31_listener() { return ctx.cambiarVista("tickets"); });
-            i0.ɵɵelementStart(32, "mat-icon");
-            i0.ɵɵtext(33, "assignment");
+            i0.ɵɵelementStart(30, "button", 9);
+            i0.ɵɵlistener("click", function HomeSup_Template_button_click_30_listener() { return ctx.cambiarVista("tickets"); });
+            i0.ɵɵelementStart(31, "mat-icon");
+            i0.ɵɵtext(32, "assignment");
             i0.ɵɵelementEnd();
-            i0.ɵɵelementStart(34, "span", 11);
-            i0.ɵɵtext(35, "Tickets");
+            i0.ɵɵelementStart(33, "span", 10);
+            i0.ɵɵtext(34, "Tickets");
             i0.ɵɵelementEnd()();
-            i0.ɵɵelementStart(36, "button", 10);
-            i0.ɵɵlistener("click", function HomeSup_Template_button_click_36_listener() { return ctx.cambiarVista("reportes"); });
-            i0.ɵɵelementStart(37, "mat-icon");
-            i0.ɵɵtext(38, "inbox");
+            i0.ɵɵelementStart(35, "button", 9);
+            i0.ɵɵlistener("click", function HomeSup_Template_button_click_35_listener() { return ctx.cambiarVista("reportes"); });
+            i0.ɵɵelementStart(36, "mat-icon");
+            i0.ɵɵtext(37, "inbox");
             i0.ɵɵelementEnd();
-            i0.ɵɵelementStart(39, "span", 11);
-            i0.ɵɵtext(40, "Reportes");
+            i0.ɵɵelementStart(38, "span", 10);
+            i0.ɵɵtext(39, "Reportes");
             i0.ɵɵelementEnd()();
-            i0.ɵɵelement(41, "mat-divider");
-            i0.ɵɵelementStart(42, "button", 12)(43, "mat-icon");
-            i0.ɵɵtext(44, "help");
+            i0.ɵɵelement(40, "mat-divider");
+            i0.ɵɵelementStart(41, "button", 11)(42, "mat-icon");
+            i0.ɵɵtext(43, "help");
             i0.ɵɵelementEnd();
-            i0.ɵɵelementStart(45, "span", 11);
-            i0.ɵɵtext(46, "Ayuda");
+            i0.ɵɵelementStart(44, "span", 10);
+            i0.ɵɵtext(45, "Ayuda");
             i0.ɵɵelementEnd()();
-            i0.ɵɵelementStart(47, "button", 10);
-            i0.ɵɵlistener("click", function HomeSup_Template_button_click_47_listener() { return ctx.logout(); });
-            i0.ɵɵelementStart(48, "mat-icon");
-            i0.ɵɵtext(49, "exit_to_app");
+            i0.ɵɵelementStart(46, "button", 9);
+            i0.ɵɵlistener("click", function HomeSup_Template_button_click_46_listener() { return ctx.logout(); });
+            i0.ɵɵelementStart(47, "mat-icon");
+            i0.ɵɵtext(48, "exit_to_app");
             i0.ɵɵelementEnd();
-            i0.ɵɵelementStart(50, "span", 11);
-            i0.ɵɵtext(51, "Salir");
+            i0.ɵɵelementStart(49, "span", 10);
+            i0.ɵɵtext(50, "Salir");
             i0.ɵɵelementEnd()()();
-            i0.ɵɵelementStart(52, "mat-sidenav-content", 13)(53, "div", 14);
-            i0.ɵɵconditionalCreate(54, HomeSup_Conditional_54_Template, 1, 0, "app-users", 15)(55, HomeSup_Conditional_55_Template, 1, 0, "app-reports")(56, HomeSup_Conditional_56_Template, 11, 6, "div", 16)(57, HomeSup_Conditional_57_Template, 11, 6, "div", 16);
+            i0.ɵɵelementStart(51, "mat-sidenav-content", 12)(52, "div", 13);
+            i0.ɵɵconditionalCreate(53, HomeSup_Conditional_53_Template, 1, 0, "app-users", 14)(54, HomeSup_Conditional_54_Template, 1, 0, "app-reports")(55, HomeSup_Conditional_55_Template, 11, 6, "div", 15)(56, HomeSup_Conditional_56_Template, 11, 6, "div", 15);
             i0.ɵɵelementEnd()()();
-            i0.ɵɵtemplate(58, HomeSup_ng_template_58_Template, 18, 8, "ng-template", null, 1, i0.ɵɵtemplateRefExtractor);
+            i0.ɵɵtemplate(57, HomeSup_ng_template_57_Template, 18, 8, "ng-template", null, 1, i0.ɵɵtemplateRefExtractor);
         } if (rf & 2) {
             i0.ɵɵadvance(9);
             i0.ɵɵtextInterpolate1(" Bienvenido ", ctx.user == null ? null : ctx.user.username, " ");
             i0.ɵɵadvance(3);
             i0.ɵɵproperty("mode", ctx.isMobile ? "over" : "side");
             i0.ɵɵtwoWayProperty("opened", ctx.menuAbierto);
-            i0.ɵɵadvance(4);
+            i0.ɵɵadvance(3);
             i0.ɵɵtextInterpolate(ctx.user == null ? null : ctx.user.username);
-            i0.ɵɵadvance(38);
-            i0.ɵɵconditional(ctx.vistaActiva === "users" ? 54 : ctx.vistaActiva === "reportes" ? 55 : ctx.vistaActiva === "solicitud" ? 56 : ctx.vistaActiva === "tickets" ? 57 : -1);
+            i0.ɵɵadvance(2);
+            i0.ɵɵtextInterpolate(ctx.user == null ? null : ctx.user.last_name);
+            i0.ɵɵadvance(36);
+            i0.ɵɵconditional(ctx.vistaActiva === "users" ? 53 : ctx.vistaActiva === "reportes" ? 54 : ctx.vistaActiva === "solicitud" ? 55 : ctx.vistaActiva === "tickets" ? 56 : -1);
         } }, dependencies: [CommonModule, i4.NgForOf, MatToolbar,
             MatButtonModule, i5.MatButton, i5.MatIconButton, MatIcon,
             MatSidenavContainer,
@@ -802,7 +803,7 @@ export class HomeSup {
                     Profile,
                     Notifications,
                     Reports
-                ], template: "<mat-toolbar>\n    <button (click)=\"toggleMenu()\">\n        <mat-icon>menu</mat-icon>\n        <span> Men\u00FA </span>\n    </button>\n    <img class=\"img-login\" src=\"https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg\"\n        alt=\"Direcci\u00F3n General de Tecnolog\u00EDas de la Informaci\u00F3n y Gobierno Digital\">\n    <span class=\"espaciador-flexible\"></span>\n    <span> Bienvenido {{ user?.username}} </span>\n    <app-notifications></app-notifications>\n\n</mat-toolbar>\n\n<mat-sidenav-container>\n    <mat-sidenav #drawer [mode]=\"isMobile ? 'over' : 'side'\" [(opened)]=\"menuAbierto\" class=\"mat-elevation-z8\">\n        <img class=\"avatar mat-elevation-z8\" src=\"../../../../public/Lot.png\" />\n\n        <h4 class=\"name\">{{user?.username}}</h4>\n        <p class=\"designation\">Software Engineer</p>\n\n        <mat-divider></mat-divider>\n        <app-profile (profileUpdated)=\"user = $event\"></app-profile>\n        <button mat-button class=\"menu-button\" (click)=\"cambiarVista('users')\">\n            <mat-icon>person</mat-icon>\n            <span class=\"span\">T\u00E9cnicos</span>\n        </button>\n        <button mat-button class=\"menu-button\" (click)=\"cambiarVista('solicitud')\">\n            <mat-icon>assignment</mat-icon>\n            <span class=\"span\">Solicitudes</span>\n        </button>\n        <button mat-button class=\"menu-button\" (click)=\"cambiarVista('tickets')\">\n            <mat-icon>assignment</mat-icon>\n            <span class=\"span\">Tickets</span>\n        </button>\n        <button mat-button class=\"menu-button\" (click)=\"cambiarVista('reportes')\">\n            <mat-icon>inbox</mat-icon>\n            <span class=\"span\">Reportes</span>\n        </button>\n\n        <mat-divider></mat-divider>\n\n        <button mat-button class=\"menu-button\">\n            <mat-icon>help</mat-icon>\n            <span class=\"span\">Ayuda</span>\n        </button>\n        <button mat-button class=\"menu-button\" (click)=\"logout()\">\n            <mat-icon>exit_to_app</mat-icon>\n            <span class=\"span\">Salir</span>\n        </button>\n    </mat-sidenav>\n\n    <mat-sidenav-content class=\"main-container\">\n        <div class=\"contenido-dinamico\">\n        @if (vistaActiva === 'users') {\n            <app-users roleFilter=\"tecnico\" titulo=\"T\u00E9cnicos\"></app-users>\n        } @else if (vistaActiva === 'reportes') {\n            <app-reports></app-reports>\n        } @else if (vistaActiva === 'solicitud') {\n            <div class=\"table-container\">\n                <h2>Solicitudes</h2>\n                <mat-form-field appearance=\"outline\">\n                    <mat-label>Buscar solicitud</mat-label>\n                    <input matInput (keyup)=\"onFiltrar($event)\" placeholder=\"Folio, tipo o descripci\u00F3n\">\n                </mat-form-field>\n\n                @if (cargando) {\n                <div class=\"loading-spinner\"><mat-spinner></mat-spinner></div>\n                } @else if (errorCarga) {\n                <p class=\"load-error\" role=\"alert\">{{ errorCarga }}</p>\n                } @else {\n                <table mat-table [dataSource]=\"datos\" class=\"mat-elevation-z8\">\n                    <ng-container matColumnDef=\"folio\">\n                        <th mat-header-cell *matHeaderCellDef>Folio</th>\n                        <td mat-cell *matCellDef=\"let solicitud\">{{ solicitud.folio }}</td>\n                    </ng-container>\n                    <ng-container matColumnDef=\"tipo\">\n                        <th mat-header-cell *matHeaderCellDef>Tipo</th>\n                        <td mat-cell *matCellDef=\"let solicitud\">{{ solicitud.tipo }}</td>\n                    </ng-container>\n                    <ng-container matColumnDef=\"descripcion\">\n                        <th mat-header-cell *matHeaderCellDef>Descripci\u00F3n</th>\n                        <td mat-cell *matCellDef=\"let solicitud\">{{ solicitud.descripcion }}</td>\n                    </ng-container>\n                    <ng-container matColumnDef=\"prioridad\">\n                        <th mat-header-cell *matHeaderCellDef>Prioridad</th>\n                        <td mat-cell *matCellDef=\"let solicitud\">{{ solicitud.prioridad }}</td>\n                    </ng-container>\n                    <ng-container matColumnDef=\"estado\">\n                        <th mat-header-cell *matHeaderCellDef>Estado</th>\n                        <td mat-cell *matCellDef=\"let solicitud\">{{ solicitud.estado }}</td>\n                    </ng-container>\n                    <ng-container matColumnDef=\"comentarios\">\n                        <th mat-header-cell *matHeaderCellDef>Comentarios</th>\n                        <td mat-cell *matCellDef=\"let solicitud\">{{ solicitud.comentarios || 'Sin comentarios' }}</td>\n                    </ng-container>\n                    <ng-container matColumnDef=\"acciones\">\n                        <th mat-header-cell *matHeaderCellDef>Acciones</th>\n                        <td mat-cell *matCellDef=\"let solicitud\">\n                            <button type=\"button\" mat-icon-button color=\"primary\"\n                                (click)=\"editarSolicitud(solicitud)\" aria-label=\"Editar solicitud\">\n                                <mat-icon>edit</mat-icon>\n                            </button>\n                            <button type=\"button\" mat-icon-button class=\"deleteButton\"\n                                (click)=\"eliminarSolicitud(solicitud)\" aria-label=\"Eliminar solicitud\">\n                                <mat-icon>delete</mat-icon>\n                            </button>\n                        </td>\n                    </ng-container>\n\n                    <tr mat-header-row *matHeaderRowDef=\"columnasVisibles\"></tr>\n                    <tr mat-row *matRowDef=\"let row; columns: columnasVisibles;\"></tr>\n                    <tr class=\"mat-row\" *matNoDataRow>\n                        <td class=\"mat-cell\" [attr.colspan]=\"columnasVisibles.length\">No hay solicitudes disponibles.</td>\n                    </tr>\n                </table>\n                }\n\n                <mat-paginator [length]=\"totalRegistros\" [pageSize]=\"tamanoPagina\" [pageIndex]=\"paginaActual\"\n                    [pageSizeOptions]=\"[5, 10, 25, 100]\" (page)=\"onCambiarPagina($event)\"\n                    aria-label=\"Seleccionar p\u00E1gina de solicitudes\">\n                </mat-paginator>\n            </div>\n        } @else if (vistaActiva === 'tickets') {\n            <div class=\"table-container\">\n                <h2>Tickets</h2>\n                <mat-form-field appearance=\"outline\">\n                    <mat-label>Buscar ticket</mat-label>\n                    <input matInput (keyup)=\"onFiltrar($event)\" placeholder=\"Folio, t\u00EDtulo o descripci\u00F3n\">\n                </mat-form-field>\n\n                @if (cargando) {\n                <div class=\"loading-spinner\"><mat-spinner></mat-spinner></div>\n                } @else if (errorCarga) {\n                <p class=\"load-error\" role=\"alert\">{{ errorCarga }}</p>\n                } @else {\n                <table mat-table [dataSource]=\"datos\" class=\"mat-elevation-z8\">\n                    <ng-container matColumnDef=\"folio\">\n                        <th mat-header-cell *matHeaderCellDef>Folio</th>\n                        <td mat-cell *matCellDef=\"let ticket\">{{ ticket.folio }}</td>\n                    </ng-container>\n                    <ng-container matColumnDef=\"titulo\">\n                        <th mat-header-cell *matHeaderCellDef>T\u00EDtulo</th>\n                        <td mat-cell *matCellDef=\"let ticket\">{{ ticket.titulo }}</td>\n                    </ng-container>\n                    <ng-container matColumnDef=\"descripcion\">\n                        <th mat-header-cell *matHeaderCellDef>Descripci\u00F3n</th>\n                        <td mat-cell *matCellDef=\"let ticket\">{{ ticket.descripcion }}</td>\n                    </ng-container>\n                    <ng-container matColumnDef=\"prioridad\">\n                        <th mat-header-cell *matHeaderCellDef>Prioridad</th>\n                        <td mat-cell *matCellDef=\"let ticket\">{{ ticket.prioridad }}</td>\n                    </ng-container>\n                    <ng-container matColumnDef=\"estado\">\n                        <th mat-header-cell *matHeaderCellDef>Estado</th>\n                        <td mat-cell *matCellDef=\"let ticket\">{{ ticket.estado }}</td>\n                    </ng-container>\n                    <ng-container matColumnDef=\"comentarios\">\n                        <th mat-header-cell *matHeaderCellDef>Comentarios</th>\n                        <td mat-cell *matCellDef=\"let ticket\">{{ ticket.comentarios || 'Sin comentarios' }}</td>\n                    </ng-container>\n                    <ng-container matColumnDef=\"acciones\">\n                        <th mat-header-cell *matHeaderCellDef>Acciones</th>\n                        <td mat-cell *matCellDef=\"let ticket\">\n                            <button type=\"button\" mat-icon-button color=\"primary\"\n                                (click)=\"editarTicket(ticket)\" aria-label=\"Editar ticket\">\n                                <mat-icon>edit</mat-icon>\n                            </button>\n                            <button type=\"button\" mat-icon-button class=\"deleteButton\"\n                                (click)=\"eliminarTicket(ticket)\" aria-label=\"Eliminar ticket\">\n                                <mat-icon>delete</mat-icon>\n                            </button>\n                        </td>\n                    </ng-container>\n\n                    <tr mat-header-row *matHeaderRowDef=\"columnasTickets\"></tr>\n                    <tr mat-row *matRowDef=\"let row; columns: columnasTickets;\"></tr>\n                    <tr class=\"mat-row\" *matNoDataRow>\n                        <td class=\"mat-cell\" [attr.colspan]=\"columnasTickets.length\">No hay tickets disponibles.</td>\n                    </tr>\n                </table>\n                }\n\n                <mat-paginator [length]=\"totalRegistros\" [pageSize]=\"tamanoPagina\" [pageIndex]=\"paginaActual\"\n                    [pageSizeOptions]=\"[5, 10, 25, 100]\" (page)=\"onCambiarPagina($event)\"\n                    aria-label=\"Seleccionar p\u00E1gina de tickets\">\n                </mat-paginator>\n            </div>\n        }\n\n        </div>\n    </mat-sidenav-content>\n</mat-sidenav-container>\n\n<ng-template #assignmentDialog>\n    <h2 mat-dialog-title>\n        Editar {{ tipoEditando === 'ticket' ? 'ticket' : 'solicitud' }}\n        {{ registroEditando?.folio }}\n    </h2>\n    <mat-dialog-content>\n        <div class=\"assignment-form\">\n            <label for=\"tecnico\">T\u00E9cnico asignado</label>\n            <select id=\"tecnico\" [(ngModel)]=\"tecnicoSeleccionado\" required>\n                <option value=\"\" disabled>Selecciona un t\u00E9cnico</option>\n                <option *ngFor=\"let tecnico of tecnicos\" [value]=\"tecnico._id ?? tecnico.id\">\n                    {{ tecnico.name }} {{ tecnico.last_name }} ({{ tecnico.username }})\n                </option>\n            </select>\n\n            <label for=\"comentariosEdicion\">Comentarios</label>\n            <textarea id=\"comentariosEdicion\" [(ngModel)]=\"comentariosEditando\" rows=\"4\"\n                placeholder=\"Comentarios para el t\u00E9cnico\"></textarea>\n        </div>\n    </mat-dialog-content>\n    <mat-dialog-actions align=\"end\">\n        <button type=\"button\" mat-button (click)=\"cerrarEditor()\" [disabled]=\"guardandoAsignacion\">\n            Cancelar\n        </button>\n        <button type=\"button\" mat-flat-button color=\"primary\" (click)=\"guardarAsignacion()\"\n            [disabled]=\"!tecnicoSeleccionado || guardandoAsignacion\">\n            {{ guardandoAsignacion ? 'Guardando...' : 'Asignar t\u00E9cnico' }}\n        </button>\n    </mat-dialog-actions>\n</ng-template>\n", styles: ["mat-toolbar {\n    background: #0194fe;\n    color: white;\n    top:0;\n    z-index: 2;\n}\n\nmat-sidenav {\n    margin: 16px;\n    width: 200px;\n    border-right: none;\n    background: #0194fe;\n    color: white;\n    border-radius: 10px;\n    padding: 16px;\n    text-align: center;\n}\n\n.content {\n    height: calc(100vh - 98px);\n    border-radius: 10px;\n    margin: 16px;\n    margin-left: 32px;\n\n    display: flex;\n    justify-content: center;\n    align-items: center;\n\n    font-size: 2rem;\n    color: lightgray;\n}\n\nmat-sidenav-container {\n    height: calc(100vh - 65px);\n    margin-right: 10;\n}\n\nmat-sidenav-container.oculto {\n    transform: translateX(-250px);\n}\n\nmat-toolbar mat-icon,\nmat-sidenav .menu-button mat-icon {\n        margin-right: 8px;\n        color: white;\n    }\n\n.span {\n    color: white;\n    font-size: 1rem;\n    margin-left: 8px;\n}\n\n.menu-button {\n    width: 100%;\n    display: flex;\n    align-items: center;\n    justify-content: flex-start;\n    font-size: 1rem;\n\n    .icon {\n        margin-right: 8px;\n        color: white;\n    }\n}\n\n.avatar {\n    margin-top: 16px;\n    width: 100px;\n    height: 100px;\n    border-radius: 50%;\n}\n\n.name {\n    margin-top: 8px;\n    font-weight: normal;\n}\n\n.designation {\n    margin-top: 2px;\n    font-size: 0.7rem;\n    color: lightgrey;\n}\n\n.img-login{\n\twidth: auto;\n    height: 40px;\n\tmargin: 20px 5px;\n}\n\nmat-divider {\n    margin-top: 16px;\n    margin-bottom: 16px;\n    background-color: white;\n}\n\n.sidebar {\n    position: fixed;\n    left: 0;\n    top: 0;\n    width: 250px;\n    height: 100vh;\n    background-color: #2c3e50;\n    color: white;\n    transition: transform 0.3s ease;\n    transform: translateX(0);\n}\n\n.sidebar.oculto {\n    transform: translateX(-250px);\n}\n\n.table-container {\n    margin: 16px;\n    padding: 16px;\n    background-color: #ffffff;\n    border-radius: 10px;\n    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);\n    overflow-x: auto;\n}\n\n.table-container mat-form-field,\n.table-container table,\n.table-container mat-paginator {\n    width: 100%;\n}\n\n.loading-spinner {\n    display: flex;\n    justify-content: center;\n    padding: 32px;\n}\n\n.load-error {\n    margin: 16px 0;\n    padding: 12px;\n    border-radius: 6px;\n    background: #ffebee;\n    color: #b71c1c;\n}\n\n.assignment-form {\n    display: grid;\n    gap: 10px;\n    padding-top: 8px;\n}\n\n.assignment-form select,\n.assignment-form textarea {\n    width: 100%;\n    box-sizing: border-box;\n    border: 1px solid #bdbdbd;\n    border-radius: 6px;\n    padding: 10px;\n    font: inherit;\n}\n\n.mat-row .mat-cell[colspan] {\n    padding: 32px;\n    text-align: center;\n    color: #666;\n}\n\n.mat-mdc-row:hover {\n  background-color: #f5f5f5;\n}\n\n.contenido {\n    margin-left: 250px;\n    transition: margin-left 0.3s ease;\n    padding: 20px;\n}\n\n.contenido.expandido {\n    margin-left: 0;\n}\n\n.media-funcion {\n    float: left;\n    margin: 0 auto;\n    max-width: 100%;\n    height: 30px;\n    padding: 15px 15px;\n    font-size: 14px;\n    background: #0194fe;\n}\n\n.espaciador-flexible {\n  flex: 1 1 auto;\n}\n"] }]
+                ], template: "<mat-toolbar>\n    <button (click)=\"toggleMenu()\">\n        <mat-icon>menu</mat-icon>\n        <span> Men\u00FA </span>\n    </button>\n    <img class=\"img-login\" src=\"https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg\"\n        alt=\"Direcci\u00F3n General de Tecnolog\u00EDas de la Informaci\u00F3n y Gobierno Digital\">\n    <span class=\"espaciador-flexible\"></span>\n    <span> Bienvenido {{ user?.username}} </span>\n    <app-notifications></app-notifications>\n\n</mat-toolbar>\n\n<mat-sidenav-container>\n    <mat-sidenav #drawer [mode]=\"isMobile ? 'over' : 'side'\" [(opened)]=\"menuAbierto\" class=\"mat-elevation-z8\">\n\n\n        <h4 class=\"name\">{{user?.username}}</h4>\n        <p class=\"designation\">{{user?.last_name}}</p>\n\n        <mat-divider></mat-divider>\n        <app-profile (profileUpdated)=\"user = $event\"></app-profile>\n        <button mat-button class=\"menu-button\" (click)=\"cambiarVista('users')\">\n            <mat-icon>person</mat-icon>\n            <span class=\"span\">T\u00E9cnicos</span>\n        </button>\n        <button mat-button class=\"menu-button\" (click)=\"cambiarVista('solicitud')\">\n            <mat-icon>assignment</mat-icon>\n            <span class=\"span\">Solicitudes</span>\n        </button>\n        <button mat-button class=\"menu-button\" (click)=\"cambiarVista('tickets')\">\n            <mat-icon>assignment</mat-icon>\n            <span class=\"span\">Tickets</span>\n        </button>\n        <button mat-button class=\"menu-button\" (click)=\"cambiarVista('reportes')\">\n            <mat-icon>inbox</mat-icon>\n            <span class=\"span\">Reportes</span>\n        </button>\n\n        <mat-divider></mat-divider>\n\n        <button mat-button class=\"menu-button\">\n            <mat-icon>help</mat-icon>\n            <span class=\"span\">Ayuda</span>\n        </button>\n        <button mat-button class=\"menu-button\" (click)=\"logout()\">\n            <mat-icon>exit_to_app</mat-icon>\n            <span class=\"span\">Salir</span>\n        </button>\n    </mat-sidenav>\n\n    <mat-sidenav-content class=\"main-container\">\n        <div class=\"contenido-dinamico\">\n        @if (vistaActiva === 'users') {\n            <app-users roleFilter=\"tecnico\" titulo=\"T\u00E9cnicos\"></app-users>\n        } @else if (vistaActiva === 'reportes') {\n            <app-reports></app-reports>\n        } @else if (vistaActiva === 'solicitud') {\n            <div class=\"table-container\">\n                <h2>Solicitudes</h2>\n                <mat-form-field appearance=\"outline\">\n                    <mat-label>Buscar solicitud</mat-label>\n                    <input matInput (keyup)=\"onFiltrar($event)\" placeholder=\"Folio, tipo o descripci\u00F3n\">\n                </mat-form-field>\n\n                @if (cargando) {\n                <div class=\"loading-spinner\"><mat-spinner></mat-spinner></div>\n                } @else if (errorCarga) {\n                <p class=\"load-error\" role=\"alert\">{{ errorCarga }}</p>\n                } @else {\n                <table mat-table [dataSource]=\"datos\" class=\"mat-elevation-z8\">\n                    <ng-container matColumnDef=\"folio\">\n                        <th mat-header-cell *matHeaderCellDef>Folio</th>\n                        <td mat-cell *matCellDef=\"let solicitud\">{{ solicitud.folio }}</td>\n                    </ng-container>\n                    <ng-container matColumnDef=\"tipo\">\n                        <th mat-header-cell *matHeaderCellDef>Tipo</th>\n                        <td mat-cell *matCellDef=\"let solicitud\">{{ solicitud.tipo }}</td>\n                    </ng-container>\n                    <ng-container matColumnDef=\"descripcion\">\n                        <th mat-header-cell *matHeaderCellDef>Descripci\u00F3n</th>\n                        <td mat-cell *matCellDef=\"let solicitud\">{{ solicitud.descripcion }}</td>\n                    </ng-container>\n                    <ng-container matColumnDef=\"prioridad\">\n                        <th mat-header-cell *matHeaderCellDef>Prioridad</th>\n                        <td mat-cell *matCellDef=\"let solicitud\">{{ solicitud.prioridad }}</td>\n                    </ng-container>\n                    <ng-container matColumnDef=\"estado\">\n                        <th mat-header-cell *matHeaderCellDef>Estado</th>\n                        <td mat-cell *matCellDef=\"let solicitud\">{{ solicitud.estado }}</td>\n                    </ng-container>\n                    <ng-container matColumnDef=\"comentarios\">\n                        <th mat-header-cell *matHeaderCellDef>Comentarios</th>\n                        <td mat-cell *matCellDef=\"let solicitud\">{{ solicitud.comentarios || 'Sin comentarios' }}</td>\n                    </ng-container>\n                    <ng-container matColumnDef=\"acciones\">\n                        <th mat-header-cell *matHeaderCellDef>Acciones</th>\n                        <td mat-cell *matCellDef=\"let solicitud\">\n                            <button type=\"button\" mat-icon-button color=\"primary\"\n                                (click)=\"editarSolicitud(solicitud)\" aria-label=\"Editar solicitud\">\n                                <mat-icon>edit</mat-icon>\n                            </button>\n                            <button type=\"button\" mat-icon-button class=\"deleteButton\"\n                                (click)=\"eliminarSolicitud(solicitud)\" aria-label=\"Eliminar solicitud\">\n                                <mat-icon>delete</mat-icon>\n                            </button>\n                        </td>\n                    </ng-container>\n\n                    <tr mat-header-row *matHeaderRowDef=\"columnasVisibles\"></tr>\n                    <tr mat-row *matRowDef=\"let row; columns: columnasVisibles;\"></tr>\n                    <tr class=\"mat-row\" *matNoDataRow>\n                        <td class=\"mat-cell\" [attr.colspan]=\"columnasVisibles.length\">No hay solicitudes disponibles.</td>\n                    </tr>\n                </table>\n                }\n\n                <mat-paginator [length]=\"totalRegistros\" [pageSize]=\"tamanoPagina\" [pageIndex]=\"paginaActual\"\n                    [pageSizeOptions]=\"[5, 10, 25, 100]\" (page)=\"onCambiarPagina($event)\"\n                    aria-label=\"Seleccionar p\u00E1gina de solicitudes\">\n                </mat-paginator>\n            </div>\n        } @else if (vistaActiva === 'tickets') {\n            <div class=\"table-container\">\n                <h2>Tickets</h2>\n                <mat-form-field appearance=\"outline\">\n                    <mat-label>Buscar ticket</mat-label>\n                    <input matInput (keyup)=\"onFiltrar($event)\" placeholder=\"Folio, t\u00EDtulo o descripci\u00F3n\">\n                </mat-form-field>\n\n                @if (cargando) {\n                <div class=\"loading-spinner\"><mat-spinner></mat-spinner></div>\n                } @else if (errorCarga) {\n                <p class=\"load-error\" role=\"alert\">{{ errorCarga }}</p>\n                } @else {\n                <table mat-table [dataSource]=\"datos\" class=\"mat-elevation-z8\">\n                    <ng-container matColumnDef=\"folio\">\n                        <th mat-header-cell *matHeaderCellDef>Folio</th>\n                        <td mat-cell *matCellDef=\"let ticket\">{{ ticket.folio }}</td>\n                    </ng-container>\n                    <ng-container matColumnDef=\"titulo\">\n                        <th mat-header-cell *matHeaderCellDef>T\u00EDtulo</th>\n                        <td mat-cell *matCellDef=\"let ticket\">{{ ticket.titulo }}</td>\n                    </ng-container>\n                    <ng-container matColumnDef=\"descripcion\">\n                        <th mat-header-cell *matHeaderCellDef>Descripci\u00F3n</th>\n                        <td mat-cell *matCellDef=\"let ticket\">{{ ticket.descripcion }}</td>\n                    </ng-container>\n                    <ng-container matColumnDef=\"prioridad\">\n                        <th mat-header-cell *matHeaderCellDef>Prioridad</th>\n                        <td mat-cell *matCellDef=\"let ticket\">{{ ticket.prioridad }}</td>\n                    </ng-container>\n                    <ng-container matColumnDef=\"estado\">\n                        <th mat-header-cell *matHeaderCellDef>Estado</th>\n                        <td mat-cell *matCellDef=\"let ticket\">{{ ticket.estado }}</td>\n                    </ng-container>\n                    <ng-container matColumnDef=\"comentarios\">\n                        <th mat-header-cell *matHeaderCellDef>Comentarios</th>\n                        <td mat-cell *matCellDef=\"let ticket\">{{ ticket.comentarios || 'Sin comentarios' }}</td>\n                    </ng-container>\n                    <ng-container matColumnDef=\"acciones\">\n                        <th mat-header-cell *matHeaderCellDef>Acciones</th>\n                        <td mat-cell *matCellDef=\"let ticket\">\n                            <button type=\"button\" mat-icon-button color=\"primary\"\n                                (click)=\"editarTicket(ticket)\" aria-label=\"Editar ticket\">\n                                <mat-icon>edit</mat-icon>\n                            </button>\n                            <button type=\"button\" mat-icon-button class=\"deleteButton\"\n                                (click)=\"eliminarTicket(ticket)\" aria-label=\"Eliminar ticket\">\n                                <mat-icon>delete</mat-icon>\n                            </button>\n                        </td>\n                    </ng-container>\n\n                    <tr mat-header-row *matHeaderRowDef=\"columnasTickets\"></tr>\n                    <tr mat-row *matRowDef=\"let row; columns: columnasTickets;\"></tr>\n                    <tr class=\"mat-row\" *matNoDataRow>\n                        <td class=\"mat-cell\" [attr.colspan]=\"columnasTickets.length\">No hay tickets disponibles.</td>\n                    </tr>\n                </table>\n                }\n\n                <mat-paginator [length]=\"totalRegistros\" [pageSize]=\"tamanoPagina\" [pageIndex]=\"paginaActual\"\n                    [pageSizeOptions]=\"[5, 10, 25, 100]\" (page)=\"onCambiarPagina($event)\"\n                    aria-label=\"Seleccionar p\u00E1gina de tickets\">\n                </mat-paginator>\n            </div>\n        }\n\n        </div>\n    </mat-sidenav-content>\n</mat-sidenav-container>\n\n<ng-template #assignmentDialog>\n    <h2 mat-dialog-title>\n        Editar {{ tipoEditando === 'ticket' ? 'ticket' : 'solicitud' }}\n        {{ registroEditando?.folio }}\n    </h2>\n    <mat-dialog-content>\n        <div class=\"assignment-form\">\n            <label for=\"tecnico\">T\u00E9cnico asignado</label>\n            <select id=\"tecnico\" [(ngModel)]=\"tecnicoSeleccionado\" required>\n                <option value=\"\" disabled>Selecciona un t\u00E9cnico</option>\n                <option *ngFor=\"let tecnico of tecnicos\" [value]=\"tecnico._id ?? tecnico.id\">\n                    {{ tecnico.name }} {{ tecnico.last_name }} ({{ tecnico.username }})\n                </option>\n            </select>\n\n            <label for=\"comentariosEdicion\">Comentarios</label>\n            <textarea id=\"comentariosEdicion\" [(ngModel)]=\"comentariosEditando\" rows=\"4\"\n                placeholder=\"Comentarios para el t\u00E9cnico\"></textarea>\n        </div>\n    </mat-dialog-content>\n    <mat-dialog-actions align=\"end\">\n        <button type=\"button\" mat-button (click)=\"cerrarEditor()\" [disabled]=\"guardandoAsignacion\">\n            Cancelar\n        </button>\n        <button type=\"button\" mat-flat-button color=\"primary\" (click)=\"guardarAsignacion()\"\n            [disabled]=\"!tecnicoSeleccionado || guardandoAsignacion\">\n            {{ guardandoAsignacion ? 'Guardando...' : 'Asignar t\u00E9cnico' }}\n        </button>\n    </mat-dialog-actions>\n</ng-template>\n", styles: ["mat-toolbar {\n    background: #0194fe;\n    color: white;\n    top:0;\n    z-index: 2;\n}\n\nmat-sidenav {\n    margin: 16px;\n    width: 200px;\n    border-right: none;\n    background: #0194fe;\n    color: white;\n    border-radius: 10px;\n    padding: 16px;\n    text-align: center;\n}\n\n.content {\n    height: calc(100vh - 98px);\n    border-radius: 10px;\n    margin: 16px;\n    margin-left: 32px;\n\n    display: flex;\n    justify-content: center;\n    align-items: center;\n\n    font-size: 2rem;\n    color: lightgray;\n}\n\nmat-sidenav-container {\n    height: calc(100vh - 65px);\n    margin-right: 10;\n}\n\nmat-sidenav-container.oculto {\n    transform: translateX(-250px);\n}\n\nmat-toolbar mat-icon,\nmat-sidenav .menu-button mat-icon {\n        margin-right: 8px;\n        color: white;\n    }\n\n.span {\n    color: white;\n    font-size: 1rem;\n    margin-left: 8px;\n}\n\n.menu-button {\n    width: 100%;\n    display: flex;\n    align-items: center;\n    justify-content: flex-start;\n    font-size: 1rem;\n\n    .icon {\n        margin-right: 8px;\n        color: white;\n    }\n}\n\n.avatar {\n    margin-top: 16px;\n    width: 100px;\n    height: 100px;\n    border-radius: 50%;\n}\n\n.name {\n    margin-top: 8px;\n    font-weight: normal;\n}\n\n.designation {\n    margin-top: 2px;\n    font-size: 0.7rem;\n    color: lightgrey;\n}\n\n.img-login{\n\twidth: auto;\n    height: 40px;\n\tmargin: 20px 5px;\n}\n\nmat-divider {\n    margin-top: 16px;\n    margin-bottom: 16px;\n    background-color: white;\n}\n\n.sidebar {\n    position: fixed;\n    left: 0;\n    top: 0;\n    width: 250px;\n    height: 100vh;\n    background-color: #2c3e50;\n    color: white;\n    transition: transform 0.3s ease;\n    transform: translateX(0);\n}\n\n.sidebar.oculto {\n    transform: translateX(-250px);\n}\n\n.table-container {\n    margin: 16px;\n    padding: 16px;\n    background-color: #ffffff;\n    border-radius: 10px;\n    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);\n    overflow-x: auto;\n}\n\n.table-container mat-form-field,\n.table-container table,\n.table-container mat-paginator {\n    width: 100%;\n}\n\n.loading-spinner {\n    display: flex;\n    justify-content: center;\n    padding: 32px;\n}\n\n.load-error {\n    margin: 16px 0;\n    padding: 12px;\n    border-radius: 6px;\n    background: #ffebee;\n    color: #b71c1c;\n}\n\n.assignment-form {\n    display: grid;\n    gap: 10px;\n    padding-top: 8px;\n}\n\n.assignment-form select,\n.assignment-form textarea {\n    width: 100%;\n    box-sizing: border-box;\n    border: 1px solid #bdbdbd;\n    border-radius: 6px;\n    padding: 10px;\n    font: inherit;\n}\n\n.mat-row .mat-cell[colspan] {\n    padding: 32px;\n    text-align: center;\n    color: #666;\n}\n\n.mat-mdc-row:hover {\n  background-color: #f5f5f5;\n}\n\n.contenido {\n    margin-left: 250px;\n    transition: margin-left 0.3s ease;\n    padding: 20px;\n}\n\n.contenido.expandido {\n    margin-left: 0;\n}\n\n.media-funcion {\n    float: left;\n    margin: 0 auto;\n    max-width: 100%;\n    height: 30px;\n    padding: 15px 15px;\n    font-size: 14px;\n    background: #0194fe;\n}\n\n.espaciador-flexible {\n  flex: 1 1 auto;\n}\n"] }]
     }], () => [{ type: i1.AuthService }, { type: i2.Router }, { type: i3.BreakpointObserver }, { type: i0.ChangeDetectorRef }], { assignmentDialog: [{
             type: ViewChild,
             args: ['assignmentDialog']

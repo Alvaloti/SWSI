@@ -32,18 +32,18 @@ import * as i10 from "@angular/material/paginator";
 import * as i11 from "@angular/material/input";
 import * as i12 from "@angular/material/progress-spinner";
 const _c0 = () => [5, 10, 25, 100];
-function HomeTick_Conditional_43_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "div", 17);
+function HomeTick_Conditional_42_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "div", 16);
     i0.ɵɵelement(1, "mat-spinner");
     i0.ɵɵelementEnd();
 } }
-function HomeTick_th_46_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "th", 30);
+function HomeTick_th_45_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "th", 29);
     i0.ɵɵtext(1, "Folio");
     i0.ɵɵelementEnd();
 } }
-function HomeTick_td_47_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "td", 31);
+function HomeTick_td_46_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "td", 30);
     i0.ɵɵtext(1);
     i0.ɵɵelementEnd();
 } if (rf & 2) {
@@ -51,13 +51,13 @@ function HomeTick_td_47_Template(rf, ctx) { if (rf & 1) {
     i0.ɵɵadvance();
     i0.ɵɵtextInterpolate(elemento_r2.folio);
 } }
-function HomeTick_th_49_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "th", 30);
+function HomeTick_th_48_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "th", 29);
     i0.ɵɵtext(1, "T\u00EDtulo");
     i0.ɵɵelementEnd();
 } }
-function HomeTick_td_50_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "td", 31);
+function HomeTick_td_49_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "td", 30);
     i0.ɵɵtext(1);
     i0.ɵɵelementEnd();
 } if (rf & 2) {
@@ -65,13 +65,13 @@ function HomeTick_td_50_Template(rf, ctx) { if (rf & 1) {
     i0.ɵɵadvance();
     i0.ɵɵtextInterpolate(elemento_r3.titulo);
 } }
-function HomeTick_th_52_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "th", 30);
+function HomeTick_th_51_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "th", 29);
     i0.ɵɵtext(1, "Descripci\u00F3n");
     i0.ɵɵelementEnd();
 } }
-function HomeTick_td_53_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "td", 31);
+function HomeTick_td_52_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "td", 30);
     i0.ɵɵtext(1);
     i0.ɵɵelementEnd();
 } if (rf & 2) {
@@ -79,13 +79,13 @@ function HomeTick_td_53_Template(rf, ctx) { if (rf & 1) {
     i0.ɵɵadvance();
     i0.ɵɵtextInterpolate(elemento_r4.descripcion);
 } }
-function HomeTick_th_55_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "th", 30);
+function HomeTick_th_54_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "th", 29);
     i0.ɵɵtext(1, "Estado");
     i0.ɵɵelementEnd();
 } }
-function HomeTick_td_56_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "td", 31);
+function HomeTick_td_55_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "td", 30);
     i0.ɵɵtext(1);
     i0.ɵɵelementEnd();
 } if (rf & 2) {
@@ -93,13 +93,13 @@ function HomeTick_td_56_Template(rf, ctx) { if (rf & 1) {
     i0.ɵɵadvance();
     i0.ɵɵtextInterpolate(elemento_r5.estado);
 } }
-function HomeTick_th_58_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "th", 30);
+function HomeTick_th_57_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "th", 29);
     i0.ɵɵtext(1, "Comentarios");
     i0.ɵɵelementEnd();
 } }
-function HomeTick_td_59_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "td", 31);
+function HomeTick_td_58_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "td", 30);
     i0.ɵɵtext(1);
     i0.ɵɵelementEnd();
 } if (rf & 2) {
@@ -107,29 +107,29 @@ function HomeTick_td_59_Template(rf, ctx) { if (rf & 1) {
     i0.ɵɵadvance();
     i0.ɵɵtextInterpolate(elemento_r6.comentarios);
 } }
-function HomeTick_th_61_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelementStart(0, "th", 30);
+function HomeTick_th_60_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelementStart(0, "th", 29);
     i0.ɵɵtext(1, "Acciones");
     i0.ɵɵelementEnd();
 } }
-function HomeTick_td_62_Template(rf, ctx) { if (rf & 1) {
+function HomeTick_td_61_Template(rf, ctx) { if (rf & 1) {
     const _r7 = i0.ɵɵgetCurrentView();
-    i0.ɵɵelementStart(0, "td", 31)(1, "button", 32);
-    i0.ɵɵlistener("click", function HomeTick_td_62_Template_button_click_1_listener() { const elemento_r8 = i0.ɵɵrestoreView(_r7).$implicit; const ctx_r8 = i0.ɵɵnextContext(); return i0.ɵɵresetView(ctx_r8.editarTicket(elemento_r8)); });
+    i0.ɵɵelementStart(0, "td", 30)(1, "button", 31);
+    i0.ɵɵlistener("click", function HomeTick_td_61_Template_button_click_1_listener() { const elemento_r8 = i0.ɵɵrestoreView(_r7).$implicit; const ctx_r8 = i0.ɵɵnextContext(); return i0.ɵɵresetView(ctx_r8.editarTicket(elemento_r8)); });
     i0.ɵɵelementStart(2, "mat-icon");
     i0.ɵɵtext(3, "edit");
     i0.ɵɵelementEnd()();
-    i0.ɵɵelementStart(4, "button", 33);
-    i0.ɵɵlistener("click", function HomeTick_td_62_Template_button_click_4_listener() { const elemento_r8 = i0.ɵɵrestoreView(_r7).$implicit; const ctx_r8 = i0.ɵɵnextContext(); return i0.ɵɵresetView(ctx_r8.eliminarTicket(elemento_r8)); });
+    i0.ɵɵelementStart(4, "button", 32);
+    i0.ɵɵlistener("click", function HomeTick_td_61_Template_button_click_4_listener() { const elemento_r8 = i0.ɵɵrestoreView(_r7).$implicit; const ctx_r8 = i0.ɵɵnextContext(); return i0.ɵɵresetView(ctx_r8.eliminarTicket(elemento_r8)); });
     i0.ɵɵelementStart(5, "mat-icon");
     i0.ɵɵtext(6, "delete");
     i0.ɵɵelementEnd()()();
 } }
+function HomeTick_tr_62_Template(rf, ctx) { if (rf & 1) {
+    i0.ɵɵelement(0, "tr", 33);
+} }
 function HomeTick_tr_63_Template(rf, ctx) { if (rf & 1) {
     i0.ɵɵelement(0, "tr", 34);
-} }
-function HomeTick_tr_64_Template(rf, ctx) { if (rf & 1) {
-    i0.ɵɵelement(0, "tr", 35);
 } }
 export class HomeTick {
     authService;
@@ -244,7 +244,7 @@ export class HomeTick {
         } if (rf & 2) {
             let _t;
             i0.ɵɵqueryRefresh(_t = i0.ɵɵloadQuery()) && (ctx.sidenav = _t.first);
-        } }, decls: 66, vars: 13, consts: [["drawer", ""], [3, "click"], ["src", "https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg", "alt", "Direcci\u00F3n General de Tecnolog\u00EDas de la Informaci\u00F3n y Gobierno Digital", 1, "img-login"], [1, "espaciador-flexible"], [1, "sidenav-container"], [1, "mat-elevation-z8", 3, "openedChange", "mode", "opened"], ["src", "../../../../public/Lot.png", "alt", "Foto de perfil", 1, "avatar", "mat-elevation-z8"], [1, "name"], [1, "designation"], [3, "profileUpdated"], ["type", "button", "mat-button", "", "routerLink", "/ticket", 1, "menu-button"], [1, "span"], ["type", "button", "mat-button", "", 1, "menu-button"], ["type", "button", "mat-button", "", 1, "menu-button", 3, "click"], [1, "table-container"], ["appearance", "outline"], ["matInput", "", "placeholder", "Folio o t\u00EDtulo", 3, "keyup"], [1, "loading-spinner"], ["mat-table", "", 1, "mat-elevation-z8", 3, "dataSource"], ["matColumnDef", "folio"], ["mat-header-cell", "", 4, "matHeaderCellDef"], ["mat-cell", "", 4, "matCellDef"], ["matColumnDef", "titulo"], ["matColumnDef", "descripcion"], ["matColumnDef", "estado"], ["matColumnDef", "comentarios"], ["matColumnDef", "acciones"], ["mat-header-row", "", 4, "matHeaderRowDef"], ["mat-row", "", 4, "matRowDef", "matRowDefColumns"], ["aria-label", "Seleccionar p\u00E1gina de tickets", 3, "page", "length", "pageSize", "pageIndex", "pageSizeOptions"], ["mat-header-cell", ""], ["mat-cell", ""], ["type", "button", "mat-icon-button", "", "color", "primary", "aria-label", "Editar ticket", 3, "click"], ["type", "button", "mat-icon-button", "", "aria-label", "Eliminar ticket", 1, "deleteButton", 3, "click"], ["mat-header-row", ""], ["mat-row", ""]], template: function HomeTick_Template(rf, ctx) { if (rf & 1) {
+        } }, decls: 65, vars: 14, consts: [["drawer", ""], [3, "click"], ["src", "https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg", "alt", "Direcci\u00F3n General de Tecnolog\u00EDas de la Informaci\u00F3n y Gobierno Digital", 1, "img-login"], [1, "espaciador-flexible"], [1, "sidenav-container"], [1, "mat-elevation-z8", 3, "openedChange", "mode", "opened"], [1, "name"], [1, "designation"], [3, "profileUpdated"], ["type", "button", "mat-button", "", "routerLink", "/ticket", 1, "menu-button"], [1, "span"], ["type", "button", "mat-button", "", 1, "menu-button"], ["type", "button", "mat-button", "", 1, "menu-button", 3, "click"], [1, "table-container"], ["appearance", "outline"], ["matInput", "", "placeholder", "Folio o t\u00EDtulo", 3, "keyup"], [1, "loading-spinner"], ["mat-table", "", 1, "mat-elevation-z8", 3, "dataSource"], ["matColumnDef", "folio"], ["mat-header-cell", "", 4, "matHeaderCellDef"], ["mat-cell", "", 4, "matCellDef"], ["matColumnDef", "titulo"], ["matColumnDef", "descripcion"], ["matColumnDef", "estado"], ["matColumnDef", "comentarios"], ["matColumnDef", "acciones"], ["mat-header-row", "", 4, "matHeaderRowDef"], ["mat-row", "", 4, "matRowDef", "matRowDefColumns"], ["aria-label", "Seleccionar p\u00E1gina de tickets", 3, "page", "length", "pageSize", "pageIndex", "pageSizeOptions"], ["mat-header-cell", ""], ["mat-cell", ""], ["type", "button", "mat-icon-button", "", "color", "primary", "aria-label", "Editar ticket", 3, "click"], ["type", "button", "mat-icon-button", "", "aria-label", "Eliminar ticket", 1, "deleteButton", 3, "click"], ["mat-header-row", ""], ["mat-row", ""]], template: function HomeTick_Template(rf, ctx) { if (rf & 1) {
             const _r1 = i0.ɵɵgetCurrentView();
             i0.ɵɵelementStart(0, "mat-toolbar")(1, "button", 1);
             i0.ɵɵlistener("click", function HomeTick_Template_button_click_1_listener() { return ctx.toggleMenu(); });
@@ -262,68 +262,67 @@ export class HomeTick {
             i0.ɵɵelementEnd();
             i0.ɵɵelementStart(11, "mat-sidenav-container", 4)(12, "mat-sidenav", 5, 0);
             i0.ɵɵtwoWayListener("openedChange", function HomeTick_Template_mat_sidenav_openedChange_12_listener($event) { i0.ɵɵrestoreView(_r1); i0.ɵɵtwoWayBindingSet(ctx.menuAbierto, $event) || (ctx.menuAbierto = $event); return i0.ɵɵresetView($event); });
-            i0.ɵɵelement(14, "img", 6);
-            i0.ɵɵelementStart(15, "h4", 7);
-            i0.ɵɵtext(16);
+            i0.ɵɵelementStart(14, "h4", 6);
+            i0.ɵɵtext(15);
             i0.ɵɵelementEnd();
-            i0.ɵɵelementStart(17, "p", 8);
-            i0.ɵɵtext(18, "Software Engineer");
+            i0.ɵɵelementStart(16, "p", 7);
+            i0.ɵɵtext(17);
             i0.ɵɵelementEnd();
-            i0.ɵɵelement(19, "mat-divider");
-            i0.ɵɵelementStart(20, "app-profile", 9);
-            i0.ɵɵlistener("profileUpdated", function HomeTick_Template_app_profile_profileUpdated_20_listener($event) { return ctx.user = $event; });
+            i0.ɵɵelement(18, "mat-divider");
+            i0.ɵɵelementStart(19, "app-profile", 8);
+            i0.ɵɵlistener("profileUpdated", function HomeTick_Template_app_profile_profileUpdated_19_listener($event) { return ctx.user = $event; });
             i0.ɵɵelementEnd();
-            i0.ɵɵelementStart(21, "button", 10)(22, "mat-icon");
-            i0.ɵɵtext(23, "assignment");
+            i0.ɵɵelementStart(20, "button", 9)(21, "mat-icon");
+            i0.ɵɵtext(22, "assignment");
             i0.ɵɵelementEnd();
-            i0.ɵɵelementStart(24, "span", 11);
-            i0.ɵɵtext(25, "Crear ticket");
+            i0.ɵɵelementStart(23, "span", 10);
+            i0.ɵɵtext(24, "Crear ticket");
             i0.ɵɵelementEnd()();
-            i0.ɵɵelement(26, "mat-divider");
-            i0.ɵɵelementStart(27, "button", 12)(28, "mat-icon");
-            i0.ɵɵtext(29, "help");
+            i0.ɵɵelement(25, "mat-divider");
+            i0.ɵɵelementStart(26, "button", 11)(27, "mat-icon");
+            i0.ɵɵtext(28, "help");
             i0.ɵɵelementEnd();
-            i0.ɵɵelementStart(30, "span", 11);
-            i0.ɵɵtext(31, "Ayuda");
+            i0.ɵɵelementStart(29, "span", 10);
+            i0.ɵɵtext(30, "Ayuda");
             i0.ɵɵelementEnd()();
-            i0.ɵɵelementStart(32, "button", 13);
-            i0.ɵɵlistener("click", function HomeTick_Template_button_click_32_listener() { return ctx.logout(); });
-            i0.ɵɵelementStart(33, "mat-icon");
-            i0.ɵɵtext(34, "exit_to_app");
+            i0.ɵɵelementStart(31, "button", 12);
+            i0.ɵɵlistener("click", function HomeTick_Template_button_click_31_listener() { return ctx.logout(); });
+            i0.ɵɵelementStart(32, "mat-icon");
+            i0.ɵɵtext(33, "exit_to_app");
             i0.ɵɵelementEnd();
-            i0.ɵɵelementStart(35, "span", 11);
-            i0.ɵɵtext(36, "Salir");
+            i0.ɵɵelementStart(34, "span", 10);
+            i0.ɵɵtext(35, "Salir");
             i0.ɵɵelementEnd()()();
-            i0.ɵɵelementStart(37, "mat-sidenav-content")(38, "div", 14)(39, "mat-form-field", 15)(40, "mat-label");
-            i0.ɵɵtext(41, "Buscar ticket");
+            i0.ɵɵelementStart(36, "mat-sidenav-content")(37, "div", 13)(38, "mat-form-field", 14)(39, "mat-label");
+            i0.ɵɵtext(40, "Buscar ticket");
             i0.ɵɵelementEnd();
-            i0.ɵɵelementStart(42, "input", 16);
-            i0.ɵɵlistener("keyup", function HomeTick_Template_input_keyup_42_listener($event) { return ctx.onFiltrar($event); });
+            i0.ɵɵelementStart(41, "input", 15);
+            i0.ɵɵlistener("keyup", function HomeTick_Template_input_keyup_41_listener($event) { return ctx.onFiltrar($event); });
             i0.ɵɵelementEnd()();
-            i0.ɵɵconditionalCreate(43, HomeTick_Conditional_43_Template, 2, 0, "div", 17);
-            i0.ɵɵelementStart(44, "table", 18);
-            i0.ɵɵelementContainerStart(45, 19);
-            i0.ɵɵtemplate(46, HomeTick_th_46_Template, 2, 0, "th", 20)(47, HomeTick_td_47_Template, 2, 1, "td", 21);
+            i0.ɵɵconditionalCreate(42, HomeTick_Conditional_42_Template, 2, 0, "div", 16);
+            i0.ɵɵelementStart(43, "table", 17);
+            i0.ɵɵelementContainerStart(44, 18);
+            i0.ɵɵtemplate(45, HomeTick_th_45_Template, 2, 0, "th", 19)(46, HomeTick_td_46_Template, 2, 1, "td", 20);
             i0.ɵɵelementContainerEnd();
-            i0.ɵɵelementContainerStart(48, 22);
-            i0.ɵɵtemplate(49, HomeTick_th_49_Template, 2, 0, "th", 20)(50, HomeTick_td_50_Template, 2, 1, "td", 21);
+            i0.ɵɵelementContainerStart(47, 21);
+            i0.ɵɵtemplate(48, HomeTick_th_48_Template, 2, 0, "th", 19)(49, HomeTick_td_49_Template, 2, 1, "td", 20);
             i0.ɵɵelementContainerEnd();
-            i0.ɵɵelementContainerStart(51, 23);
-            i0.ɵɵtemplate(52, HomeTick_th_52_Template, 2, 0, "th", 20)(53, HomeTick_td_53_Template, 2, 1, "td", 21);
+            i0.ɵɵelementContainerStart(50, 22);
+            i0.ɵɵtemplate(51, HomeTick_th_51_Template, 2, 0, "th", 19)(52, HomeTick_td_52_Template, 2, 1, "td", 20);
             i0.ɵɵelementContainerEnd();
-            i0.ɵɵelementContainerStart(54, 24);
-            i0.ɵɵtemplate(55, HomeTick_th_55_Template, 2, 0, "th", 20)(56, HomeTick_td_56_Template, 2, 1, "td", 21);
+            i0.ɵɵelementContainerStart(53, 23);
+            i0.ɵɵtemplate(54, HomeTick_th_54_Template, 2, 0, "th", 19)(55, HomeTick_td_55_Template, 2, 1, "td", 20);
             i0.ɵɵelementContainerEnd();
-            i0.ɵɵelementContainerStart(57, 25);
-            i0.ɵɵtemplate(58, HomeTick_th_58_Template, 2, 0, "th", 20)(59, HomeTick_td_59_Template, 2, 1, "td", 21);
+            i0.ɵɵelementContainerStart(56, 24);
+            i0.ɵɵtemplate(57, HomeTick_th_57_Template, 2, 0, "th", 19)(58, HomeTick_td_58_Template, 2, 1, "td", 20);
             i0.ɵɵelementContainerEnd();
-            i0.ɵɵelementContainerStart(60, 26);
-            i0.ɵɵtemplate(61, HomeTick_th_61_Template, 2, 0, "th", 20)(62, HomeTick_td_62_Template, 7, 0, "td", 21);
+            i0.ɵɵelementContainerStart(59, 25);
+            i0.ɵɵtemplate(60, HomeTick_th_60_Template, 2, 0, "th", 19)(61, HomeTick_td_61_Template, 7, 0, "td", 20);
             i0.ɵɵelementContainerEnd();
-            i0.ɵɵtemplate(63, HomeTick_tr_63_Template, 1, 0, "tr", 27)(64, HomeTick_tr_64_Template, 1, 0, "tr", 28);
+            i0.ɵɵtemplate(62, HomeTick_tr_62_Template, 1, 0, "tr", 26)(63, HomeTick_tr_63_Template, 1, 0, "tr", 27);
             i0.ɵɵelementEnd();
-            i0.ɵɵelementStart(65, "mat-paginator", 29);
-            i0.ɵɵlistener("page", function HomeTick_Template_mat_paginator_page_65_listener($event) { return ctx.onCambiarPagina($event); });
+            i0.ɵɵelementStart(64, "mat-paginator", 28);
+            i0.ɵɵlistener("page", function HomeTick_Template_mat_paginator_page_64_listener($event) { return ctx.onCambiarPagina($event); });
             i0.ɵɵelementEnd()()()();
         } if (rf & 2) {
             i0.ɵɵadvance(9);
@@ -331,10 +330,12 @@ export class HomeTick {
             i0.ɵɵadvance(3);
             i0.ɵɵproperty("mode", ctx.isMobile ? "over" : "side");
             i0.ɵɵtwoWayProperty("opened", ctx.menuAbierto);
-            i0.ɵɵadvance(4);
+            i0.ɵɵadvance(3);
             i0.ɵɵtextInterpolate(ctx.user == null ? null : ctx.user.name);
-            i0.ɵɵadvance(27);
-            i0.ɵɵconditional(ctx.cargando ? 43 : -1);
+            i0.ɵɵadvance(2);
+            i0.ɵɵtextInterpolate(ctx.user == null ? null : ctx.user.last_name);
+            i0.ɵɵadvance(25);
+            i0.ɵɵconditional(ctx.cargando ? 42 : -1);
             i0.ɵɵadvance();
             i0.ɵɵproperty("dataSource", ctx.datos);
             i0.ɵɵadvance(19);
@@ -342,7 +343,7 @@ export class HomeTick {
             i0.ɵɵadvance();
             i0.ɵɵproperty("matRowDefColumns", ctx.columnasVisibles);
             i0.ɵɵadvance();
-            i0.ɵɵproperty("length", ctx.totalRegistros)("pageSize", ctx.tamanoPagina)("pageIndex", ctx.paginaActual)("pageSizeOptions", i0.ɵɵpureFunction0(12, _c0));
+            i0.ɵɵproperty("length", ctx.totalRegistros)("pageSize", ctx.tamanoPagina)("pageIndex", ctx.paginaActual)("pageSizeOptions", i0.ɵɵpureFunction0(13, _c0));
         } }, dependencies: [CommonModule,
             MatToolbarModule, i4.MatToolbar, MatSidenavModule, i5.MatSidenav, i5.MatSidenavContainer, i5.MatSidenavContent, MatListModule, i6.MatDivider, MatMenuModule,
             MatButtonModule, i7.MatButton, i7.MatIconButton, MatIconModule, i8.MatIcon, MatExpansionModule,
@@ -372,7 +373,7 @@ export class HomeTick {
                     MatIcon,
                     Profile,
                     Notifications,
-                ], template: "<mat-toolbar>\n    <button (click)=\"toggleMenu()\">\n        <mat-icon>menu</mat-icon>\n        <span> Men\u00FA </span>\n    </button>\n    <img class=\"img-login\" src=\"https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg\"\n        alt=\"Direcci\u00F3n General de Tecnolog\u00EDas de la Informaci\u00F3n y Gobierno Digital\">\n\n    <span class=\"espaciador-flexible\"></span>\n    <span> Bienvenido {{ user?.name}} </span>\n    <app-notifications></app-notifications>\n\n</mat-toolbar>\n\n<mat-sidenav-container class=\"sidenav-container\">\n    <mat-sidenav #drawer [mode]=\"isMobile ? 'over' : 'side'\" [(opened)]=\"menuAbierto\" class=\"mat-elevation-z8\">\n        <img class=\"avatar mat-elevation-z8\" src=\"../../../../public/Lot.png\" alt=\"Foto de perfil\">\n        <h4 class=\"name\">{{ user?.name }}</h4>\n        <p class=\"designation\">Software Engineer</p>\n\n        <mat-divider></mat-divider>\n        <app-profile (profileUpdated)=\"user = $event\"></app-profile>\n        <button type=\"button\" mat-button class=\"menu-button\" routerLink=\"/ticket\">\n            <mat-icon>assignment</mat-icon>\n            <span class=\"span\">Crear ticket</span>\n        </button>\n\n        <mat-divider></mat-divider>\n        <button type=\"button\" mat-button class=\"menu-button\">\n            <mat-icon>help</mat-icon>\n            <span class=\"span\">Ayuda</span>\n        </button>\n        <button type=\"button\" mat-button class=\"menu-button\" (click)=\"logout()\">\n            <mat-icon>exit_to_app</mat-icon>\n            <span class=\"span\">Salir</span>\n        </button>\n    </mat-sidenav>\n\n    <mat-sidenav-content>\n        <div class=\"table-container\">\n            <mat-form-field appearance=\"outline\">\n                <mat-label>Buscar ticket</mat-label>\n                <input matInput (keyup)=\"onFiltrar($event)\" placeholder=\"Folio o t\u00EDtulo\">\n            </mat-form-field>\n\n            @if (cargando) {\n            <div class=\"loading-spinner\">\n                <mat-spinner></mat-spinner>\n            </div>\n            }\n\n            <table mat-table [dataSource]=\"datos\" class=\"mat-elevation-z8\">\n                <ng-container matColumnDef=\"folio\">\n                    <th mat-header-cell *matHeaderCellDef>Folio</th>\n                    <td mat-cell *matCellDef=\"let elemento\">{{ elemento.folio }}</td>\n                </ng-container>\n                <ng-container matColumnDef=\"titulo\">\n                    <th mat-header-cell *matHeaderCellDef>T\u00EDtulo</th>\n                    <td mat-cell *matCellDef=\"let elemento\">{{ elemento.titulo }}</td>\n                </ng-container>\n                <ng-container matColumnDef=\"descripcion\">\n                    <th mat-header-cell *matHeaderCellDef>Descripci\u00F3n</th>\n                    <td mat-cell *matCellDef=\"let elemento\">{{ elemento.descripcion }}</td>\n                </ng-container>\n                <ng-container matColumnDef=\"estado\">\n                    <th mat-header-cell *matHeaderCellDef>Estado</th>\n                    <td mat-cell *matCellDef=\"let elemento\">{{ elemento.estado }}</td>\n                </ng-container>\n                <ng-container matColumnDef=\"comentarios\">\n                    <th mat-header-cell *matHeaderCellDef>Comentarios</th>\n                    <td mat-cell *matCellDef=\"let elemento\">{{ elemento.comentarios }}</td>\n                </ng-container>\n                <ng-container matColumnDef=\"acciones\">\n                    <th mat-header-cell *matHeaderCellDef>Acciones</th>\n                    <td mat-cell *matCellDef=\"let elemento\">\n                        <button type=\"button\" mat-icon-button color=\"primary\" (click)=\"editarTicket(elemento)\"\n                            aria-label=\"Editar ticket\"><mat-icon>edit</mat-icon></button>\n                        <button type=\"button\" mat-icon-button class=\"deleteButton\" (click)=\"eliminarTicket(elemento)\"\n                            aria-label=\"Eliminar ticket\"><mat-icon>delete</mat-icon></button>\n                    </td>\n                </ng-container>\n\n                <tr mat-header-row *matHeaderRowDef=\"columnasVisibles\"></tr>\n                <tr mat-row *matRowDef=\"let row; columns: columnasVisibles;\"></tr>\n            </table>\n\n            <mat-paginator [length]=\"totalRegistros\" [pageSize]=\"tamanoPagina\" [pageIndex]=\"paginaActual\"\n                [pageSizeOptions]=\"[5, 10, 25, 100]\" (page)=\"onCambiarPagina($event)\"\n                aria-label=\"Seleccionar p\u00E1gina de tickets\">\n            </mat-paginator>\n        </div>\n    </mat-sidenav-content>\n</mat-sidenav-container>\n", styles: ["mat-toolbar {\n    background: #0194fe;\n    color: white;\n    top:0;\n    z-index: 2;\n}\n\n::ng-deep .mat-mdc-menu-panel {\n  background-color: #0194fe !important;\n}\n\nmat-sidenav {\n    margin: 16px;\n    width: 200px;\n    border-right: none;\n    background: #0194fe;\n    color: white;\n    border-radius: 10px;\n    padding: 16px;\n    text-align: center;\n}\n\n.content {\n    height: calc(100vh - 98px);\n    border-radius: 10px;\n    margin: 16px;\n    margin-left: 32px;\n\n    display: flex;\n    justify-content: center;\n    align-items: center;\n\n    font-size: 2rem;\n    color: lightgray;\n}\n\n.mat-menu{\n  background-color: #0194fe;\n  color: #0194fe;\n}\n\nmat-sidenav-container {\n    height: calc(100vh - 65px);\n    margin-right: 10;\n}\n\nmat-sidenav-container.oculto {\n    transform: translateX(-250px);\n}\n\n.span {\n    color: white;\n    font-size: 1rem;\n    margin-left: 8px;\n}\n\n.menu-button {\n    width: 100%;\n    display: flex;\n    align-items: center;\n    justify-content: flex-start;\n    font-size: 1rem;\n\n    mat-icon {\n        margin-right: 8px;\n        color: white;\n    }\n}\n\n.avatar {\n    margin-top: 16px;\n    width: 100px;\n    height: 100px;\n    border-radius: 50%;\n}\n\n.name {\n    margin-top: 8px;\n    font-weight: normal;\n}\n\n.designation {\n    margin-top: 2px;\n    font-size: 0.7rem;\n    color: lightgrey;\n}\n\n.img-login{\n\twidth: auto;\n    height: 40px;\n\tmargin: 20px 5px;\n}\n\nmat-divider {\n    margin-top: 16px;\n    margin-bottom: 16px;\n    background-color: white;\n}\n\n.sidebar {\n    position: fixed;\n    left: 0;\n    top: 0;\n    width: 250px;\n    height: 100vh;\n    background-color: #2c3e50;\n    color: white;\n    transition: transform 0.3s ease;\n    transform: translateX(0);\n}\n\n.sidebar.oculto {\n    transform: translateX(-250px);\n}\n\n.table-container {\n    margin: 16px;\n    padding: 16px;\n    background-color: #ffffff;\n    border-radius: 10px;\n    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);\n}\n\n.mat-mdc-row:hover {\n  background-color: #f5f5f5;\n}\n\n.contenido {\n    margin-left: 250px;\n    transition: margin-left 0.3s ease;\n    padding: 20px;\n}\n\n.contenido.expandido {\n    margin-left: 0;\n}\n\n.media-funcion {\n    float: left;\n    margin: 0 auto;\n    max-width: 100%;\n    height: 30px;\n    padding: 15px 15px;\n    font-size: 14px;\n    background: #0194fe;\n}\n\n.espaciador-flexible {\n  flex: 1 1 auto;\n}\n"] }]
+                ], template: "<mat-toolbar>\n    <button (click)=\"toggleMenu()\">\n        <mat-icon>menu</mat-icon>\n        <span> Men\u00FA </span>\n    </button>\n    <img class=\"img-login\" src=\"https://imagenes.leon.gob.mx/dependencias/tecnologias-de-la-informacion-b.svg\"\n        alt=\"Direcci\u00F3n General de Tecnolog\u00EDas de la Informaci\u00F3n y Gobierno Digital\">\n\n    <span class=\"espaciador-flexible\"></span>\n    <span> Bienvenido {{ user?.name}} </span>\n    <app-notifications></app-notifications>\n\n</mat-toolbar>\n\n<mat-sidenav-container class=\"sidenav-container\">\n    <mat-sidenav #drawer [mode]=\"isMobile ? 'over' : 'side'\" [(opened)]=\"menuAbierto\" class=\"mat-elevation-z8\">\n\n        <h4 class=\"name\">{{ user?.name }}</h4>\n        <p class=\"designation\">{{user?.last_name}}</p>\n\n        <mat-divider></mat-divider>\n        <app-profile (profileUpdated)=\"user = $event\"></app-profile>\n        <button type=\"button\" mat-button class=\"menu-button\" routerLink=\"/ticket\">\n            <mat-icon>assignment</mat-icon>\n            <span class=\"span\">Crear ticket</span>\n        </button>\n\n        <mat-divider></mat-divider>\n        <button type=\"button\" mat-button class=\"menu-button\">\n            <mat-icon>help</mat-icon>\n            <span class=\"span\">Ayuda</span>\n        </button>\n        <button type=\"button\" mat-button class=\"menu-button\" (click)=\"logout()\">\n            <mat-icon>exit_to_app</mat-icon>\n            <span class=\"span\">Salir</span>\n        </button>\n    </mat-sidenav>\n\n    <mat-sidenav-content>\n        <div class=\"table-container\">\n            <mat-form-field appearance=\"outline\">\n                <mat-label>Buscar ticket</mat-label>\n                <input matInput (keyup)=\"onFiltrar($event)\" placeholder=\"Folio o t\u00EDtulo\">\n            </mat-form-field>\n\n            @if (cargando) {\n            <div class=\"loading-spinner\">\n                <mat-spinner></mat-spinner>\n            </div>\n            }\n\n            <table mat-table [dataSource]=\"datos\" class=\"mat-elevation-z8\">\n                <ng-container matColumnDef=\"folio\">\n                    <th mat-header-cell *matHeaderCellDef>Folio</th>\n                    <td mat-cell *matCellDef=\"let elemento\">{{ elemento.folio }}</td>\n                </ng-container>\n                <ng-container matColumnDef=\"titulo\">\n                    <th mat-header-cell *matHeaderCellDef>T\u00EDtulo</th>\n                    <td mat-cell *matCellDef=\"let elemento\">{{ elemento.titulo }}</td>\n                </ng-container>\n                <ng-container matColumnDef=\"descripcion\">\n                    <th mat-header-cell *matHeaderCellDef>Descripci\u00F3n</th>\n                    <td mat-cell *matCellDef=\"let elemento\">{{ elemento.descripcion }}</td>\n                </ng-container>\n                <ng-container matColumnDef=\"estado\">\n                    <th mat-header-cell *matHeaderCellDef>Estado</th>\n                    <td mat-cell *matCellDef=\"let elemento\">{{ elemento.estado }}</td>\n                </ng-container>\n                <ng-container matColumnDef=\"comentarios\">\n                    <th mat-header-cell *matHeaderCellDef>Comentarios</th>\n                    <td mat-cell *matCellDef=\"let elemento\">{{ elemento.comentarios }}</td>\n                </ng-container>\n                <ng-container matColumnDef=\"acciones\">\n                    <th mat-header-cell *matHeaderCellDef>Acciones</th>\n                    <td mat-cell *matCellDef=\"let elemento\">\n                        <button type=\"button\" mat-icon-button color=\"primary\" (click)=\"editarTicket(elemento)\"\n                            aria-label=\"Editar ticket\"><mat-icon>edit</mat-icon></button>\n                        <button type=\"button\" mat-icon-button class=\"deleteButton\" (click)=\"eliminarTicket(elemento)\"\n                            aria-label=\"Eliminar ticket\"><mat-icon>delete</mat-icon></button>\n                    </td>\n                </ng-container>\n\n                <tr mat-header-row *matHeaderRowDef=\"columnasVisibles\"></tr>\n                <tr mat-row *matRowDef=\"let row; columns: columnasVisibles;\"></tr>\n            </table>\n\n            <mat-paginator [length]=\"totalRegistros\" [pageSize]=\"tamanoPagina\" [pageIndex]=\"paginaActual\"\n                [pageSizeOptions]=\"[5, 10, 25, 100]\" (page)=\"onCambiarPagina($event)\"\n                aria-label=\"Seleccionar p\u00E1gina de tickets\">\n            </mat-paginator>\n        </div>\n    </mat-sidenav-content>\n</mat-sidenav-container>\n", styles: ["mat-toolbar {\n    background: #0194fe;\n    color: white;\n    top:0;\n    z-index: 2;\n}\n\n::ng-deep .mat-mdc-menu-panel {\n  background-color: #0194fe !important;\n}\n\nmat-sidenav {\n    margin: 16px;\n    width: 200px;\n    border-right: none;\n    background: #0194fe;\n    color: white;\n    border-radius: 10px;\n    padding: 16px;\n    text-align: center;\n}\n\n.content {\n    height: calc(100vh - 98px);\n    border-radius: 10px;\n    margin: 16px;\n    margin-left: 32px;\n\n    display: flex;\n    justify-content: center;\n    align-items: center;\n\n    font-size: 2rem;\n    color: lightgray;\n}\n\n.mat-menu{\n  background-color: #0194fe;\n  color: #0194fe;\n}\n\nmat-sidenav-container {\n    height: calc(100vh - 65px);\n    margin-right: 10;\n}\n\nmat-sidenav-container.oculto {\n    transform: translateX(-250px);\n}\n\n.span {\n    color: white;\n    font-size: 1rem;\n    margin-left: 8px;\n}\n\n.menu-button {\n    width: 100%;\n    display: flex;\n    align-items: center;\n    justify-content: flex-start;\n    font-size: 1rem;\n\n    mat-icon {\n        margin-right: 8px;\n        color: white;\n    }\n}\n\n.avatar {\n    margin-top: 16px;\n    width: 100px;\n    height: 100px;\n    border-radius: 50%;\n}\n\n.name {\n    margin-top: 8px;\n    font-weight: normal;\n}\n\n.designation {\n    margin-top: 2px;\n    font-size: 0.7rem;\n    color: lightgrey;\n}\n\n.img-login{\n\twidth: auto;\n    height: 40px;\n\tmargin: 20px 5px;\n}\n\nmat-divider {\n    margin-top: 16px;\n    margin-bottom: 16px;\n    background-color: white;\n}\n\n.sidebar {\n    position: fixed;\n    left: 0;\n    top: 0;\n    width: 250px;\n    height: 100vh;\n    background-color: #2c3e50;\n    color: white;\n    transition: transform 0.3s ease;\n    transform: translateX(0);\n}\n\n.sidebar.oculto {\n    transform: translateX(-250px);\n}\n\n.table-container {\n    margin: 16px;\n    padding: 16px;\n    background-color: #ffffff;\n    border-radius: 10px;\n    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);\n}\n\n.mat-mdc-row:hover {\n  background-color: #f5f5f5;\n}\n\n.contenido {\n    margin-left: 250px;\n    transition: margin-left 0.3s ease;\n    padding: 20px;\n}\n\n.contenido.expandido {\n    margin-left: 0;\n}\n\n.media-funcion {\n    float: left;\n    margin: 0 auto;\n    max-width: 100%;\n    height: 30px;\n    padding: 15px 15px;\n    font-size: 14px;\n    background: #0194fe;\n}\n\n.espaciador-flexible {\n  flex: 1 1 auto;\n}\n"] }]
     }], () => [{ type: i1.AuthService }, { type: i2.Router }, { type: i3.BreakpointObserver }, { type: i0.ChangeDetectorRef }], { sidenav: [{
             type: ViewChild,
             args: [MatSidenav]
