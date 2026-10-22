@@ -1,19 +1,19 @@
 mat-toolbar {
-    background: #0194fe;
+    background: #003871;
     color: white;
     top:0;
     z-index: 2;
 }
 
 ::ng-deep .mat-mdc-menu-panel {
-  background-color: #0194fe !important;
+  background-color: #003871!important;
 }
 
 mat-sidenav {
     margin: 16px;
     width: 200px;
     border-right: none;
-    background: #0194fe;
+    background: #003871;
     color: white;
     border-radius: 10px;
     padding: 16px;
@@ -35,8 +35,8 @@ mat-sidenav {
 }
 
 .mat-menu{
-  background-color: #0194fe;
-  color: #0194fe;
+  background-color: #003871;
+  color: #003871;
 }
 
 mat-sidenav-container {
@@ -142,7 +142,7 @@ mat-divider {
     height: 30px;
     padding: 15px 15px;
     font-size: 14px;
-    background: #0194fe;
+    background: #003871;
 }
 
 .espaciador-flexible {
