@@ -3,57 +3,61 @@
         <h2>Generar Ticket</h2>
         <p>Por favor, complete el siguiente formulario para generar un ticket.</p>
 
-        <div class="form-group">
-            <label for="titulo">Título</label>
-            <input type="text" id="titulo" formControlName="titulo" placeholder="Ingrese el título de la solicitud">
-            <small *ngIf="ticketForm.get('titulo')?.hasError('required') && ticketForm.get('titulo')?.touched">
-                Título es requerido.
-            </small>
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="titulo">Título</label>
+                <input type="text" id="titulo" formControlName="titulo" placeholder="Ingrese el título del ticket">
+                <small *ngIf="ticketForm.get('titulo')?.hasError('required') && ticketForm.get('titulo')?.touched">
+                    Título es requerido.
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="prioridad">Prioridad</label>
+                <select id="prioridad" formControlName="prioridad">
+                    <option value="">Seleccionar Prioridad</option>
+                    <option value="muy-baja">Muy Baja</option>
+                    <option value="baja">Baja</option>
+                    <option value="media">Media</option>
+                    <option value="alta">Alta</option>
+                    <option value="muy-alta">Muy Alta</option>
+                </select>
+                <small
+                    *ngIf="ticketForm.get('prioridad')?.hasError('required') && ticketForm.get('prioridad')?.touched">
+                    Prioridad es requerida.
+                </small>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="descripcion">Descripción</label>
+                <input type="text" id="descripcion" formControlName="descripcion" placeholder="Descripción">
+                <small
+                    *ngIf="ticketForm.get('descripcion')?.hasError('required') && ticketForm.get('descripcion')?.touched">
+                    Descripción es requerida.
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="solucion">Solución</label>
+                <input type="text" id="solucion" formControlName="solucion" placeholder="Describa la solución">
+            </div>
+
+            <div class="form-group">
+                <label for="ticket-archivo">Archivo adjunto (opcional)</label>
+                <input id="ticket-archivo" type="file"
+                    accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,application/pdf,image/jpeg,image/png,image/gif,image/webp"
+                    (change)="onFileSelected($event)">
+                <small class="file-help">PDF o imagen, máximo 10 MB.</small>
+                <small class="file-error" *ngIf="fileError">{{ fileError }}</small>
+                <small class="selected-file" *ngIf="selectedFile">Seleccionado: {{ selectedFile.name }}</small>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label for="descripcion">Descripción</label>
-            <input type="text" id="descripcion" formControlName="descripcion" placeholder="Descripción">
-            <small
-                *ngIf="ticketForm.get('descripcion')?.hasError('required') && ticketForm.get('descripcion')?.touched">
-                Descripción es requerida.
-            </small>
+        <div class="form-actions">
+            <button type="button" mat-raised-button class="cancel-btn" (click)="loadChildren('hometick')">Cancelar</button>
+            <button type="submit" [disabled]="ticketForm.invalid || !!fileError || submitting" class="submit-btn">
+                {{ submitting ? 'Guardando...' : 'Generar Ticket' }}
+            </button>
         </div>
-
-        <div class="form-group">
-            <label for="prioridad">Prioridad</label>
-            <select id="prioridad" formControlName="prioridad">
-                <option value="">Seleccionar Prioridad</option>
-                <option value="muy-baja">Muy Baja</option>
-                <option value="baja">Baja</option>
-                <option value="media">Media</option>
-                <option value="alta">Alta</option>
-                <option value="muy-alta">Muy Alta</option>
-            </select>
-            <small
-                *ngIf="ticketForm.get('prioridad')?.hasError('required') && ticketForm.get('prioridad')?.touched">
-                Prioridad es requerida.
-            </small>
-        </div>
-
-         <div class="form-group">
-            <label for="solucion">Solución</label>
-            <input type="text" id="solucion" formControlName="solucion" placeholder="Describa la solución">
-        </div>
-
-        <div class="form-group">
-            <label for="ticket-archivo">Archivo adjunto (opcional)</label>
-            <input id="ticket-archivo" type="file"
-                accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,application/pdf,image/jpeg,image/png,image/gif,image/webp"
-                (change)="onFileSelected($event)">
-            <small class="file-help">PDF o imagen, máximo 10 MB.</small>
-            <small class="file-error" *ngIf="fileError">{{ fileError }}</small>
-            <small class="selected-file" *ngIf="selectedFile">Seleccionado: {{ selectedFile.name }}</small>
-        </div>
-
-        <button type="submit" [disabled]="ticketForm.invalid || !!fileError || submitting" class="submit-btn">
-            {{ submitting ? 'Guardando...' : 'Generar Ticket' }}
-        </button>
-        <button type="button" mat-raised-button color="accent" class="cancel-btn" (click)="loadChildren('hometick')">Cancelar</button>
     </form>
 </div>
