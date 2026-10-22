@@ -86,7 +86,7 @@ body {
 	text-decoration: none;}
 
 .ruta a:hover{
-	color:#0194fe;
+	color:#003871;
 	text-decoration: none;}
 
 
@@ -100,7 +100,7 @@ body {
     position: fixed;
     bottom: 10px;
     right: 10px;
-    background-color: #0194fe;
+    background-color: #003871;
     text-align: center;
     line-height:40px;
     padding: 10px;
@@ -118,7 +118,7 @@ body {
 	height: 60px;
 	padding:15px 15px;
 	font-size: 18px;
-	background: #0194fe;}
+	background: #003871;}
 
 a.tel{
 	float: left;
@@ -357,7 +357,7 @@ header nav ul li.sub-menu:before {
 	font-family: fontAwesome;
 	position: absolute;
 	line-height: 50px;
-	color: #0194fe;
+	color: #003871;
 	right: 5px;
 	cursor: pointer;}
 
@@ -394,7 +394,7 @@ header nav ul li a:hover, header nav ul li a.active {
 
 /* Toggle Button */
 .menu-toggle {
-	color: #0194fe;
+	color: #003871;
 	float: right;
 	line-height: 50px;
 	font-size: 24px;
@@ -453,7 +453,7 @@ header nav ul li a:hover, header nav ul li a.active {
 
 /* Slider Inner Slide Effect */
 .slider h2 {
-  color: #0194fe;
+  color: #003871;
 	font-family: 'Avenir LT Std';
    font-weight: 900;
    font-style: normal;
@@ -542,7 +542,7 @@ header nav ul li a:hover, header nav ul li a.active {
 
 .number-pagination span {
   font-size: 30px;
-  color: #0194fe;
+  color: #003871;
   letter-spacing: 4px;}
 
 .number-pagination span:after {
@@ -565,7 +565,7 @@ header nav ul li a:hover, header nav ul li a.active {
   height: 15px;
   border-radius: 50%;
   display: inline-block;
-  background: #0194fe;
+  background: #003871;
   margin: 0 10px;
   cursor: pointer;}
 
@@ -705,7 +705,7 @@ ul.marquee li a:hover{
 	margin: 20px 0px;}
 
 .items-destacados h1 span{
-	color:#0194fe;}
+	color:#003871;}
 
 .intro{
 	color:#888;
@@ -729,7 +729,7 @@ ul.marquee li a:hover{
 	color:#888;}
 
 .opcion-destacados a:hover{
-	color:#0194fe;}
+	color:#003871;}
 
 .ico-destacados{
 	width: 70px;
@@ -796,7 +796,7 @@ ul.marquee li a:hover{
 #mixedSlider .MS-content .item a { color: #888; text-decoration: none; }
 
 #mixedSlider .MS-content .item a:hover {
-	color:#0194fe;}
+	color:#003871;}
 
 #mixedSlider .MS-controls button {
   position: absolute;
@@ -1016,7 +1016,7 @@ a.link-modulo{
 a:hover.link-modulo{
     background-position: -100px 0;
 	text-decoration:none;
-	color:#0194fe;}
+	color:#003871;}
 
 /*-------------------------------------------
 				FOOTER
@@ -1141,10 +1141,10 @@ a:hover.comentarios{
     background:url("./img-dependencias-v3/mail-footer-roll.svg") 0 0 no-repeat;
 	background-position:left;
 	background-size:30px 30px;
-	color:#0194fe;}
+	color:#003871;}
 
 .comentarios span{
-	color:#0194fe;}
+	color:#003871;}
 
 a.telefono{
 	clear: both;
@@ -1169,7 +1169,7 @@ a:hover.telefono{
     background:url("./img-dependencias-v3/tel-roll-footer.svg") 0 0 no-repeat;
 	background-position:left;
 	background-size:30px 30px;
-	color:#0194fe;}
+	color:#003871;}
 
 .municipio{
 	margin: 0 auto;
@@ -1368,7 +1368,7 @@ a:hover.youtube-footer{
 	line-height: 22px;}
 
 .txt-filosofia h2{
-	color: #0194fe;
+	color: #003871;
 	font-size:25px;
 	font-weight: 900;
 	margin: 10px 0px;}
@@ -1378,7 +1378,7 @@ a:hover.youtube-footer{
 
 .tit-valores h1{
 	text-align: center;
-	color:#0194fe;
+	color:#003871;
 	font-size: 25px;
 	font-weight: 900;
 	line-height: 36px;
@@ -1610,7 +1610,7 @@ a:hover.item-lateral{
 	box-shadow: 0 2px 10px -2px rgba(0, 0, 0, 0.1);	}
 
 .dato-micro h2{
-	color:#0194fe;
+	color:#003871;
 	font-size: 22px;
 	line-height: 28px;
 	margin-bottom: 10px;}
@@ -1622,7 +1622,7 @@ a:hover.item-lateral{
 
 .dato-micro a:hover{
 	background: #F6F5F5;
-	color:#0194fe;
+	color:#003871;
 	border-radius: 5px;
 	text-decoration: none;}
 
@@ -1684,7 +1684,7 @@ a:hover.item-lateral{
 	margin-right: 10px;}
 
 .box-formulario-contacto h2{
-	color:#0194fe;
+	color:#003871;
 	font-weight: 900;
 	font-size: 25px;
 	line-height: 27px;
@@ -1699,7 +1699,7 @@ a:hover.item-lateral{
 	font-weight: 300;}
 
 .intro-contacto span{
-	color:#0194fe;
+	color:#003871;
 	font-weight: 900;}
 
 .input-nombre input {
@@ -1826,7 +1826,7 @@ a:hover.item-lateral{
 	text-decoration: underline;}
 
 .aviso-privacidad a:hover{
-	color:#0194fe;
+	color:#003871;
 	text-decoration: none;}
 
 .casilla {
@@ -1869,7 +1869,7 @@ a:hover.item-lateral{
 	margin: 0 auto;
 	font-weight: 900;
 	font-size: 12px;
-	color:#0194fe;
+	color:#003871;
 	text-align: left;
 	padding:25px 0px 0px 0px}
 
@@ -2037,7 +2037,7 @@ a:hover.item-lateral{
 	text-align: center}
 
 .areas-integral h1 span{
-	color:#0194fe;}
+	color:#003871;}
 
 .area-int{
 	margin: 0 auto;
@@ -2105,7 +2105,7 @@ a:hover.item-lateral{
 
 .carrusel a:hover{
 	background: #F7F5F5;
-	color:#0194fe;}
+	color:#003871;}
 
 .img-carrusel{
 	width:70%;
@@ -2489,7 +2489,7 @@ a:hover.crear-cuenta{
 /* When the checkbox is checked, add a blue background */
 .container-casilla input:checked ~ .checkmark {
 	border-radius: 5px;
-  background-color:#0194fe;}
+  background-color:#003871;}
 
 /* Create the checkmark/indicator (hidden when not checked) */
 .checkmark:after {
@@ -2608,7 +2608,7 @@ a:hover.crear-cuenta{
 	height:50px;
 	border:0px;
 	border-radius:5px;
-    background:#0194fe;
+    background:#003871;
 	font-size: 16px;
 	font-weight: 900;
 	color: #fff;
@@ -2775,7 +2775,7 @@ a:hover.bot-pag{
 	padding:20px 10px;}
 
 .box-descrip-destacado h1{
-	color:#0194fe;
+	color:#003871;
 	text-align: left;
 	font-size: 40px;
 	line-height: 45px;
@@ -2785,12 +2785,12 @@ a:hover.bot-pag{
 	width: 95%;
 	padding:5px 0px 20px 0px;
 	text-align: left;
-	color:#0194fe;
+	color:#003871;
 	font-size: 18px;
 	line-height: 20px;}
 
 .ruta-temas a{
-	color:#0194fe;
+	color:#003871;
 	font-weight: 900;
 	text-decoration: none;}
 
@@ -2834,7 +2834,7 @@ a:hover.bot-pag{
 	color:#888;}
 
 .info-item-destacado a:hover{
-	color:#0194fe;}
+	color:#003871;}
 
 .ico-destacados-secc{
 	width: 100px;
@@ -2864,11 +2864,11 @@ a:hover.bot-pag{
 
 	header nav ul li a {border-bottom: 1px solid rgba(224,224,224,.2); background: #0b6beb; color:#fff;}
 
-	header nav ul li.active ul { position: relative; background: #0194fe; }
+	header nav ul li.active ul { position: relative; background: #003871; }
 
 	header nav ul li ul li { width: 100%;	}
 
-	header nav ul li ul li a{color: #FFF; background: #0194fe }
+	header nav ul li ul li a{color: #FFF; background: #003871 }
 
 	.ilustra-destacado {flex-basis:200px; height: 200px;}
 

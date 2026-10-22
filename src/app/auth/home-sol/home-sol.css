@@ -1,5 +1,5 @@
 mat-toolbar {
-    background: #0194fe;
+    background: #003871;
     color: white;
     top:0;
     z-index: 2;
@@ -9,7 +9,7 @@ mat-sidenav {
     margin: 16px;
     width: 200px;
     border-right: none;
-    background: #0194fe;
+    background: #003871;
     color: white;
     border-radius: 10px;
     padding: 16px;
@@ -133,7 +133,7 @@ mat-divider {
     height: 30px;
     padding: 15px 15px;
     font-size: 14px;
-    background: #0194fe;
+    background: #003871;
 }
 
 .espaciador-flexible {

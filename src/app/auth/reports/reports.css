@@ -5,10 +5,10 @@
 .report-filters label { display: flex; flex-direction: column; gap: 6px; color: #444; font-weight: 500; }
 .report-filters input, .report-filters select { box-sizing: border-box; width: 100%; padding: 10px; border: 1px solid #bbb; border-radius: 6px; background: white; }
 .search-field { grid-column: span 2; }
-.generate-button { min-height: 42px; background: #0194fe !important; color: white !important; }
+.generate-button { min-height: 42px; background: #003871 !important; color: white !important; }
 .summary-grid { display: grid; grid-template-columns: repeat(4, minmax(150px, 1fr)); gap: 16px; margin: 24px 0 16px; }
-.summary-card { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 4px 10px; padding: 18px; border-left: 5px solid #0194fe; border-radius: 8px; background: #f4f9ff; }
-.summary-card mat-icon { grid-row: span 2; color: #0194fe; }
+.summary-card { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 4px 10px; padding: 18px; border-left: 5px solid #003871; border-radius: 8px; background: #f4f9ff; }
+.summary-card mat-icon { grid-row: span 2; color: #003871; }
 .summary-card span { color: #555; }
 .summary-card strong { font-size: 1.7rem; color: #222; }
 .summary-card.warning { border-color: #f9a825; }
