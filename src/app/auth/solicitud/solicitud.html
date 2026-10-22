@@ -65,7 +65,7 @@
         </div>
 
         <div class="form-actions">
-            <button type="button" mat-raised-button class="cancel-btn" (click)="loadChildren('homesol')">Cancelar</button>
+            <button type="button" mat-raised-button class="cancel-btn" (click)="cancel()">Cancelar</button>
             <button type="submit" mat-raised-button color="primary" class="submit-btn"
                 [disabled]="solicitudForm.invalid || !!fileError || submitting">
                 {{ submitting ? 'Guardando...' : 'Enviar Solicitud' }}

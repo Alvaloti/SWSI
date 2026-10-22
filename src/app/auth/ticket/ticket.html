@@ -54,7 +54,7 @@
         </div>
 
         <div class="form-actions">
-            <button type="button" mat-raised-button class="cancel-btn" (click)="loadChildren('hometick')">Cancelar</button>
+            <button type="button" mat-raised-button class="cancel-btn" (click)="cancel()">Cancelar</button>
             <button type="submit" [disabled]="ticketForm.invalid || !!fileError || submitting" class="submit-btn">
                 {{ submitting ? 'Guardando...' : 'Generar Ticket' }}
             </button>

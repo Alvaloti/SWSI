@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, TemplateRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatSidenavContainer, MatSidenav,} from '@angular/material/sidenav';
 import { MatDivider, MatDividerModule } from '@angular/material/divider';
@@ -6,7 +6,7 @@ import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { MatToolbar, MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { AuthService } from '../../service/auth-service';
-import { Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
+import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { MatTable, MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -22,6 +22,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { Profile } from '../profile/profile';
 import { Notifications } from '../notifications/notifications';
 import { finalize } from 'rxjs';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { Solicitud } from '../solicitud/solicitud';
 
 @Component({
     selector: 'app-home-sol',
@@ -72,14 +74,40 @@ import { finalize } from 'rxjs';
     MatFormFieldModule,
     MatProgressSpinnerModule,
     MatIcon,
-    RouterLink,
     Profile,
-    Notifications
+    Notifications,
+    MatDialogModule,
+    Solicitud
 ],
     templateUrl: './home-sol.html',
     styleUrl: './home-sol.css',
 })
 export class HomeSol {
+    @ViewChild('solicitudDialog') solicitudDialog!: TemplateRef<unknown>;
+    private readonly dialog = inject(MatDialog);
+    private solicitudDialogRef?: MatDialogRef<unknown>;
+
+    abrirSolicitud(): void {
+        this.solicitudDialogRef = this.dialog.open(this.solicitudDialog, {
+            width: '780px',
+            maxWidth: '95vw',
+            maxHeight: '90vh',
+            disableClose: true,
+            autoFocus: false,
+        });
+        if (this.isMobile) this.menuAbierto = false;
+    }
+
+    cerrarSolicitud(): void {
+        this.solicitudDialogRef?.close();
+    }
+
+    solicitudCreada(): void {
+        this.cerrarSolicitud();
+        this.paginaActual = 0;
+        this.cargarDatos();
+    }
+
     eliminarSolicitud(solicitud: any) {
         const id = solicitud._id ?? solicitud.id;
         if (!id || !window.confirm(`¿Eliminar la solicitud "${solicitud.folio ?? id}"?`)) return;

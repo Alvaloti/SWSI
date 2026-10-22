@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../service/auth-service';
@@ -11,6 +11,9 @@ import { AuthService } from '../../service/auth-service';
     styleUrl: './ticket.css',
 })
 export class Ticket {
+    @Input() dialogMode = false;
+    @Output() created = new EventEmitter<void>();
+    @Output() cancelled = new EventEmitter<void>();
     private readonly allowedFileTypes = new Set([
         'application/pdf',
         'image/jpeg',
@@ -60,11 +63,12 @@ export class Ticket {
                 this.authService.uploadAttachment(this.selectedFile, { ticket_id: ticketId }).subscribe({
                     next: () => this.finishCreation('Ticket y archivo registrados correctamente.'),
                     error: (error) => {
+                        this.submitting = false;
                         window.alert(
                             error.error?.message ??
                             'El ticket fue creado, pero no fue posible guardar el archivo adjunto.',
                         );
-                        this.router.navigateByUrl('/hometick');
+                        this.completeNavigation();
                     },
                 });
             },
@@ -98,6 +102,22 @@ export class Ticket {
     private finishCreation(message: string): void {
         this.submitting = false;
         window.alert(message);
+        this.completeNavigation();
+    }
+
+    cancel(): void {
+        if (this.dialogMode) {
+            this.cancelled.emit();
+            return;
+        }
+        this.router.navigateByUrl('/hometick');
+    }
+
+    private completeNavigation(): void {
+        if (this.dialogMode) {
+            this.created.emit();
+            return;
+        }
         this.router.navigateByUrl('/hometick');
     }
 

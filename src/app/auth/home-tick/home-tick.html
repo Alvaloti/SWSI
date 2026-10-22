@@ -20,7 +20,7 @@
 
         <mat-divider></mat-divider>
         <app-profile (profileUpdated)="user = $event"></app-profile>
-        <button type="button" mat-button class="menu-button" routerLink="/ticket">
+        <button type="button" mat-button class="menu-button" (click)="abrirTicket()">
             <mat-icon>assignment</mat-icon>
             <span class="span">Crear ticket</span>
         </button>
@@ -91,3 +91,11 @@
         </div>
     </mat-sidenav-content>
 </mat-sidenav-container>
+
+<ng-template #ticketDialog>
+    <app-ticket
+        [dialogMode]="true"
+        (created)="ticketCreado()"
+        (cancelled)="cerrarTicket()">
+    </app-ticket>
+</ng-template>

@@ -20,7 +20,7 @@
 
         <mat-divider></mat-divider>
         <app-profile (profileUpdated)="user = $event"></app-profile>
-        <button mat-button class="menu-button" routerLink="/solicitud">
+        <button type="button" mat-button class="menu-button" (click)="abrirSolicitud()">
             <mat-icon>assignment</mat-icon>
             <span class="span">Crea solicitud</span>
         </button>
@@ -115,3 +115,11 @@
 
     </mat-sidenav-content>
 </mat-sidenav-container>
+
+<ng-template #solicitudDialog>
+    <app-solicitud
+        [dialogMode]="true"
+        (created)="solicitudCreada()"
+        (cancelled)="cerrarSolicitud()">
+    </app-solicitud>
+</ng-template>

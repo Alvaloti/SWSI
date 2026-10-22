@@ -1,5 +1,5 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { ChangeDetectorRef, Component, inject, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, TemplateRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,6 +20,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { Profile } from '../profile/profile';
 import { Notifications } from '../notifications/notifications';
 import { finalize } from 'rxjs';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { Ticket } from '../ticket/ticket';
 
 @Component({
     selector: 'app-home-tick',
@@ -42,12 +44,39 @@ import { finalize } from 'rxjs';
         MatIcon,
         Profile,
         Notifications,
+        MatDialogModule,
+        Ticket,
     ],
     templateUrl: './home-tick.html',
     styleUrl: './home-tick.css',
 })
 export class HomeTick {
     @ViewChild(MatSidenav) sidenav!: MatSidenav;
+    @ViewChild('ticketDialog') ticketDialog!: TemplateRef<unknown>;
+
+    private readonly dialog = inject(MatDialog);
+    private ticketDialogRef?: MatDialogRef<unknown>;
+
+    abrirTicket(): void {
+        this.ticketDialogRef = this.dialog.open(this.ticketDialog, {
+            width: '780px',
+            maxWidth: '95vw',
+            maxHeight: '90vh',
+            disableClose: true,
+            autoFocus: false,
+        });
+        if (this.isMobile) this.menuAbierto = false;
+    }
+
+    cerrarTicket(): void {
+        this.ticketDialogRef?.close();
+    }
+
+    ticketCreado(): void {
+        this.cerrarTicket();
+        this.paginaActual = 0;
+        this.cargarDatos();
+    }
 
     user: any;
     isMobile = true;

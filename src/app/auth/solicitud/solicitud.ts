@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../service/auth-service';
 import { Router } from '@angular/router';
@@ -12,6 +12,9 @@ import { Router } from '@angular/router';
     styleUrl: './solicitud.css',
 })
 export class Solicitud {
+    @Input() dialogMode = false;
+    @Output() created = new EventEmitter<void>();
+    @Output() cancelled = new EventEmitter<void>();
     private readonly allowedFileTypes = new Set([
         'application/pdf',
         'image/jpeg',
@@ -74,11 +77,12 @@ export class Solicitud {
                 this.authService.uploadAttachment(this.selectedFile, { solicitud_id: solicitudId }).subscribe({
                     next: () => this.finishCreation('Solicitud y archivo registrados correctamente.'),
                     error: (error) => {
+                        this.submitting = false;
                         window.alert(
                             error.error?.message ??
                             'La solicitud fue creada, pero no fue posible guardar el archivo adjunto.',
                         );
-                        this.router.navigateByUrl('/homesol');
+                        this.completeNavigation();
                     },
                 });
             },
@@ -112,6 +116,22 @@ export class Solicitud {
     private finishCreation(message: string): void {
         this.submitting = false;
         window.alert(message);
+        this.completeNavigation();
+    }
+
+    cancel(): void {
+        if (this.dialogMode) {
+            this.cancelled.emit();
+            return;
+        }
+        this.router.navigateByUrl('/homesol');
+    }
+
+    private completeNavigation(): void {
+        if (this.dialogMode) {
+            this.created.emit();
+            return;
+        }
         this.router.navigateByUrl('/homesol');
     }
 
