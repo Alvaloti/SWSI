@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { AuthService } from '../../service/auth-service';
 import { Router } from '@angular/router';
+import { USERNAME_PATTERN } from '../../shared/validation-patterns';
 
 interface RoleOption {
     _id: string;
@@ -35,7 +36,7 @@ export class Register {
         private router: Router,
     ) {
         this.registerForm = this.fb.group({
-            username: ['', Validators.required],
+            username: ['', [Validators.required, Validators.pattern(USERNAME_PATTERN), Validators.maxLength(50)]],
             nomina: ['', Validators.required],
             email: ['', [Validators.required, Validators.email]],
             password: ['', [Validators.required, Validators.minLength(8)]],
@@ -47,6 +48,10 @@ export class Register {
     }
 
     onSubmit() {
+        if (this.registerForm.invalid) {
+            this.registerForm.markAllAsTouched();
+            return;
+        }
         const formData = this.registerForm.value;
         console.log('Form Data:', formData);
         this.authService.register(formData).subscribe({

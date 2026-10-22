@@ -14,6 +14,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { USERNAME_PATTERN } from '../../shared/validation-patterns';
 
 @Component({
     selector: 'app-users',
@@ -51,7 +52,7 @@ export class Users {
         private breakpointObserver: BreakpointObserver,
     ) {
         this.registerForm = new FormGroup({
-            username: new FormControl('', Validators.required),
+            username: new FormControl('', [Validators.required, Validators.pattern(USERNAME_PATTERN), Validators.maxLength(50)]),
             nomina: new FormControl('', Validators.required),
             email: new FormControl('', [Validators.required, Validators.email]),
             password: new FormControl('', [Validators.required, Validators.minLength(8)]),

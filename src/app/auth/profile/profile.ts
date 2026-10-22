@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '../../service/auth-service';
+import { USERNAME_PATTERN } from '../../shared/validation-patterns';
 
 @Component({
     selector: 'app-profile',
@@ -18,7 +19,10 @@ export class Profile {
     @Output() profileUpdated = new EventEmitter<any>();
 
     readonly profileForm = new FormGroup({
-        username: new FormControl('', { nonNullable: true, validators: Validators.required }),
+        username: new FormControl('', {
+            nonNullable: true,
+            validators: [Validators.required, Validators.pattern(USERNAME_PATTERN), Validators.maxLength(50)],
+        }),
         nomina: new FormControl('', { nonNullable: true, validators: Validators.required }),
         email: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.email] }),
         name: new FormControl('', { nonNullable: true, validators: Validators.required }),

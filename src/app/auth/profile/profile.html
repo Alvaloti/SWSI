@@ -19,8 +19,12 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="profile-username">Usuario</label>
-                        <input id="profile-username" type="text" formControlName="username">
+                        <input id="profile-username" type="text" formControlName="username"
+                            placeholder="nombre.apellido" maxlength="50" autocomplete="username"
+                            autocapitalize="none" spellcheck="false">
                         <small *ngIf="profileForm.get('username')?.touched && profileForm.get('username')?.hasError('required')">El usuario es requerido.</small>
+                        <small *ngIf="profileForm.get('username')?.touched && profileForm.get('username')?.hasError('pattern')">Usa el formato nombre.apellido, sin espacios ni caracteres especiales.</small>
+                        <small *ngIf="profileForm.get('username')?.touched && profileForm.get('username')?.hasError('maxlength')">El usuario no puede superar 50 caracteres.</small>
                     </div>
                     <div class="form-group">
                         <label for="profile-nomina">Nómina</label>

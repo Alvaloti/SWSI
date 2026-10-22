@@ -92,9 +92,16 @@
 
         <div class="form-group">
             <label for="username">Usuario</label>
-            <input type="text" id="username" formControlName="username" placeholder="Usuario">
+            <input type="text" id="username" formControlName="username" placeholder="nombre.apellido"
+                maxlength="50" autocomplete="username" autocapitalize="none" spellcheck="false">
             <small *ngIf="registerForm.get('username')?.hasError('required') && registerForm.get('username')?.touched">
                 Usuario es requerido.
+            </small>
+            <small *ngIf="registerForm.get('username')?.hasError('pattern') && registerForm.get('username')?.touched">
+                Usa el formato nombre.apellido, sin espacios ni caracteres especiales.
+            </small>
+            <small *ngIf="registerForm.get('username')?.hasError('maxlength') && registerForm.get('username')?.touched">
+                El usuario no puede superar 50 caracteres.
             </small>
         </div>
 
