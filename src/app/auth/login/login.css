@@ -2327,7 +2327,7 @@ a:hover.item-lateral{
 
 .input-usuario{
 	width:80%;
-	background-color: #aad6f2;
+	background-color: white;
 	background-image: url('./img-dependencias-v3/usuario-login.svg');
 	background-repeat: no-repeat;
 	background-position: 4px center;
@@ -2345,7 +2345,7 @@ a:hover.item-lateral{
 	font-size: 16px;
 	background: transparent;
 	border: none;
-	color:#fff; }
+	color:black; }
 
 .input-usuario input:focus {
 	outline: none;}
@@ -2353,11 +2353,11 @@ a:hover.item-lateral{
 .input-usuario input::placeholder {
 	font-family: 'Avenir LT Std';
 	font-weight: 900;
-	color:#fff;}
+	color:black;}
 
 .input-password{
 	width:80%;
-	background-color: #aad6f2;
+	background-color: white;
 	background-image: url('./img-dependencias-v3/password.svg');
 	background-repeat: no-repeat;
 	background-position: 4px center;
@@ -2375,7 +2375,7 @@ a:hover.item-lateral{
 	font-size: 16px;
 	background: transparent;
 	border: none;
-	color:#fff; }
+	color:black; }
 
 .input-password input:focus {
 	outline: none;}
@@ -2383,7 +2383,7 @@ a:hover.item-lateral{
 .input-password input::placeholder {
 	font-family: 'Avenir LT Std';
 	font-weight: 900;
-	color:#fff;}
+	color:black;}
 
 .detalle-campo{
 	width:80%;
