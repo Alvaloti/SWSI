@@ -1024,7 +1024,7 @@ a:hover.link-modulo{
 footer{
 	background:#003871;
 	margin: 10px 0px 0px 0px;
-	padding: 100px 30px 40px 30px;}
+	padding: 30px 30px 40px 30px;}
 
 .difusion{
 	text-align: center;
@@ -1067,7 +1067,7 @@ footer{
 	color:#fff;
 	font-weight: 900;
 	font-size: 22px;
-	line-height: 24px;
+	line-height: 20px;
 	margin: 10px 0px;}
 
 .dato-page ul {
@@ -1141,10 +1141,10 @@ a:hover.comentarios{
     background:url("./img-dependencias-v3/mail-footer-roll.svg") 0 0 no-repeat;
 	background-position:left;
 	background-size:30px 30px;
-	color:#003871;}
+	color:white;}
 
 .comentarios span{
-	color:#003871;}
+	color:white;}
 
 a.telefono{
 	clear: both;
@@ -1169,7 +1169,7 @@ a:hover.telefono{
     background:url("./img-dependencias-v3/tel-roll-footer.svg") 0 0 no-repeat;
 	background-position:left;
 	background-size:30px 30px;
-	color:#003871;}
+	color:white;}
 
 .municipio{
 	margin: 0 auto;
@@ -2421,7 +2421,7 @@ a:hover.item-lateral{
 	height:40px;
 	border:0px;
 	border-radius:5px;
-    background:#0b6beb;
+    background:#003871;
 	font-size: 16px;
 	font-weight: 900;
 	color: #fff;
@@ -2457,7 +2457,7 @@ a:hover.crear-cuenta{
 	margin-bottom: 12px;
  	cursor: pointer;
 	font-size: 16px;
-	color:#888;
+	color:black;
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
@@ -2479,7 +2479,7 @@ a:hover.crear-cuenta{
   height: 28px;
   width: 28px;
 	border-radius: 5px;
-  background-color: #aad6f2;}
+  background-color: white;}
 
 /* On mouse-over, add a grey background color */
 .container-casilla:hover input ~ .checkmark {
