@@ -1023,7 +1023,7 @@ a:hover.link-modulo{
 -----------------------------------------*/
 footer{
 	background:#003871;
-	margin: 10px 0px 0px 0px;
+	margin: 0px 0px 0px 0px;
 	padding: 30px 30px 40px 30px;}
 
 .difusion{
@@ -2115,7 +2115,7 @@ a:hover.item-lateral{
 				CATÁLOGO DE SERVICIOS
 -----------------------------------------*/
 #catalogo-servicios-cintilla{
-	height:380px;
+	height:250px;
 	background:url("./img-dependencias-v3/catalogo-servicios.jpg") top center;
 	background-repeat:no-repeat;
 	background-size:cover;
@@ -2281,19 +2281,19 @@ a:hover.item-lateral{
 	box-shadow: 0 2px 25px -2px rgba(0, 0, 0, 0.2);	}
 
 .enc-login{
-	height: 350px;
+	height: 200px;
 	background:url("./img-dependencias-v3/login.jpg") top center;
 	background-repeat:no-repeat;
 	background-size:cover;
 	background-position:center;
 	background-position-y: initial;
 	text-align: center;
-	margin-bottom: 30px;
-	padding:120px 20px 60px 20px;}
+	margin-bottom: 20px;
+	padding:100px 20px 60px 20px;}
 
 .img-login{
 	width: 250px;
-	margin: 10px 0px;}
+	margin: 0px 0px 20px;}
 
 .info-login{
 	margin: 0 auto;
@@ -3103,7 +3103,7 @@ a:hover.bot-pag{
 
 	.modulo{height:680px;}
 
-	footer{ padding: 100px 0px 40px 0px; margin: 10px 10px 0px 10px;}
+	footer{ padding: 50px 0px 40px 0px; margin: 5px 10px 0px 10px;}
 
 	#copy{ margin: 0px 10px;}
 
@@ -3244,7 +3244,7 @@ a:hover.bot-pag{
 
 	.centrar-boton-sesion{ width: 95%;}
 
-	.enc-login{ height: 230px; padding:60px 10px 60px 10px;}
+	.enc-login{ height: 150px; padding:30px 10px 60px 10px;}
 
 	.txt-acuse{ height: 230px; padding:50px 30px 50px 30px;}
 
