@@ -2345,7 +2345,7 @@ a:hover.item-lateral{
 	font-size: 16px;
 	background: transparent;
 	border: none;
-	color:black; }
+	color:#003871; }
 
 .input-usuario input:focus {
 	outline: none;}
@@ -2353,7 +2353,7 @@ a:hover.item-lateral{
 .input-usuario input::placeholder {
 	font-family: 'Avenir LT Std';
 	font-weight: 900;
-	color:black;}
+	color:#003871;}
 
 .input-password{
 	width:80%;
@@ -2375,7 +2375,7 @@ a:hover.item-lateral{
 	font-size: 16px;
 	background: transparent;
 	border: none;
-	color:black; }
+	color:#003871; }
 
 .input-password input:focus {
 	outline: none;}
@@ -2383,7 +2383,7 @@ a:hover.item-lateral{
 .input-password input::placeholder {
 	font-family: 'Avenir LT Std';
 	font-weight: 900;
-	color:black;}
+	color:#003871;}
 
 .detalle-campo{
 	width:80%;
