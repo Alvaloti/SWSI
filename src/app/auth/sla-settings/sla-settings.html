@@ -1,0 +1,17 @@
+<section class="sla-card">
+    <header><div><h2>Políticas de nivel de servicio (SLA)</h2><p>Define los tiempos objetivo y el momento en que se enviará la advertencia para cada prioridad.</p></div><button mat-stroked-button (click)="load()"><mat-icon>refresh</mat-icon>Actualizar</button></header>
+    @if (loading) { <div class="state"><mat-spinner diameter="42"></mat-spinner></div> }
+    @else {
+        <div class="table-wrapper"><table><thead><tr><th>Prioridad</th><th>Primera respuesta</th><th>Resolución</th><th>Advertencia</th><th>Activo</th><th></th></tr></thead><tbody>
+            <tr *ngFor="let row of policies">
+                <td><strong>{{ row.name }}</strong><small>{{ row.key }}</small></td>
+                <td><input type="number" min="0.25" step="0.25" [(ngModel)]="row.response_hours"> horas</td>
+                <td><input type="number" min="0.25" step="0.25" [(ngModel)]="row.resolution_hours"> horas</td>
+                <td><input type="number" min="1" max="99" [(ngModel)]="row.warning_percent"> %</td>
+                <td><input type="checkbox" [(ngModel)]="row.sla_active"></td>
+                <td><button mat-flat-button color="primary" (click)="save(row)" [disabled]="savingPriority === row.key">{{ savingPriority === row.key ? 'Guardando…' : 'Guardar' }}</button></td>
+            </tr>
+        </tbody></table></div>
+        <p class="note"><mat-icon>info</mat-icon>Los nuevos tiempos se aplican a solicitudes y tickets creados después de guardar. Si cambia su prioridad, el SLA se recalcula desde su fecha de creación.</p>
+    }
+</section>
