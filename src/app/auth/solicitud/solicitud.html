@@ -5,10 +5,13 @@
 
         <div class="form-grid">
             <div class="form-group">
-                <label for="tipo">Tipo de Solicitud</label>
-                <input type="text" id="tipo" formControlName="tipo" placeholder="Tipo de Solicitud">
-                <small *ngIf="solicitudForm.get('tipo')?.hasError('required') && solicitudForm.get('tipo')?.touched">
-                    Tipo de Solicitud es requerido.
+                <label for="solicitud-category">Categoría</label>
+                <select id="solicitud-category" formControlName="category">
+                    <option value="" disabled>Seleccionar categoría</option>
+                    <option *ngFor="let category of categories" [value]="category._id">{{ category.name }}</option>
+                </select>
+                <small *ngIf="solicitudForm.get('category')?.hasError('required') && solicitudForm.get('category')?.touched">
+                    La categoría es requerida.
                 </small>
             </div>
 
@@ -49,7 +52,7 @@
                 <input id="solicitud-archivo" type="file"
                     accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,application/pdf,image/jpeg,image/png,image/gif,image/webp"
                     (change)="onFileSelected($event)">
-                <small class="file-help">PDF o imagen, máximo 10 MB.</small>
+                <small class="file-help">PDF o imagen, máximo {{ maxAttachmentMb }} MB.</small>
                 <small class="file-error" *ngIf="fileError">{{ fileError }}</small>
                 <small class="selected-file" *ngIf="selectedFile">Seleccionado: {{ selectedFile.name }}</small>
             </div>

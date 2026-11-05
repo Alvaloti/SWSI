@@ -22,10 +22,11 @@ export class Solicitud {
         'image/gif',
         'image/webp',
     ]);
-    private readonly maxFileSize = 10 * 1024 * 1024;
+    maxAttachmentMb = 10;
     solicitudForm: FormGroup;
     areas: any[] = [];
     priorities: any[] = [];
+    categories: any[] = [];
     selectedFile: File | null = null;
     fileError = '';
     submitting = false;
@@ -35,7 +36,7 @@ export class Solicitud {
         private router: Router,
     ) {
         this.solicitudForm = new FormGroup({
-            tipo: new FormControl('', Validators.required),
+            category: new FormControl('', Validators.required),
             descripcion: new FormControl('', Validators.required),
             comentarios: new FormControl(''),
             area: new FormControl('', Validators.required),
@@ -55,6 +56,14 @@ export class Solicitud {
         this.authService.getPriorities('solicitud').subscribe({
             next: (response) => this.priorities = response.items || [],
             error: () => this.priorities = [],
+        });
+        this.authService.getCategories({ applies_to: 'solicitud', limit: 100 }).subscribe({
+            next: (response) => this.categories = response.categories ?? response.category ?? [],
+            error: () => this.categories = [],
+        });
+        this.authService.getSystemSettings().subscribe({
+            next: (response) => this.maxAttachmentMb = Number(response.settings?.max_attachment_mb) || 10,
+            error: () => this.maxAttachmentMb = 10,
         });
     }
 
@@ -110,8 +119,8 @@ export class Solicitud {
             input.value = '';
             return;
         }
-        if (file.size > this.maxFileSize) {
-            this.fileError = 'El archivo no puede superar 10 MB.';
+        if (file.size > this.maxAttachmentMb * 1024 * 1024) {
+            this.fileError = `El archivo no puede superar ${this.maxAttachmentMb} MB.`;
             input.value = '';
             return;
         }

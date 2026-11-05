@@ -31,6 +31,7 @@ export class Notifications implements OnInit, OnDestroy {
     loadError = '';
     showPreferences = false;
     savingPreferences = false;
+    allowUserPreferences = true;
     preferences: Record<string, boolean> = {};
     readonly preferenceOptions = [
         ['assignment', 'Asignaciones'], ['status', 'Cambios de estado'], ['decision', 'Aprobaciones y rechazos'],
@@ -42,7 +43,19 @@ export class Notifications implements OnInit, OnDestroy {
     private pollingSubscription?: Subscription;
 
     ngOnInit(): void {
-        this.pollingSubscription = timer(0, 30000)
+        this.authService.getNotificationSettings().subscribe({
+            next: (response) => {
+                this.allowUserPreferences = response.settings?.allow_user_preferences !== false;
+                this.startPolling(Number(response.settings?.polling_seconds) || 30);
+            },
+            error: () => this.startPolling(30),
+        });
+    }
+
+    private startPolling(seconds: number): void {
+        this.pollingSubscription?.unsubscribe();
+        const interval = Math.min(300, Math.max(15, seconds)) * 1000;
+        this.pollingSubscription = timer(0, interval)
             .pipe(switchMap(() => this.authService.getNotifications()))
             .subscribe({
                 next: (response) => this.applyResponse(response),
@@ -110,6 +123,7 @@ export class Notifications implements OnInit, OnDestroy {
 
     openPreferences(event: Event): void {
         event.stopPropagation();
+        if (!this.allowUserPreferences) return;
         this.showPreferences = !this.showPreferences;
         if (!this.showPreferences) return;
         this.authService.getNotificationPreferences().subscribe({
@@ -136,5 +150,6 @@ export class Notifications implements OnInit, OnDestroy {
         this.notifications = Array.isArray(response.notifications) ? response.notifications : [];
         this.unreadCount = Number(response.unreadCount) || 0;
         this.loadError = '';
+        this.allowUserPreferences = response.notificationSettings?.allow_user_preferences ?? this.allowUserPreferences;
     }
 }

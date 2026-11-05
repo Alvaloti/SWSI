@@ -8,7 +8,7 @@
 <mat-menu #notificationMenu="matMenu" panelClass="notification-menu" xPosition="before">
     <div class="notification-header" (click)="$event.stopPropagation()">
         <strong>Notificaciones</strong>
-        <button type="button" mat-icon-button (click)="openPreferences($event)" aria-label="Configurar notificaciones">
+        <button *ngIf="allowUserPreferences" type="button" mat-icon-button (click)="openPreferences($event)" aria-label="Configurar notificaciones">
             <mat-icon>settings</mat-icon>
         </button>
         <button type="button" mat-button (click)="markAllAsRead($event)" [disabled]="!unreadCount">

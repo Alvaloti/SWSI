@@ -103,7 +103,7 @@ export class Assignments {
     }
 
     cargarCatalogos() {
-        this.authService.getItems({ limit: 100 }).subscribe({
+        this.authService.getItems({ limit: 500, available: true }).subscribe({
             next: (response) => {
                 const items = response.items ?? response;
                 this.items = Array.isArray(items)

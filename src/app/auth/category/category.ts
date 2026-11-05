@@ -50,6 +50,7 @@ export class Category {
         this.categoryForm = new FormGroup({
             name: new FormControl('', Validators.required),
             description: new FormControl('', Validators.required),
+            applies_to: new FormControl('ambos', Validators.required),
             active: new FormControl(true),
         });
     }
@@ -59,7 +60,7 @@ export class Category {
     private dialogRef?: MatDialogRef<unknown>;
 
     // Configuración de Tabla
-    columnasVisibles: string[] = ['id', 'nombre', 'descripción', 'activo', 'acciones'];
+    columnasVisibles: string[] = ['id', 'nombre', 'descripción', 'ambito', 'activo', 'acciones'];
     datos = new MatTableDataSource<any>([]);
     cargando = false;
 
@@ -125,6 +126,7 @@ export class Category {
         this.categoryForm.reset({
             name: '',
             description: '',
+            applies_to: 'ambos',
             active: true,
         });
         this.dialogRef = this.dialog.open(contenido, {
@@ -143,6 +145,7 @@ export class Category {
         this.categoryForm.patchValue({
             name: category.name,
             description: category.description,
+            applies_to: category.applies_to ?? 'ambos',
             active: category.active ?? true,
         });
         this.dialogRef = this.dialog.open(this.categoryDialog, {

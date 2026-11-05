@@ -38,6 +38,16 @@
             <span class="span">Auditoría</span>
         </button>
         }
+        @if (hasPermission('work.assign')) {
+        <button mat-button class="menu-button" (click)="cambiarVista('solicitudes-asignacion')">
+            <mat-icon>assignment</mat-icon>
+            <span class="span">Solicitudes</span>
+        </button>
+        <button mat-button class="menu-button" (click)="cambiarVista('tickets-asignacion')">
+            <mat-icon>confirmation_number</mat-icon>
+            <span class="span">Tickets</span>
+        </button>
+        }
         <mat-nav-list>
             <!-- Opción con menú flotante -->
             @if (hasAnyAdministrationPermission()) {
@@ -86,6 +96,18 @@
                     <span class="span">SLA</span>
                 </button>
                 }
+                @if (hasPermission('notifications.manage')) {
+                <button mat-button class="menu-button" (click)="cambiarVista('notificaciones-config')">
+                    <mat-icon>notifications</mat-icon>
+                    <span class="span">Notificaciones</span>
+                </button>
+                }
+                @if (hasPermission('settings.manage')) {
+                <button mat-button class="menu-button" (click)="cambiarVista('parametros')">
+                    <mat-icon>tune</mat-icon>
+                    <span class="span">Parámetros generales</span>
+                </button>
+                }
 
             </mat-menu>
             <mat-divider></mat-divider>
@@ -119,10 +141,18 @@
             <app-catalogs></app-catalogs>
             } @else if (vistaActiva === 'sla') {
             <app-sla-settings></app-sla-settings>
+            } @else if (vistaActiva === 'notificaciones-config') {
+            <app-notification-settings></app-notification-settings>
+            } @else if (vistaActiva === 'parametros') {
+            <app-system-settings></app-system-settings>
             } @else if (vistaActiva === 'reportes') {
             <app-reports></app-reports>
             } @else if (vistaActiva === 'auditoria') {
             <app-audit></app-audit>
+            } @else if (vistaActiva === 'solicitudes-asignacion') {
+            <app-home-sup [embedded]="true" initialView="solicitud"></app-home-sup>
+            } @else if (vistaActiva === 'tickets-asignacion') {
+            <app-home-sup [embedded]="true" initialView="tickets"></app-home-sup>
             } @else {
             <app-users></app-users>
             }

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, TemplateRef, ViewChild, viewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, Input, TemplateRef, ViewChild, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDivider } from '@angular/material/divider';
 import { MatIcon } from '@angular/material/icon';
@@ -51,6 +51,8 @@ import { Reports } from '../reports/reports';
     styleUrl: './home-sup.css',
 })
 export class HomeSup {
+    @Input() embedded = false;
+    @Input() initialView: 'users' | 'solicitud' | 'tickets' | 'reportes' = 'users';
     @ViewChild('assignmentDialog') assignmentDialog!: TemplateRef<unknown>;
     @ViewChild('decisionDialog') decisionDialog!: TemplateRef<unknown>;
     @ViewChild(MatSidenav)
@@ -96,8 +98,14 @@ export class HomeSup {
     private dialogRef?: MatDialogRef<unknown>;
 
     ngOnInit() {
-        this.observarTamanoPantalla();
+        this.vistaActiva = this.initialView;
+        if (!this.embedded) this.observarTamanoPantalla();
+        else {
+            this.isMobile = false;
+            this.menuAbierto = false;
+        }
         this.cargarTecnicos();
+        if (this.vistaActiva === 'solicitud' || this.vistaActiva === 'tickets') this.cargarDatos();
         this.authService.getUser().subscribe({
             next: (response) => {
                 if (response.status === 'success') this.user = response.user;

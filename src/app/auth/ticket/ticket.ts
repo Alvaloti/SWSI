@@ -21,12 +21,13 @@ export class Ticket {
         'image/gif',
         'image/webp',
     ]);
-    private readonly maxFileSize = 10 * 1024 * 1024;
+    maxAttachmentMb = 10;
     ticketForm: FormGroup;
     selectedFile: File | null = null;
     fileError = '';
     submitting = false;
     priorities: any[] = [];
+    categories: any[] = [];
 
     constructor(
         private fb: FormBuilder,
@@ -35,6 +36,7 @@ export class Ticket {
     ) {
         this.ticketForm = this.fb.group({
             titulo: ['', Validators.required],
+            category: ['', Validators.required],
             descripcion: ['', Validators.required],
             prioridad: ['', Validators.required],
             solucion: [''],
@@ -44,6 +46,14 @@ export class Ticket {
         this.authService.getPriorities('ticket').subscribe({
             next: (response) => this.priorities = response.items || [],
             error: () => this.priorities = [],
+        });
+        this.authService.getCategories({ applies_to: 'ticket', limit: 100 }).subscribe({
+            next: (response) => this.categories = response.categories ?? response.category ?? [],
+            error: () => this.categories = [],
+        });
+        this.authService.getSystemSettings().subscribe({
+            next: (response) => this.maxAttachmentMb = Number(response.settings?.max_attachment_mb) || 10,
+            error: () => this.maxAttachmentMb = 10,
         });
     }
     onSubmit() {
@@ -98,8 +108,8 @@ export class Ticket {
             input.value = '';
             return;
         }
-        if (file.size > this.maxFileSize) {
-            this.fileError = 'El archivo no puede superar 10 MB.';
+        if (file.size > this.maxAttachmentMb * 1024 * 1024) {
+            this.fileError = `El archivo no puede superar ${this.maxAttachmentMb} MB.`;
             input.value = '';
             return;
         }

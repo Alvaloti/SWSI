@@ -30,6 +30,9 @@ import { Reports } from '../reports/reports';
 import { Audit } from '../audit/audit';
 import { Catalogs } from '../catalogs/catalogs';
 import { SlaSettings } from '../sla-settings/sla-settings';
+import { HomeSup } from '../home-sup/home-sup';
+import { NotificationSettings } from '../notification-settings/notification-settings';
+import { SystemSettings } from '../system-settings/system-settings';
 
 @Component({
     selector: 'app-sidebar',
@@ -61,7 +64,10 @@ import { SlaSettings } from '../sla-settings/sla-settings';
     Reports,
     Audit,
     Catalogs,
-    SlaSettings
+    SlaSettings,
+    HomeSup,
+    NotificationSettings,
+    SystemSettings
 ],
     templateUrl: './home.html',
     styleUrls: ['./home.css'],
@@ -105,6 +111,8 @@ export class Home implements OnInit {
                     else if (this.hasPermission('inventory.manage')) this.vistaActiva = 'inventario';
                     else if (this.hasPermission('catalogs.manage')) this.vistaActiva = 'catalogos';
                     else if (this.hasPermission('sla.manage')) this.vistaActiva = 'sla';
+                    else if (this.hasPermission('notifications.manage')) this.vistaActiva = 'notificaciones-config';
+                    else if (this.hasPermission('settings.manage')) this.vistaActiva = 'parametros';
                 }
             },
             error: (error) => console.error('No se pudo cargar el usuario:', error),
@@ -121,7 +129,7 @@ export class Home implements OnInit {
     }
 
     hasAnyAdministrationPermission(): boolean {
-        return ['catalogs.manage', 'roles.manage', 'inventory.manage', 'sla.manage'].some((permission) => this.hasPermission(permission));
+        return ['catalogs.manage', 'roles.manage', 'inventory.manage', 'sla.manage', 'notifications.manage', 'settings.manage'].some((permission) => this.hasPermission(permission));
     }
 
     private observarTamanoPantalla() {

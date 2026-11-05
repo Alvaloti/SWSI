@@ -13,6 +13,15 @@
             </div>
 
             <div class="form-group">
+                <label for="ticket-category">Categoría</label>
+                <select id="ticket-category" formControlName="category">
+                    <option value="" disabled>Seleccionar categoría</option>
+                    <option *ngFor="let category of categories" [value]="category._id">{{ category.name }}</option>
+                </select>
+                <small *ngIf="ticketForm.get('category')?.hasError('required') && ticketForm.get('category')?.touched">La categoría es requerida.</small>
+            </div>
+
+            <div class="form-group">
                 <label for="prioridad">Prioridad</label>
                 <select id="prioridad" formControlName="prioridad">
                     <option value="">Seleccionar Prioridad</option>
@@ -43,7 +52,7 @@
                 <input id="ticket-archivo" type="file"
                     accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,application/pdf,image/jpeg,image/png,image/gif,image/webp"
                     (change)="onFileSelected($event)">
-                <small class="file-help">PDF o imagen, máximo 10 MB.</small>
+                <small class="file-help">PDF o imagen, máximo {{ maxAttachmentMb }} MB.</small>
                 <small class="file-error" *ngIf="fileError">{{ fileError }}</small>
                 <small class="selected-file" *ngIf="selectedFile">Seleccionado: {{ selectedFile.name }}</small>
             </div>

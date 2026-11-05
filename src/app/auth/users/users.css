@@ -109,3 +109,14 @@ mat-dialog-actions .cancel-btn {
     justify-content: right;
 }
 
+.import-button { margin-left: 10px; color: #003871; }
+.import-dialog { color: #263238; }
+.import-field { display: grid; gap: 7px; margin: 18px 0; padding: 14px; border: 1px solid #d5dde5; border-radius: 8px; }
+.import-field label { color: #003871; font-weight: 700; }
+.import-field small { color: #667085; }
+.import-ready { display: flex; align-items: center; gap: 7px; color: #176b37; }
+.import-error { padding: 10px; border-radius: 6px; background: #fee4e2; color: #b42318; }
+.import-result { padding: 12px; border-radius: 7px; background: #e7f6ec; color: #176b37; }
+.import-result.has-errors { background: #fff4e5; color: #8a4b08; }
+.import-errors { max-height: 240px; margin-top: 10px; overflow-y: auto; font-size: 13px; }
+.import-errors p { margin: 5px 0; }

@@ -47,6 +47,10 @@ export class AuthService {
         return this.http.put(`${this.baseUrl}/users/${id}`, user, { withCredentials: true });
     }
 
+    importUsers(rows: any[]): Observable<any> {
+        return this.http.post(`${this.baseUrl}/users/import`, { rows }, { withCredentials: true });
+    }
+
     getSolicitudes(params?: any): Observable<any> {
         return this.http.get(`${this.baseUrl}/getSolicitudes`, { params, withCredentials: true });
     }
@@ -253,6 +257,22 @@ export class AuthService {
 
     getNotificationPreferences(): Observable<any> {
         return this.http.get(`${this.baseUrl}/notification-preferences`, { withCredentials: true });
+    }
+
+    getNotificationSettings(): Observable<any> {
+        return this.http.get(`${this.baseUrl}/notification-settings`, { withCredentials: true });
+    }
+
+    getSystemSettings(): Observable<any> {
+        return this.http.get(`${this.baseUrl}/system-settings`, { withCredentials: true });
+    }
+
+    updateSystemSettings(settings: any): Observable<any> {
+        return this.http.put(`${this.baseUrl}/system-settings`, settings, { withCredentials: true });
+    }
+
+    updateNotificationSettings(settings: any): Observable<any> {
+        return this.http.put(`${this.baseUrl}/notification-settings`, settings, { withCredentials: true });
     }
 
     updateNotificationPreferences(preferences: any): Observable<any> {

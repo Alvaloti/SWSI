@@ -11,6 +11,9 @@
             <mat-icon>add_circle</mat-icon>
             <span> Agregar</span>
         </button>
+        <button mat-stroked-button type="button" class="import-button" (click)="abrirImportacion()">
+            <mat-icon>upload_file</mat-icon><span> Importar CSV</span>
+        </button>
     </div>
 
     <!-- Spinner de Carga -->
@@ -178,4 +181,35 @@
             </button>
         </mat-dialog-actions>
     </form>
+</ng-template>
+
+<ng-template #importDialog>
+    <section class="import-dialog">
+        <h2 mat-dialog-title>Importación masiva de usuarios</h2>
+        <mat-dialog-content>
+            <p>Descarga la plantilla, complétala en Excel y guárdala como CSV. Se permiten hasta 200 usuarios por archivo.</p>
+            <button mat-stroked-button type="button" (click)="descargarPlantilla()"><mat-icon>download</mat-icon> Descargar plantilla CSV</button>
+            <div class="import-field">
+                <label for="users-import-file">Archivo CSV</label>
+                <input id="users-import-file" type="file" accept=".csv,text/csv" (change)="seleccionarArchivo($event)">
+                <small>Rol y área pueden escribirse por nombre o por identificador. La columna active acepta true, false, sí o no.</small>
+            </div>
+            @if (importFileName && !importError) { <p class="import-ready"><mat-icon>check_circle</mat-icon>{{ importFileName }}: {{ importRows.length }} filas listas para validar.</p> }
+            @if (importError) { <p class="import-error" role="alert">{{ importError }}</p> }
+            @if (importResult) {
+                <div class="import-result" [class.has-errors]="importResult.rejected">
+                    <strong>{{ importResult.message }}</strong>
+                    @if (importResult.errors?.length) {
+                        <div class="import-errors"><p *ngFor="let error of importResult.errors"><b>Fila {{ error.row }}</b> {{ error.username ? '(' + error.username + ')' : '' }}: {{ error.messages.join('; ') }}</p></div>
+                    }
+                </div>
+            }
+        </mat-dialog-content>
+        <mat-dialog-actions align="end">
+            <button mat-button type="button" (click)="cerrarFormulario()">Cerrar</button>
+            <button mat-flat-button color="primary" type="button" (click)="importarUsuarios()" [disabled]="!importRows.length || importing">
+                {{ importing ? 'Importando…' : 'Importar usuarios' }}
+            </button>
+        </mat-dialog-actions>
+    </section>
 </ng-template>

@@ -53,3 +53,5 @@ Thumbs.db
 !src/app/auth/audit/**
 !src/app/auth/catalogs/**
 !src/app/auth/sla-settings/**
+!src/app/auth/notification-settings/**
+!src/app/auth/system-settings/**

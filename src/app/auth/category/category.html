@@ -42,6 +42,11 @@
             <td mat-cell *matCellDef="let elemento"> {{elemento.description}} </td>
         </ng-container>
 
+        <ng-container matColumnDef="ambito">
+            <th mat-header-cell *matHeaderCellDef> Disponible en </th>
+            <td mat-cell *matCellDef="let elemento">{{ elemento.applies_to === 'ambos' ? 'Solicitudes y tickets' : elemento.applies_to }}</td>
+        </ng-container>
+
         <!-- Columna Estado -->
         <ng-container matColumnDef="activo">
             <th mat-header-cell *matHeaderCellDef> Activa </th>
@@ -92,6 +97,14 @@
                 *ngIf="categoryForm.get('description')?.hasError('required') && categoryForm.get('description')?.touched">
                 Descripción es requerida.
             </small>
+        </div>
+        <div class="form-group">
+            <label for="category-applies-to">Disponible en</label>
+            <select id="category-applies-to" formControlName="applies_to">
+                <option value="ambos">Solicitudes y tickets</option>
+                <option value="solicitud">Sólo solicitudes</option>
+                <option value="ticket">Sólo tickets</option>
+            </select>
         </div>
         <label class="checkbox-row" *ngIf="editingId">
             <input type="checkbox" formControlName="active">

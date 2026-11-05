@@ -39,6 +39,7 @@ import { USERNAME_PATTERN } from '../../shared/validation-patterns';
 })
 export class Users {
     @ViewChild('userDialog') userDialog!: TemplateRef<unknown>;
+    @ViewChild('importDialog') importDialog!: TemplateRef<unknown>;
     @Input() roleFilter = '';
     @Input() titulo = 'Usuarios';
     registerForm: FormGroup;
@@ -78,6 +79,11 @@ export class Users {
     tamanoPagina = 10;
     paginaActual = 0;
     filtroBusqueda = '';
+    importRows: any[] = [];
+    importFileName = '';
+    importError = '';
+    importResult: any = null;
+    importing = false;
 
     ngOnInit() {
         this.cargarDatos();
@@ -181,6 +187,96 @@ export class Users {
 
     cerrarFormulario() {
         this.dialogRef?.close();
+    }
+
+    abrirImportacion() {
+        this.importRows = [];
+        this.importFileName = '';
+        this.importError = '';
+        this.importResult = null;
+        this.dialogRef = this.dialog.open(this.importDialog, { width: '760px', maxWidth: '96vw', disableClose: true });
+    }
+
+    descargarPlantilla(): void {
+        const headers = 'username,nomina,email,password,name,last_name,role,area,active\r\n';
+        const blob = new Blob(['\uFEFF', headers], { type: 'text/csv;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = 'plantilla_importacion_usuarios.csv';
+        anchor.click();
+        URL.revokeObjectURL(url);
+    }
+
+    async seleccionarArchivo(event: Event): Promise<void> {
+        const input = event.target as HTMLInputElement;
+        const file = input.files?.[0];
+        this.importRows = [];
+        this.importResult = null;
+        this.importError = '';
+        if (!file) return;
+        this.importFileName = file.name;
+        if (!file.name.toLowerCase().endsWith('.csv')) {
+            this.importError = 'Selecciona un archivo CSV. Puedes generarlo o guardarlo desde Excel.';
+            input.value = '';
+            return;
+        }
+        try {
+            const records = this.parseCsv(await file.text());
+            if (records.length < 2) throw new Error('El archivo no contiene filas de usuarios.');
+            const headers = records[0].map((header) => header.replace(/^\uFEFF/, '').trim().toLowerCase());
+            const required = ['username', 'nomina', 'email', 'password', 'name', 'last_name', 'role', 'area'];
+            const missing = required.filter((header) => !headers.includes(header));
+            if (missing.length) throw new Error(`Faltan las columnas: ${missing.join(', ')}.`);
+            this.importRows = records.slice(1)
+                .filter((record) => record.some((value) => value.trim() !== ''))
+                .map((record) => Object.fromEntries(headers.map((header, index) => [header, record[index]?.trim() ?? ''])));
+            if (!this.importRows.length) throw new Error('El archivo no contiene usuarios.');
+            if (this.importRows.length > 200) throw new Error('El archivo supera el límite de 200 usuarios.');
+        } catch (error) {
+            this.importError = error instanceof Error ? error.message : 'No fue posible leer el archivo.';
+            this.importRows = [];
+        }
+    }
+
+    importarUsuarios(): void {
+        if (!this.importRows.length || this.importing) return;
+        this.importing = true;
+        this.importResult = null;
+        this.authService.importUsers(this.importRows).subscribe({
+            next: (response) => {
+                this.importing = false;
+                this.importResult = response;
+                if (response.imported) this.cargarDatos();
+            },
+            error: (error) => {
+                this.importing = false;
+                this.importResult = error.error ?? { message: 'No fue posible importar los usuarios.', errors: [] };
+            },
+        });
+    }
+
+    private parseCsv(text: string): string[][] {
+        const firstLine = text.split(/\r?\n/, 1)[0] || '';
+        const delimiter = (firstLine.match(/;/g)?.length || 0) > (firstLine.match(/,/g)?.length || 0) ? ';' : ',';
+        const rows: string[][] = [];
+        let row: string[] = [];
+        let value = '';
+        let quoted = false;
+        for (let index = 0; index < text.length; index += 1) {
+            const character = text[index];
+            if (character === '"') {
+                if (quoted && text[index + 1] === '"') { value += '"'; index += 1; }
+                else quoted = !quoted;
+            } else if (character === delimiter && !quoted) {
+                row.push(value); value = '';
+            } else if ((character === '\n' || character === '\r') && !quoted) {
+                if (character === '\r' && text[index + 1] === '\n') index += 1;
+                row.push(value); rows.push(row); row = []; value = '';
+            } else value += character;
+        }
+        if (value || row.length) { row.push(value); rows.push(row); }
+        return rows;
     }
 
     eliminarUsuario(usuario: any) {
