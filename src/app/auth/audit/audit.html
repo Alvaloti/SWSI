@@ -1,0 +1,94 @@
+<section class="audit-card">
+    <header>
+        <div>
+            <h2>Auditoría de accesos y operaciones</h2>
+            <p>Consulta los eventos de seguridad y los cambios realizados en el sistema.</p>
+        </div>
+        <button mat-stroked-button type="button" (click)="loadAudit()" [disabled]="loading">
+            <mat-icon>refresh</mat-icon> Actualizar
+        </button>
+    </header>
+
+    <form class="filters" (ngSubmit)="applyFilters()">
+        <label>
+            Buscar
+            <input name="search" [(ngModel)]="filters.search" placeholder="Usuario, acción, recurso o IP">
+        </label>
+        <label>
+            Categoría
+            <select name="category" [(ngModel)]="filters.category">
+                <option value="">Todas</option>
+                <option value="acceso">Acceso</option>
+                <option value="operacion">Operación</option>
+                <option value="seguridad">Seguridad</option>
+            </select>
+        </label>
+        <label>
+            Resultado
+            <select name="success" [(ngModel)]="filters.success">
+                <option value="">Todos</option>
+                <option value="true">Exitoso</option>
+                <option value="false">Fallido</option>
+            </select>
+        </label>
+        <label>
+            Desde
+            <input type="date" name="from" [(ngModel)]="filters.from">
+        </label>
+        <label>
+            Hasta
+            <input type="date" name="to" [(ngModel)]="filters.to">
+        </label>
+        <div class="filter-actions">
+            <button mat-flat-button color="primary" type="submit" [disabled]="loading">Filtrar</button>
+            <button mat-button type="button" (click)="clearFilters()" [disabled]="loading">Limpiar</button>
+        </div>
+    </form>
+
+    @if (loading) {
+        <div class="state"><mat-spinner diameter="42"></mat-spinner><span>Cargando auditoría…</span></div>
+    } @else if (errorMessage) {
+        <div class="state error"><mat-icon>error_outline</mat-icon><span>{{ errorMessage }}</span></div>
+    } @else {
+        <div class="table-wrapper">
+            <table mat-table [dataSource]="logs">
+                <ng-container matColumnDef="date">
+                    <th mat-header-cell *matHeaderCellDef>Fecha</th>
+                    <td mat-cell *matCellDef="let log">{{ log.occurred_at | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+                </ng-container>
+                <ng-container matColumnDef="user">
+                    <th mat-header-cell *matHeaderCellDef>Usuario</th>
+                    <td mat-cell *matCellDef="let log"><strong>{{ userLabel(log) }}</strong><small>{{ log.user_email }}</small></td>
+                </ng-container>
+                <ng-container matColumnDef="category">
+                    <th mat-header-cell *matHeaderCellDef>Categoría</th>
+                    <td mat-cell *matCellDef="let log"><span class="badge category">{{ log.category }}</span></td>
+                </ng-container>
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef>Acción</th>
+                    <td mat-cell *matCellDef="let log">{{ log.action }}</td>
+                </ng-container>
+                <ng-container matColumnDef="resource">
+                    <th mat-header-cell *matHeaderCellDef>Recurso</th>
+                    <td mat-cell *matCellDef="let log">{{ log.resource || '—' }}<small>{{ log.method }} {{ log.path }}</small></td>
+                </ng-container>
+                <ng-container matColumnDef="result">
+                    <th mat-header-cell *matHeaderCellDef>Resultado</th>
+                    <td mat-cell *matCellDef="let log"><span class="badge" [class.success]="log.success" [class.failure]="!log.success">{{ log.success ? 'Exitoso' : 'Fallido' }} ({{ log.status_code }})</span></td>
+                </ng-container>
+                <ng-container matColumnDef="ip">
+                    <th mat-header-cell *matHeaderCellDef>Dirección IP</th>
+                    <td mat-cell *matCellDef="let log">{{ log.ip || '—' }}</td>
+                </ng-container>
+                <ng-container matColumnDef="details">
+                    <th mat-header-cell *matHeaderCellDef>Detalles</th>
+                    <td mat-cell *matCellDef="let log" [title]="detailsLabel(log.details)">{{ detailsLabel(log.details) }}</td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                <tr class="mat-row" *matNoDataRow><td class="mat-cell empty" [attr.colspan]="displayedColumns.length">No existen eventos con los filtros seleccionados.</td></tr>
+            </table>
+        </div>
+        <mat-paginator [length]="total" [pageIndex]="pageIndex" [pageSize]="pageSize" [pageSizeOptions]="[10, 20, 50, 100]" (page)="changePage($event)" showFirstLastButtons></mat-paginator>
+    }
+</section>
