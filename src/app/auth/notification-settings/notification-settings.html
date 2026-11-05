@@ -1,0 +1,16 @@
+<section class="settings-card">
+    <header><div><h2>Configuración global de notificaciones</h2><p>Estas reglas se aplican a todos los usuarios y tienen prioridad sobre sus preferencias personales.</p></div><button mat-stroked-button (click)="load()"><mat-icon>refresh</mat-icon> Actualizar</button></header>
+    @if (loading) { <div class="state"><mat-spinner diameter="42"></mat-spinner></div> }
+    @else {
+        <div class="global-options">
+            <label><span><strong>Permitir preferencias personales</strong><small>Los usuarios podrán desactivar tipos de avisos desde la campana.</small></span><input type="checkbox" [(ngModel)]="settings.allow_user_preferences"></label>
+            <label><span><strong>Intervalo de actualización</strong><small>Frecuencia con la que el navegador consulta nuevos avisos.</small></span><span><input type="number" min="15" max="300" [(ngModel)]="settings.polling_seconds"> segundos</span></label>
+            <label><span><strong>Retención del historial</strong><small>Los avisos anteriores a este periodo se eliminan automáticamente.</small></span><span><input type="number" min="7" max="730" [(ngModel)]="settings.retention_days"> días</span></label>
+        </div>
+        <h3>Tipos de notificación habilitados</h3>
+        <div class="event-grid">
+            <label *ngFor="let option of eventOptions"><input type="checkbox" [(ngModel)]="settings.events[option[0]]"><span><strong>{{ option[1] }}</strong><small>{{ option[2] }}</small></span></label>
+        </div>
+        <div class="actions"><button mat-flat-button color="primary" (click)="save()" [disabled]="saving">{{ saving ? 'Guardando…' : 'Guardar configuración' }}</button></div>
+    }
+</section>
