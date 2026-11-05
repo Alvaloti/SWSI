@@ -1,0 +1,21 @@
+<section class="settings-card">
+    <header><div><h2>Parámetros generales</h2><p>Configura la identidad y el comportamiento general del sistema.</p></div><button mat-stroked-button (click)="load()"><mat-icon>refresh</mat-icon> Actualizar</button></header>
+    @if (loading) { <div class="state"><mat-spinner diameter="42"></mat-spinner></div> }
+    @else {
+        <div class="form-grid">
+            <label>Nombre del sistema<input [(ngModel)]="settings.system_name" maxlength="100" required></label>
+            <label>Organización<input [(ngModel)]="settings.organization_name" maxlength="150"></label>
+            <label>Correo de soporte<input type="email" [(ngModel)]="settings.support_email" maxlength="150"></label>
+            <label>Zona horaria<select [(ngModel)]="settings.timezone"><option value="America/Mexico_City">Ciudad de México</option><option value="America/Cancun">Cancún</option><option value="America/Tijuana">Tijuana</option><option value="UTC">UTC</option></select></label>
+            <label>Formato de fecha<select [(ngModel)]="settings.date_format"><option value="dd/MM/yyyy">DD/MM/AAAA</option><option value="MM/dd/yyyy">MM/DD/AAAA</option><option value="yyyy-MM-dd">AAAA-MM-DD</option></select></label>
+            <label>Registros por página<select [(ngModel)]="settings.default_page_size"><option *ngFor="let size of [5,10,25,50,100]" [ngValue]="size">{{ size }}</option></select></label>
+            <label>Límite de adjuntos<span class="unit-input"><input type="number" min="1" max="25" [(ngModel)]="settings.max_attachment_mb"><span>MB</span></span><small>Se aplica en frontend y backend.</small></label>
+            <label>Duración de sesión<span class="unit-input"><input type="number" min="15" max="1440" [(ngModel)]="settings.session_duration_minutes"><span>minutos</span></span><small>Se aplicará en el siguiente inicio de sesión.</small></label>
+        </div>
+        <div class="maintenance" [class.active]="settings.maintenance_mode">
+            <label class="switch-row"><span><strong>Modo mantenimiento</strong><small>Impide nuevos accesos, excepto administradores generales.</small></span><input type="checkbox" [(ngModel)]="settings.maintenance_mode"></label>
+            <label>Mensaje para usuarios<textarea rows="3" maxlength="500" [(ngModel)]="settings.maintenance_message"></textarea></label>
+        </div>
+        <div class="actions"><button mat-flat-button color="primary" (click)="save()" [disabled]="saving">{{ saving ? 'Guardando…' : 'Guardar parámetros' }}</button></div>
+    }
+</section>
