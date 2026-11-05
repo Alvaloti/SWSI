@@ -8,9 +8,21 @@
 <mat-menu #notificationMenu="matMenu" panelClass="notification-menu" xPosition="before">
     <div class="notification-header" (click)="$event.stopPropagation()">
         <strong>Notificaciones</strong>
+        <button type="button" mat-icon-button (click)="openPreferences($event)" aria-label="Configurar notificaciones">
+            <mat-icon>settings</mat-icon>
+        </button>
         <button type="button" mat-button (click)="markAllAsRead($event)" [disabled]="!unreadCount">
             Marcar todas como leídas
         </button>
+    </div>
+
+    <div class="notification-preferences" *ngIf="showPreferences" (click)="$event.stopPropagation()">
+        <strong>¿Qué avisos deseas recibir?</strong>
+        <label *ngFor="let option of preferenceOptions">
+            <input type="checkbox" [checked]="preferences[option[0]] !== false" (change)="updatePreference(option[0], $event)">
+            {{ option[1] }}
+        </label>
+        <button type="button" mat-flat-button (click)="savePreferences($event)" [disabled]="savingPreferences">{{ savingPreferences ? 'Guardando…' : 'Guardar preferencias' }}</button>
     </div>
 
     <div class="notification-state" *ngIf="loading">Cargando...</div>
@@ -22,7 +34,7 @@
     <button type="button" mat-menu-item class="notification-item"
         *ngFor="let notification of notifications"
         [class.unread]="!notification.read_at" (click)="markAsRead(notification)">
-        <mat-icon>{{ notification.type === 'assignment' ? 'assignment_ind' : 'update' }}</mat-icon>
+        <mat-icon>{{ notificationIcon(notification.type) }}</mat-icon>
         <span class="notification-content">
             <strong>{{ notification.title }}</strong>
             <span>{{ notification.message }}</span>

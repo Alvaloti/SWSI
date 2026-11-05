@@ -44,6 +44,16 @@
     background-color: white; /* Asegura fondo blanco en select */
 }
 
+.form-group textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font: inherit;
+    resize: vertical;
+}
+
 .form-group input:focus {
     border-color: #007bff;
     outline: none;
@@ -107,5 +117,29 @@ mat-dialog-actions .cancel-btn {
 .espaciador-flexible {
     flex: 1 1 auto;
     justify-content: right;
+}
+
+.maintenance-button { color: #d96c00; }
+.history-button { color: #0067a3; }
+.status-pill { display: inline-block; padding: 4px 9px; border-radius: 999px; background: #eaf4ff; color: #175f91; text-transform: capitalize; }
+.equipment-reference { margin: 0 0 18px; padding: 10px 12px; border-radius: 6px; background: #eef5fb; color: #003871; font-weight: 700; }
+.maintenance-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
+.maintenance-grid .full-width { grid-column: 1 / -1; }
+.equipment-timeline { margin: 10px 0; padding: 0; list-style: none; }
+.equipment-timeline li { position: relative; display: grid; grid-template-columns: 42px 1fr; gap: 12px; padding-bottom: 20px; }
+.equipment-timeline li:not(:last-child)::before { position: absolute; top: 38px; bottom: 2px; left: 20px; width: 2px; background: #cdd9e5; content: ''; }
+.timeline-icon { z-index: 1; display: grid; width: 40px; height: 40px; place-items: center; border-radius: 50%; background: #003871; color: #fff; }
+.timeline-content { min-width: 0; padding: 10px 12px; border: 1px solid #dbe4ec; border-radius: 7px; background: #fff; }
+.timeline-heading { display: flex; justify-content: space-between; gap: 12px; color: #263238; }
+.timeline-heading time { flex: none; color: #607d8b; font-size: .82rem; }
+.timeline-content p { margin: 8px 0; line-height: 1.4; }
+.timeline-content small { color: #607d8b; }
+.loading-spinner { display: flex; justify-content: center; padding: 30px; }
+.empty-history { padding: 24px; color: #666; text-align: center; }
+
+@media (max-width: 600px) {
+    .maintenance-grid { grid-template-columns: 1fr; }
+    .maintenance-grid .full-width { grid-column: auto; }
+    .timeline-heading { flex-direction: column; gap: 4px; }
 }
 

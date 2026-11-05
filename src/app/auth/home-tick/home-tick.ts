@@ -22,6 +22,7 @@ import { Notifications } from '../notifications/notifications';
 import { finalize } from 'rxjs';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { Ticket } from '../ticket/ticket';
+import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-home-tick',
@@ -46,6 +47,7 @@ import { Ticket } from '../ticket/ticket';
         Notifications,
         MatDialogModule,
         Ticket,
+        FormsModule,
     ],
     templateUrl: './home-tick.html',
     styleUrl: './home-tick.css',
@@ -53,9 +55,11 @@ import { Ticket } from '../ticket/ticket';
 export class HomeTick {
     @ViewChild(MatSidenav) sidenav!: MatSidenav;
     @ViewChild('ticketDialog') ticketDialog!: TemplateRef<unknown>;
+    @ViewChild('surveyDialog') surveyDialog!: TemplateRef<unknown>;
 
     private readonly dialog = inject(MatDialog);
     private ticketDialogRef?: MatDialogRef<unknown>;
+    private surveyDialogRef?: MatDialogRef<unknown>;
 
     abrirTicket(): void {
         this.ticketDialogRef = this.dialog.open(this.ticketDialog, {
@@ -81,13 +85,17 @@ export class HomeTick {
     user: any;
     isMobile = true;
     menuAbierto = true;
-    columnasVisibles: string[] = ['folio', 'titulo', 'descripcion', 'estado', 'comentarios', 'acciones'];
+    columnasVisibles: string[] = ['folio', 'titulo', 'descripcion', 'estado', 'solucion', 'comentarios', 'acciones'];
     datos = new MatTableDataSource<any>([]);
     cargando = false;
     totalRegistros = 0;
     tamanoPagina = 10;
     paginaActual = 0;
     filtroBusqueda = '';
+    ticketEncuesta: any;
+    calificacionEncuesta = 5;
+    comentarioEncuesta = '';
+    guardandoAccion = false;
 
     constructor(
         private authService: AuthService,
@@ -180,6 +188,60 @@ export class HomeTick {
         this.authService.deleteTicket(id).subscribe({
             next: () => this.cargarDatos(),
             error: (error) => window.alert(error.error?.message ?? 'No fue posible eliminar el ticket.'),
+        });
+    }
+
+    cerrarTicketAtendido(ticket: any) {
+        const id = ticket._id ?? ticket.id;
+        if (!id || ticket.estado !== 'resuelto' || this.guardandoAccion) return;
+        if (!window.confirm(`¿Confirmas que la solución del ticket ${ticket.folio} resolvió el problema?`)) return;
+        this.guardandoAccion = true;
+        this.authService.closeTicket(id).pipe(
+            finalize(() => {
+                this.guardandoAccion = false;
+                this.changeDetectorRef.markForCheck();
+            }),
+        ).subscribe({
+            next: (response) => {
+                window.alert(response.message);
+                this.cargarDatos();
+            },
+            error: (error) => window.alert(error.error?.message ?? 'No fue posible cerrar el ticket.'),
+        });
+    }
+
+    abrirEncuesta(ticket: any) {
+        if (ticket.estado !== 'cerrado' || ticket.encuesta?.calificacion) return;
+        this.ticketEncuesta = ticket;
+        this.calificacionEncuesta = 5;
+        this.comentarioEncuesta = '';
+        this.surveyDialogRef = this.dialog.open(this.surveyDialog, {
+            width: '520px',
+            maxWidth: '95vw',
+            disableClose: true,
+        });
+    }
+
+    cerrarEncuesta() {
+        this.surveyDialogRef?.close();
+    }
+
+    guardarEncuesta() {
+        const id = this.ticketEncuesta?._id ?? this.ticketEncuesta?.id;
+        if (!id || this.guardandoAccion) return;
+        this.guardandoAccion = true;
+        this.authService.submitTicketSurvey(id, Number(this.calificacionEncuesta), this.comentarioEncuesta.trim()).pipe(
+            finalize(() => {
+                this.guardandoAccion = false;
+                this.changeDetectorRef.markForCheck();
+            }),
+        ).subscribe({
+            next: (response) => {
+                this.cerrarEncuesta();
+                window.alert(response.message);
+                this.cargarDatos();
+            },
+            error: (error) => window.alert(error.error?.message ?? 'No fue posible registrar la encuesta.'),
         });
     }
 

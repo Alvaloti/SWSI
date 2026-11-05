@@ -26,6 +26,7 @@ export class Ticket {
     selectedFile: File | null = null;
     fileError = '';
     submitting = false;
+    priorities: any[] = [];
 
     constructor(
         private fb: FormBuilder,
@@ -37,6 +38,12 @@ export class Ticket {
             descripcion: ['', Validators.required],
             prioridad: ['', Validators.required],
             solucion: [''],
+        });
+    }
+    ngOnInit(): void {
+        this.authService.getPriorities('ticket').subscribe({
+            next: (response) => this.priorities = response.items || [],
+            error: () => this.priorities = [],
         });
     }
     onSubmit() {

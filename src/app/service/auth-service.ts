@@ -16,8 +16,15 @@ export class AuthService {
     }
 
     login(user: any): Observable<any> {
-        console.log(sessionStorage.getItem('token'));
         return this.http.post(`${this.baseUrl}/login`, user, { withCredentials: true });
+    }
+
+    forgotPassword(email: string): Observable<any> {
+        return this.http.post(`${this.baseUrl}/forgot-password`, { email });
+    }
+
+    resetPassword(token: string, password: string): Observable<any> {
+        return this.http.post(`${this.baseUrl}/reset-password`, { token, password });
     }
 
     getUser(): Observable<any> {
@@ -52,10 +59,34 @@ export class AuthService {
         return this.http.get(`${this.baseUrl}/getTickets`, { params, withCredentials: true });
     }
 
-    getEstados(): Observable<{ status: string; estados: string[] }> {
-        return this.http.get<{ status: string; estados: string[] }>(`${this.baseUrl}/estados`, {
+    getEstados(appliesTo?: 'solicitud' | 'ticket'): Observable<{ status: string; estados: string[]; items?: any[] }> {
+        return this.http.get<{ status: string; estados: string[]; items?: any[] }>(`${this.baseUrl}/estados`, {
+            params: appliesTo ? { applies_to: appliesTo } : {},
             withCredentials: true,
         });
+    }
+
+    getPriorities(appliesTo?: 'solicitud' | 'ticket'): Observable<any> {
+        return this.http.get(`${this.baseUrl}/prioridades`, {
+            params: appliesTo ? { applies_to: appliesTo } : {},
+            withCredentials: true,
+        });
+    }
+
+    getCatalogs(params?: any): Observable<any> {
+        return this.http.get(`${this.baseUrl}/catalogs`, { params, withCredentials: true });
+    }
+
+    createCatalog(item: any): Observable<any> {
+        return this.http.post(`${this.baseUrl}/catalogs`, item, { withCredentials: true });
+    }
+
+    updateCatalog(id: string, item: any): Observable<any> {
+        return this.http.put(`${this.baseUrl}/catalogs/${id}`, item, { withCredentials: true });
+    }
+
+    deleteCatalog(id: string): Observable<any> {
+        return this.http.delete(`${this.baseUrl}/catalogs/${id}`, { withCredentials: true });
     }
 
     createTicket(ticket: any): Observable<any> {
@@ -63,6 +94,10 @@ export class AuthService {
     }
     getRoles(params?: any): Observable<any> {
         return this.http.get<any[]>(`${this.baseUrl}/getRoles`, { params, withCredentials: true });
+    }
+
+    getPermissions(): Observable<any> {
+        return this.http.get(`${this.baseUrl}/permissions`, { withCredentials: true });
     }
 
     getRegistrationRoles(): Observable<{ status: string; roles: Array<{ _id: string; name: string }> }> {
@@ -131,8 +166,24 @@ export class AuthService {
         return this.http.delete(`${this.baseUrl}/items/${id}`, { withCredentials: true });
     }
 
+    createMaintenance(id: string, maintenance: any): Observable<any> {
+        return this.http.post(`${this.baseUrl}/inventory/${id}/maintenance`, maintenance, { withCredentials: true });
+    }
+
+    getInventoryHistory(id: string): Observable<any> {
+        return this.http.get(`${this.baseUrl}/inventory/${id}/history`, { withCredentials: true });
+    }
+
     updateSolicitud(id: string, solicitud: any): Observable<any> {
         return this.http.put(`${this.baseUrl}/solicitudes/${id}`, solicitud, { withCredentials: true });
+    }
+
+    decideSolicitud(id: string, decision: 'aprobada' | 'rechazada', motivo = ''): Observable<any> {
+        return this.http.patch(
+            `${this.baseUrl}/solicitudes/${id}/decision`,
+            { decision, motivo },
+            { withCredentials: true },
+        );
     }
 
     deleteSolicitud(id: string): Observable<any> {
@@ -141,6 +192,26 @@ export class AuthService {
 
     updateTicket(id: string, ticket: any): Observable<any> {
         return this.http.put(`${this.baseUrl}/tickets/${id}`, ticket, { withCredentials: true });
+    }
+
+    solveTicket(id: string, solucion: string): Observable<any> {
+        return this.http.patch(`${this.baseUrl}/tickets/${id}/solution`, { solucion }, { withCredentials: true });
+    }
+
+    escalateTicket(id: string, motivo: string): Observable<any> {
+        return this.http.patch(`${this.baseUrl}/tickets/${id}/escalate`, { motivo }, { withCredentials: true });
+    }
+
+    closeTicket(id: string): Observable<any> {
+        return this.http.patch(`${this.baseUrl}/tickets/${id}/close`, {}, { withCredentials: true });
+    }
+
+    submitTicketSurvey(id: string, calificacion: number, comentario: string): Observable<any> {
+        return this.http.post(
+            `${this.baseUrl}/tickets/${id}/survey`,
+            { calificacion, comentario },
+            { withCredentials: true },
+        );
     }
 
     deleteTicket(id: string): Observable<any> {
@@ -180,6 +251,22 @@ export class AuthService {
         return this.http.get(`${this.baseUrl}/notifications`, { withCredentials: true });
     }
 
+    getNotificationPreferences(): Observable<any> {
+        return this.http.get(`${this.baseUrl}/notification-preferences`, { withCredentials: true });
+    }
+
+    updateNotificationPreferences(preferences: any): Observable<any> {
+        return this.http.put(`${this.baseUrl}/notification-preferences`, preferences, { withCredentials: true });
+    }
+
+    getSlaPolicies(): Observable<any> {
+        return this.http.get(`${this.baseUrl}/sla-policies`, { withCredentials: true });
+    }
+
+    updateSlaPolicy(priority: string, policy: any): Observable<any> {
+        return this.http.put(`${this.baseUrl}/sla-policies/${encodeURIComponent(priority)}`, policy, { withCredentials: true });
+    }
+
     markNotificationAsRead(id: string): Observable<any> {
         return this.http.patch(`${this.baseUrl}/notifications/${id}/read`, {}, { withCredentials: true });
     }
@@ -190,6 +277,10 @@ export class AuthService {
 
     getReports(params: HttpParams): Observable<any> {
         return this.http.get(`${this.baseUrl}/reports`, { params, withCredentials: true });
+    }
+
+    getAudit(params?: any): Observable<any> {
+        return this.http.get(`${this.baseUrl}/audit`, { params, withCredentials: true });
     }
 
     getAssignments(params?: any): Observable<any> {

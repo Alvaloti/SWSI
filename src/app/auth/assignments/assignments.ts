@@ -107,7 +107,10 @@ export class Assignments {
             next: (response) => {
                 const items = response.items ?? response;
                 this.items = Array.isArray(items)
-                    ? items.filter((item) => !item.assigned_to && String(item.status).toLowerCase() !== 'baja')
+                    ? items.filter((item) => {
+                        const status = String(item.status || '').toLowerCase();
+                        return !item.assigned_to && !['baja', 'mantenimiento'].includes(status);
+                    })
                     : [];
             },
         });

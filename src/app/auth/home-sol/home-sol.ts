@@ -141,7 +141,7 @@ export class HomeSol {
     private http = inject(HttpClient);
 
     // Configuración de Tabla
-    columnasVisibles: string[] = ['folio', 'tipo', 'descripcion', 'estado', 'comentarios', 'acciones'];
+    columnasVisibles: string[] = ['folio', 'tipo', 'descripcion', 'aprobacion', 'estado', 'comentarios', 'acciones'];
     datos = new MatTableDataSource<any>([]);
     cargando = false;
 

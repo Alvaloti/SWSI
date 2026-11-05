@@ -17,10 +17,14 @@ import { Role } from './auth/role/role';
 import { Inventory } from './auth/inventory/inventory';
 import { authGuard } from './auth.guard';
 import { Assignments } from './auth/assignments/assignments';
+import { ForgotPassword } from './auth/forgot-password/forgot-password';
+import { ResetPassword } from './auth/reset-password/reset-password';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/login', pathMatch: 'full' },
     { path: 'login', component: Login },
+    { path: 'forgot-password', component: ForgotPassword },
+    { path: 'reset-password', component: ResetPassword },
     { path: 'register', component: Register, canActivate: [authGuard] },
     { path: 'user', component: Users, canActivate: [authGuard] },
     { path: 'home', component: Home, canActivate: [authGuard] },

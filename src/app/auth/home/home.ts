@@ -27,6 +27,9 @@ import { Assignments } from '../assignments/assignments';
 import { Profile } from '../profile/profile';
 import { Notifications } from '../notifications/notifications';
 import { Reports } from '../reports/reports';
+import { Audit } from '../audit/audit';
+import { Catalogs } from '../catalogs/catalogs';
+import { SlaSettings } from '../sla-settings/sla-settings';
 
 @Component({
     selector: 'app-sidebar',
@@ -55,7 +58,10 @@ import { Reports } from '../reports/reports';
     Assignments,
     Profile,
     Notifications,
-    Reports
+    Reports,
+    Audit,
+    Catalogs,
+    SlaSettings
 ],
     templateUrl: './home.html',
     styleUrls: ['./home.css'],
@@ -91,7 +97,15 @@ export class Home implements OnInit {
         this.observarTamanoPantalla();
         this.authService.getUser().subscribe({
             next: (response) => {
-                if (response.status === 'success') this.user = response.user;
+                if (response.status === 'success') {
+                    this.user = response.user;
+                    if (this.hasPermission('users.manage')) this.vistaActiva = 'users';
+                    else if (this.hasPermission('reports.view')) this.vistaActiva = 'reportes';
+                    else if (this.hasPermission('audit.view')) this.vistaActiva = 'auditoria';
+                    else if (this.hasPermission('inventory.manage')) this.vistaActiva = 'inventario';
+                    else if (this.hasPermission('catalogs.manage')) this.vistaActiva = 'catalogos';
+                    else if (this.hasPermission('sla.manage')) this.vistaActiva = 'sla';
+                }
             },
             error: (error) => console.error('No se pudo cargar el usuario:', error),
         });
@@ -99,6 +113,15 @@ export class Home implements OnInit {
 
     cambiarVista(nuevaVista: string) {
         this.vistaActiva = nuevaVista;
+    }
+
+    hasPermission(permission: string): boolean {
+        const permissions: string[] = this.user?.rolId?.permissions ?? [];
+        return permissions.includes('system.manage') || permissions.includes(permission);
+    }
+
+    hasAnyAdministrationPermission(): boolean {
+        return ['catalogs.manage', 'roles.manage', 'inventory.manage', 'sla.manage'].some((permission) => this.hasPermission(permission));
     }
 
     private observarTamanoPantalla() {

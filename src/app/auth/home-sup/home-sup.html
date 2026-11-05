@@ -85,6 +85,17 @@
                         <th mat-header-cell *matHeaderCellDef>Prioridad</th>
                         <td mat-cell *matCellDef="let solicitud">{{ solicitud.prioridad }}</td>
                     </ng-container>
+                    <ng-container matColumnDef="aprobacion">
+                        <th mat-header-cell *matHeaderCellDef>Aprobación</th>
+                        <td mat-cell *matCellDef="let solicitud">
+                            <span class="approval-badge"
+                                [class.approved]="solicitud.estado_aprobacion === 'aprobada'"
+                                [class.rejected]="solicitud.estado_aprobacion === 'rechazada'"
+                                [attr.title]="solicitud.motivo_rechazo || null">
+                                {{ solicitud.estado_aprobacion || 'pendiente' }}
+                            </span>
+                        </td>
+                    </ng-container>
                     <ng-container matColumnDef="estado">
                         <th mat-header-cell *matHeaderCellDef>Estado</th>
                         <td mat-cell *matCellDef="let solicitud">{{ solicitud.estado }}</td>
@@ -96,8 +107,22 @@
                     <ng-container matColumnDef="acciones">
                         <th mat-header-cell *matHeaderCellDef>Acciones</th>
                         <td mat-cell *matCellDef="let solicitud">
+                            @if (!solicitud.estado_aprobacion || solicitud.estado_aprobacion === 'pendiente') {
+                            <button type="button" mat-icon-button class="approve-button"
+                                (click)="abrirDecision(solicitud, 'aprobada')" aria-label="Aprobar solicitud"
+                                title="Aprobar solicitud">
+                                <mat-icon>check_circle</mat-icon>
+                            </button>
+                            <button type="button" mat-icon-button class="reject-button"
+                                (click)="abrirDecision(solicitud, 'rechazada')" aria-label="Rechazar solicitud"
+                                title="Rechazar solicitud">
+                                <mat-icon>cancel</mat-icon>
+                            </button>
+                            }
                             <button type="button" mat-icon-button color="primary"
-                                (click)="editarSolicitud(solicitud)" aria-label="Editar solicitud">
+                                (click)="editarSolicitud(solicitud)" aria-label="Asignar solicitud"
+                                [disabled]="solicitud.estado_aprobacion !== 'aprobada'"
+                                title="Asignar técnico">
                                 <mat-icon>edit</mat-icon>
                             </button>
                             <button type="button" mat-icon-button class="deleteButton"
@@ -156,7 +181,14 @@
                     </ng-container>
                     <ng-container matColumnDef="comentarios">
                         <th mat-header-cell *matHeaderCellDef>Comentarios</th>
-                        <td mat-cell *matCellDef="let ticket">{{ ticket.comentarios || 'Sin comentarios' }}</td>
+                        <td mat-cell *matCellDef="let ticket">
+                            {{ ticket.comentarios || 'Sin comentarios' }}
+                            @if (ticket.escalamientos?.length) {
+                            <small class="escalation-detail">
+                                Escalado: {{ ticket.escalamientos[ticket.escalamientos.length - 1].motivo }}
+                            </small>
+                            }
+                        </td>
                     </ng-container>
                     <ng-container matColumnDef="acciones">
                         <th mat-header-cell *matHeaderCellDef>Acciones</th>
@@ -218,6 +250,37 @@
         <button type="button" mat-flat-button color="primary" (click)="guardarAsignacion()"
             [disabled]="!tecnicoSeleccionado || guardandoAsignacion">
             {{ guardandoAsignacion ? 'Guardando...' : 'Asignar técnico' }}
+        </button>
+    </mat-dialog-actions>
+</ng-template>
+
+<ng-template #decisionDialog>
+    <h2 mat-dialog-title>
+        {{ decisionSeleccionada === 'aprobada' ? 'Aprobar' : 'Rechazar' }} solicitud
+        {{ solicitudDecision?.folio }}
+    </h2>
+    <mat-dialog-content>
+        @if (decisionSeleccionada === 'aprobada') {
+        <p>Confirma que la solicitud cumple con la información necesaria para autorizar su atención.</p>
+        } @else {
+        <div class="assignment-form">
+            <p>Indica al solicitante por qué la solicitud no puede ser atendida.</p>
+            <label for="motivoRechazo">Motivo de rechazo</label>
+            <textarea id="motivoRechazo" [(ngModel)]="motivoRechazo" rows="5" maxlength="1000"
+                placeholder="Describe el motivo del rechazo" required></textarea>
+            <small>{{ motivoRechazo.length }}/1000 caracteres</small>
+        </div>
+        }
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button type="button" mat-button (click)="cerrarDecision()" [disabled]="guardandoDecision">
+            Cancelar
+        </button>
+        <button type="button" mat-flat-button
+            [class.reject-confirmation]="decisionSeleccionada === 'rechazada'"
+            (click)="guardarDecision()"
+            [disabled]="guardandoDecision || (decisionSeleccionada === 'rechazada' && !motivoRechazo.trim())">
+            {{ guardandoDecision ? 'Guardando...' : (decisionSeleccionada === 'aprobada' ? 'Confirmar aprobación' : 'Confirmar rechazo') }}
         </button>
     </mat-dialog-actions>
 </ng-template>

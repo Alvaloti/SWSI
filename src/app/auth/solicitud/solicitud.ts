@@ -25,6 +25,7 @@ export class Solicitud {
     private readonly maxFileSize = 10 * 1024 * 1024;
     solicitudForm: FormGroup;
     areas: any[] = [];
+    priorities: any[] = [];
     selectedFile: File | null = null;
     fileError = '';
     submitting = false;
@@ -50,6 +51,10 @@ export class Solicitud {
                     : [];
             },
             error: (error) => console.error('No se pudieron cargar las áreas:', error),
+        });
+        this.authService.getPriorities('solicitud').subscribe({
+            next: (response) => this.priorities = response.items || [],
+            error: () => this.priorities = [],
         });
     }
 

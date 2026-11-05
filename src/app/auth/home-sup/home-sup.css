@@ -155,6 +155,52 @@ mat-divider {
     font: inherit;
 }
 
+.approval-badge {
+    display: inline-block;
+    padding: 4px 9px;
+    border-radius: 999px;
+    background: #fff3cd;
+    color: #755500;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+.approval-badge.approved {
+    background: #e8f5e9;
+    color: #1b5e20;
+}
+
+.approval-badge.rejected {
+    background: #ffebee;
+    color: #b71c1c;
+}
+
+.approve-button {
+    color: #2e7d32;
+}
+
+.reject-button {
+    color: #c62828;
+}
+
+.reject-confirmation {
+    background: #c62828 !important;
+    color: #fff !important;
+}
+
+.assignment-form small {
+    color: #666;
+    text-align: right;
+}
+
+.escalation-detail {
+    display: block;
+    margin-top: 5px;
+    color: #b45309;
+    font-weight: 700;
+}
+
 .mat-row .mat-cell[colspan] {
     padding: 32px;
     text-align: center;

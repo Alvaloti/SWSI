@@ -3428,3 +3428,18 @@ background:#003871 !important;
     font-weight: 600;
     text-align: center;
 }
+
+.password-recovery-link {
+	display: block;
+	margin: 18px auto 0;
+	color: #003871;
+	font-size: 15px;
+	font-weight: 900;
+	text-align: center;
+	text-decoration: underline;
+}
+
+.password-recovery-link:hover,
+.password-recovery-link:focus-visible {
+	color: #d96c00;
+}

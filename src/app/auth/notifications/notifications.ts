@@ -8,7 +8,7 @@ import { AuthService } from '../../service/auth-service';
 
 interface UserNotification {
     _id: string;
-    type: 'assignment' | 'status';
+    type: 'assignment' | 'status' | 'decision' | 'solution' | 'escalation' | 'closure' | 'sla_warning' | 'sla_breach';
     title: string;
     message: string;
     entity_type: 'solicitud' | 'ticket';
@@ -29,6 +29,14 @@ export class Notifications implements OnInit, OnDestroy {
     unreadCount = 0;
     loading = false;
     loadError = '';
+    showPreferences = false;
+    savingPreferences = false;
+    preferences: Record<string, boolean> = {};
+    readonly preferenceOptions = [
+        ['assignment', 'Asignaciones'], ['status', 'Cambios de estado'], ['decision', 'Aprobaciones y rechazos'],
+        ['solution', 'Soluciones'], ['escalation', 'Escalamientos'], ['closure', 'Cierres'],
+        ['sla_warning', 'SLA próximo a vencer'], ['sla_breach', 'Incumplimientos de SLA'],
+    ];
 
     private readonly authService = inject(AuthService);
     private pollingSubscription?: Subscription;
@@ -83,6 +91,44 @@ export class Notifications implements OnInit, OnDestroy {
                 }));
                 this.unreadCount = 0;
             },
+        });
+    }
+
+    notificationIcon(type: UserNotification['type']): string {
+        const icons: Record<UserNotification['type'], string> = {
+            assignment: 'assignment_ind',
+            status: 'update',
+            decision: 'fact_check',
+            solution: 'task_alt',
+            escalation: 'priority_high',
+            closure: 'lock',
+            sla_warning: 'schedule',
+            sla_breach: 'timer_off',
+        };
+        return icons[type];
+    }
+
+    openPreferences(event: Event): void {
+        event.stopPropagation();
+        this.showPreferences = !this.showPreferences;
+        if (!this.showPreferences) return;
+        this.authService.getNotificationPreferences().subscribe({
+            next: (response) => this.preferences = response.preferences || {},
+            error: () => this.loadError = 'No fue posible cargar las preferencias.',
+        });
+    }
+
+    updatePreference(key: string, event: Event): void {
+        event.stopPropagation();
+        this.preferences[key] = (event.target as HTMLInputElement).checked;
+    }
+
+    savePreferences(event: Event): void {
+        event.stopPropagation();
+        this.savingPreferences = true;
+        this.authService.updateNotificationPreferences(this.preferences).subscribe({
+            next: () => { this.savingPreferences = false; this.showPreferences = false; this.loadNotifications(); },
+            error: () => { this.savingPreferences = false; this.loadError = 'No fue posible guardar las preferencias.'; },
         });
     }
 

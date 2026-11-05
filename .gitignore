@@ -46,3 +46,10 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# Public password-recovery views (override the workstation's global *.* rule)
+!src/app/auth/forgot-password/**
+!src/app/auth/reset-password/**
+!src/app/auth/audit/**
+!src/app/auth/catalogs/**
+!src/app/auth/sla-settings/**

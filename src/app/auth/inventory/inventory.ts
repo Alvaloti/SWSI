@@ -40,7 +40,10 @@ import { finalize } from 'rxjs';
 })
 export class Inventory {
     @ViewChild('inventoryDialog') inventoryDialog!: TemplateRef<unknown>;
+    @ViewChild('maintenanceDialog') maintenanceDialog!: TemplateRef<unknown>;
+    @ViewChild('historyDialog') historyDialog!: TemplateRef<unknown>;
     inventoryForm: FormGroup;
+    maintenanceForm: FormGroup;
     editingId?: string;
     user: any;
 
@@ -56,13 +59,22 @@ export class Inventory {
             serial_number: new FormControl('', Validators.required),
             status: new FormControl('', Validators.required),
         });
+        this.maintenanceForm = new FormGroup({
+            maintenance_type: new FormControl('preventivo', Validators.required),
+            description: new FormControl('', [Validators.required, Validators.maxLength(2000)]),
+            provider: new FormControl('', Validators.maxLength(200)),
+            cost: new FormControl(0, [Validators.required, Validators.min(0)]),
+            maintenance_date: new FormControl(this.today(), Validators.required),
+            status: new FormControl('completado', Validators.required),
+            result: new FormControl('', Validators.maxLength(2000)),
+        });
     }
     private http = inject(HttpClient);
     private dialog = inject(MatDialog);
     private dialogRef?: MatDialogRef<unknown>;
 
     // Configuración de Tabla
-    columnasVisibles: string[] = ['id', 'tipo', 'marca', 'asignado', 'acciones'];
+    columnasVisibles: string[] = ['id', 'tipo', 'marca', 'modelo', 'estado', 'asignado', 'acciones'];
     datos = new MatTableDataSource<any>([]);
     cargando = false;
 
@@ -71,6 +83,10 @@ export class Inventory {
     tamanoPagina = 10;
     paginaActual = 0;
     filtroBusqueda = '';
+    selectedItem: any;
+    timeline: any[] = [];
+    historyLoading = false;
+    savingMaintenance = false;
 
     ngOnInit() {
         this.cargarDatos();
@@ -183,6 +199,90 @@ export class Inventory {
         });
     }
 
+    abrirMantenimiento(item: any) {
+        this.selectedItem = item;
+        this.maintenanceForm.reset({
+            maintenance_type: 'preventivo',
+            description: '',
+            provider: '',
+            cost: 0,
+            maintenance_date: this.today(),
+            status: 'completado',
+            result: '',
+        });
+        this.dialogRef = this.dialog.open(this.maintenanceDialog, {
+            width: '620px',
+            maxWidth: '95vw',
+            maxHeight: '90vh',
+            disableClose: true,
+        });
+    }
+
+    guardarMantenimiento() {
+        const id = this.selectedItem?._id ?? this.selectedItem?.id;
+        if (!id || this.maintenanceForm.invalid || this.savingMaintenance) {
+            this.maintenanceForm.markAllAsTouched();
+            return;
+        }
+        this.savingMaintenance = true;
+        this.authService.createMaintenance(id, this.maintenanceForm.getRawValue()).pipe(
+            finalize(() => {
+                this.savingMaintenance = false;
+                this.changeDetectorRef.markForCheck();
+            }),
+        ).subscribe({
+            next: (response) => {
+                window.alert(response.message);
+                this.cerrarFormulario();
+                this.cargarDatos();
+            },
+            error: (error) => window.alert(error.error?.message ?? 'No fue posible registrar el mantenimiento.'),
+        });
+    }
+
+    abrirHistorial(item: any) {
+        const id = item?._id ?? item?.id;
+        if (!id) return;
+        this.selectedItem = item;
+        this.timeline = [];
+        this.historyLoading = true;
+        this.dialogRef = this.dialog.open(this.historyDialog, {
+            width: '760px',
+            maxWidth: '96vw',
+            maxHeight: '90vh',
+            disableClose: false,
+        });
+        this.authService.getInventoryHistory(id).pipe(
+            finalize(() => {
+                this.historyLoading = false;
+                this.changeDetectorRef.markForCheck();
+            }),
+        ).subscribe({
+            next: (response) => {
+                this.timeline = Array.isArray(response.timeline) ? response.timeline : [];
+                this.changeDetectorRef.markForCheck();
+            },
+            error: (error) => window.alert(error.error?.message ?? 'No fue posible cargar el historial.'),
+        });
+    }
+
+    actorName(actor: any): string {
+        if (!actor) return 'Sistema';
+        return [actor.name, actor.last_name].filter(Boolean).join(' ') || actor.username || 'Usuario';
+    }
+
+    historyIcon(type: string): string {
+        const icons: Record<string, string> = {
+            registro: 'add_circle',
+            actualizacion: 'edit',
+            cambio_estado: 'sync_alt',
+            asignacion: 'person_add',
+            devolucion: 'assignment_return',
+            mantenimiento: 'build',
+        };
+        return icons[type] ?? 'history';
+    }
+
     onSubmit() {
         if (this.inventoryForm.invalid) {
             this.inventoryForm.markAllAsTouched();
@@ -206,5 +306,11 @@ export class Inventory {
                 console.log('Registration failed:', error);
             },
         });
+    }
+
+    private today(): string {
+        const now = new Date();
+        const offset = now.getTimezoneOffset() * 60000;
+        return new Date(now.getTime() - offset).toISOString().slice(0, 10);
     }
 }

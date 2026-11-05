@@ -66,6 +66,10 @@
                     <th mat-header-cell *matHeaderCellDef>Estado</th>
                     <td mat-cell *matCellDef="let elemento">{{ elemento.estado }}</td>
                 </ng-container>
+                <ng-container matColumnDef="solucion">
+                    <th mat-header-cell *matHeaderCellDef>Solución</th>
+                    <td mat-cell *matCellDef="let elemento">{{ elemento.solucion || 'Pendiente' }}</td>
+                </ng-container>
                 <ng-container matColumnDef="comentarios">
                     <th mat-header-cell *matHeaderCellDef>Comentarios</th>
                     <td mat-cell *matCellDef="let elemento">{{ elemento.comentarios }}</td>
@@ -73,10 +77,24 @@
                 <ng-container matColumnDef="acciones">
                     <th mat-header-cell *matHeaderCellDef>Acciones</th>
                     <td mat-cell *matCellDef="let elemento">
-                        <button type="button" mat-icon-button color="primary" (click)="editarTicket(elemento)"
-                            aria-label="Editar ticket"><mat-icon>edit</mat-icon></button>
-                        <button type="button" mat-icon-button class="deleteButton" (click)="eliminarTicket(elemento)"
-                            aria-label="Eliminar ticket"><mat-icon>delete</mat-icon></button>
+                        @if (elemento.estado === 'resuelto' && elemento.solucion) {
+                        <button type="button" mat-icon-button class="close-ticket-button"
+                            (click)="cerrarTicketAtendido(elemento)" [disabled]="guardandoAccion"
+                            aria-label="Aceptar solución y cerrar ticket" title="Aceptar solución y cerrar">
+                            <mat-icon>lock</mat-icon>
+                        </button>
+                        }
+                        @if (elemento.estado === 'cerrado' && !elemento.encuesta?.calificacion) {
+                        <button type="button" mat-icon-button color="primary" (click)="abrirEncuesta(elemento)"
+                            aria-label="Responder encuesta de satisfacción" title="Responder encuesta">
+                            <mat-icon>star_rate</mat-icon>
+                        </button>
+                        }
+                        @if (elemento.encuesta?.calificacion) {
+                        <span class="survey-result" [attr.aria-label]="'Calificación: ' + elemento.encuesta.calificacion + ' de 5'">
+                            {{ elemento.encuesta.calificacion }} <mat-icon>star</mat-icon>
+                        </span>
+                        }
                     </td>
                 </ng-container>
 
@@ -98,4 +116,33 @@
         (created)="ticketCreado()"
         (cancelled)="cerrarTicket()">
     </app-ticket>
+</ng-template>
+
+<ng-template #surveyDialog>
+    <h2 mat-dialog-title>Encuesta de satisfacción</h2>
+    <mat-dialog-content>
+        <div class="survey-form">
+            <p>Califica la atención recibida para el ticket {{ ticketEncuesta?.folio }}.</p>
+            <label for="calificacionEncuesta">Calificación</label>
+            <select id="calificacionEncuesta" [(ngModel)]="calificacionEncuesta">
+                <option [ngValue]="5">5 - Excelente</option>
+                <option [ngValue]="4">4 - Buena</option>
+                <option [ngValue]="3">3 - Regular</option>
+                <option [ngValue]="2">2 - Deficiente</option>
+                <option [ngValue]="1">1 - Muy deficiente</option>
+            </select>
+
+            <label for="comentarioEncuesta">Comentario opcional</label>
+            <textarea id="comentarioEncuesta" [(ngModel)]="comentarioEncuesta" rows="5" maxlength="2000"
+                placeholder="Cuéntanos sobre tu experiencia"></textarea>
+            <small>{{ comentarioEncuesta.length }}/2000 caracteres</small>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button type="button" mat-button (click)="cerrarEncuesta()" [disabled]="guardandoAccion">Cancelar</button>
+        <button type="button" mat-flat-button color="primary" (click)="guardarEncuesta()"
+            [disabled]="guardandoAccion">
+            {{ guardandoAccion ? 'Enviando...' : 'Enviar encuesta' }}
+        </button>
+    </mat-dialog-actions>
 </ng-template>

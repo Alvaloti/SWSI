@@ -46,6 +46,9 @@
 .notification-header button { color: white; font-size: 12px; }
 .notification-state { padding: 20px 16px; text-align: center; color: white; }
 .notification-state.error { color: #ffffff; font-weight: 600; }
+.notification-preferences { display: grid; gap: 8px; padding: 12px 16px; min-width: 340px; color: white; border-bottom: 1px solid rgba(255,255,255,.35); }
+.notification-preferences label { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.notification-preferences button { margin-top: 6px; background: white; color: #003871; }
 
 .notification-item { height: auto; min-height: 76px; }
 .notification-item.unread { background: rgba(255, 255, 255, 0.16); }

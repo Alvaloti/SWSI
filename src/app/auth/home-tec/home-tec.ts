@@ -1,5 +1,5 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, TemplateRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpParams } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,6 +17,8 @@ import { AuthService } from '../../service/auth-service';
 import { finalize, timeout } from 'rxjs';
 import { Profile } from '../profile/profile';
 import { Notifications } from '../notifications/notifications';
+import { FormsModule } from '@angular/forms';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
 type TipoAsignacion = 'solicitudes' | 'tickets';
 
@@ -36,6 +38,8 @@ type TipoAsignacion = 'solicitudes' | 'tickets';
         MatProgressSpinnerModule,
         Profile,
         Notifications,
+        FormsModule,
+        MatDialogModule,
     ],
     templateUrl: './home-tec.html',
     styleUrl: './home-tec.css',
@@ -43,12 +47,13 @@ type TipoAsignacion = 'solicitudes' | 'tickets';
 export class HomeTec {
     estados: string[] = [];
     @ViewChild(MatSidenav) sidenav!: MatSidenav;
+    @ViewChild('ticketActionDialog') ticketActionDialog!: TemplateRef<unknown>;
 
     user: any;
     isMobile = true;
     menuAbierto = true;
     vistaActiva: TipoAsignacion = 'solicitudes';
-    columnasVisibles: string[] = ['folio', 'asunto', 'descripcion', 'prioridad', 'estado', 'comentarios', 'acciones'];
+    readonly columnasBase = ['folio', 'asunto', 'descripcion', 'prioridad', 'estado', 'sla', 'comentarios', 'acciones'];
     datos = new MatTableDataSource<any>([]);
     cargando = false;
     errorCarga = '';
@@ -57,6 +62,18 @@ export class HomeTec {
     paginaActual = 0;
     filtroBusqueda = '';
     private temporizadorBusqueda?: ReturnType<typeof setTimeout>;
+    private readonly dialog = inject(MatDialog);
+    private ticketActionDialogRef?: MatDialogRef<unknown>;
+    ticketAccion: 'solucion' | 'escalamiento' = 'solucion';
+    ticketSeleccionado: any;
+    detalleAccion = '';
+    guardandoAccion = false;
+
+    get columnasVisibles(): string[] {
+        return this.vistaActiva === 'tickets'
+            ? ['folio', 'asunto', 'descripcion', 'prioridad', 'estado', 'sla', 'solucion', 'comentarios', 'acciones']
+            : this.columnasBase;
+    }
 
     constructor(
         private authService: AuthService,
@@ -78,7 +95,7 @@ export class HomeTec {
     }
 
     private cargarEstados() {
-        this.authService.getEstados().subscribe({
+        this.authService.getEstados(this.vistaActiva === 'tickets' ? 'ticket' : 'solicitud').subscribe({
             next: (response) => {
                 this.estados = response.estados ?? [];
                 this.changeDetectorRef.markForCheck();
@@ -99,6 +116,7 @@ export class HomeTec {
         this.vistaActiva = nuevaVista;
         this.paginaActual = 0;
         this.filtroBusqueda = '';
+        this.cargarEstados();
         this.cargarDatos();
         if (this.isMobile) this.menuAbierto = false;
     }
@@ -191,6 +209,59 @@ export class HomeTec {
                 window.alert(error.error?.message ?? 'No fue posible actualizar el estado.');
                 this.cargarDatos();
             },
+        });
+    }
+
+    estadoFinalRestringido(estado: string): boolean {
+        return this.vistaActiva === 'tickets' && ['resuelto', 'cerrado'].includes(estado);
+    }
+
+    slaLabel(registro: any): string {
+        if (['resuelto', 'cerrado'].includes(registro.estado)) return 'Cumplido';
+        if (!registro.sla_resolution_due) return 'Sin SLA';
+        const remaining = new Date(registro.sla_resolution_due).getTime() - Date.now();
+        if (remaining <= 0) return 'Vencido';
+        const hours = Math.ceil(remaining / 3600000);
+        return hours < 24 ? `${hours} h restantes` : `${Math.ceil(hours / 24)} días restantes`;
+    }
+
+    abrirAccionTicket(ticket: any, accion: 'solucion' | 'escalamiento') {
+        if (!ticket?._id || ticket.estado === 'cerrado') return;
+        if (accion === 'escalamiento' && ticket.estado === 'resuelto') return;
+        this.ticketSeleccionado = ticket;
+        this.ticketAccion = accion;
+        this.detalleAccion = accion === 'solucion' ? (ticket.solucion ?? '') : '';
+        this.ticketActionDialogRef = this.dialog.open(this.ticketActionDialog, {
+            width: '560px',
+            maxWidth: '95vw',
+            disableClose: true,
+        });
+    }
+
+    cerrarAccionTicket() {
+        this.ticketActionDialogRef?.close();
+    }
+
+    guardarAccionTicket() {
+        const detalle = this.detalleAccion.trim();
+        const id = this.ticketSeleccionado?._id ?? this.ticketSeleccionado?.id;
+        if (!id || !detalle || this.guardandoAccion) return;
+        this.guardandoAccion = true;
+        const request = this.ticketAccion === 'solucion'
+            ? this.authService.solveTicket(id, detalle)
+            : this.authService.escalateTicket(id, detalle);
+        request.pipe(
+            finalize(() => {
+                this.guardandoAccion = false;
+                this.changeDetectorRef.markForCheck();
+            }),
+        ).subscribe({
+            next: (response) => {
+                this.cerrarAccionTicket();
+                window.alert(response.message);
+                this.cargarDatos();
+            },
+            error: (error) => window.alert(error.error?.message ?? 'No fue posible completar la acción.'),
         });
     }
 

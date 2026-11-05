@@ -20,22 +20,35 @@
 
         <mat-divider></mat-divider>
         <app-profile (profileUpdated)="user = $event"></app-profile>
+        @if (hasPermission('users.manage')) {
         <button mat-button class="menu-button" (click)="cambiarVista('users')">
             <mat-icon>person</mat-icon>
             <span class="span">Usuarios</span>
         </button>
+        }
+        @if (hasPermission('reports.view')) {
         <button mat-button class="menu-button" (click)="cambiarVista('reportes')">
             <mat-icon>inbox</mat-icon>
             <span class="span">Reportes</span>
         </button>
+        }
+        @if (hasPermission('audit.view')) {
+        <button mat-button class="menu-button" (click)="cambiarVista('auditoria')">
+            <mat-icon>policy</mat-icon>
+            <span class="span">Auditoría</span>
+        </button>
+        }
         <mat-nav-list>
             <!-- Opción con menú flotante -->
+            @if (hasAnyAdministrationPermission()) {
             <button mat-button class="menu-button" [matMenuTriggerFor]="administracion">
                 <mat-icon matListItemMeta>settings</mat-icon>
                 <span class="span">Administración</span>
             </button>
+            }
             <!-- Definición del menú flotante (fuera del flujo del sidenav) -->
             <mat-menu #administracion="matMenu" xPosition="after" panelClass="menu-personalizado">
+                @if (hasPermission('catalogs.manage')) {
                 <button mat-button class="menu-button" (click)="cambiarVista('area')">
                     <mat-icon>settings</mat-icon>
                     <span class="span">Áreas</span>
@@ -44,10 +57,14 @@
                     <mat-icon>settings</mat-icon>
                     <span class="span">Categorías</span>
                 </button>
+                }
+                @if (hasPermission('roles.manage')) {
                 <button mat-button class="menu-button"  (click)="cambiarVista('role')">
                     <mat-icon>settings</mat-icon>
                     <span class="span">Roles</span>
                 </button>
+                }
+                @if (hasPermission('inventory.manage')) {
                 <button mat-button class="menu-button"  (click)="cambiarVista('inventario')">
                     <mat-icon>settings</mat-icon>
                     <span class="span">Inventario</span>
@@ -56,6 +73,19 @@
                     <mat-icon>assignment_ind</mat-icon>
                     <span class="span">Asignaciones</span>
                 </button>
+                }
+                @if (hasPermission('catalogs.manage')) {
+                <button mat-button class="menu-button" (click)="cambiarVista('catalogos')">
+                    <mat-icon>format_list_bulleted</mat-icon>
+                    <span class="span">Estados y prioridades</span>
+                </button>
+                }
+                @if (hasPermission('sla.manage')) {
+                <button mat-button class="menu-button" (click)="cambiarVista('sla')">
+                    <mat-icon>timer</mat-icon>
+                    <span class="span">SLA</span>
+                </button>
+                }
 
             </mat-menu>
             <mat-divider></mat-divider>
@@ -85,8 +115,14 @@
             <app-inventory></app-inventory>
             }@else if (vistaActiva === 'asignaciones') {
             <app-assignments></app-assignments>
+            } @else if (vistaActiva === 'catalogos') {
+            <app-catalogs></app-catalogs>
+            } @else if (vistaActiva === 'sla') {
+            <app-sla-settings></app-sla-settings>
             } @else if (vistaActiva === 'reportes') {
             <app-reports></app-reports>
+            } @else if (vistaActiva === 'auditoria') {
+            <app-audit></app-audit>
             } @else {
             <app-users></app-users>
             }

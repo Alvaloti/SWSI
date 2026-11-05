@@ -81,15 +81,17 @@ export class Login {
             supervisor: '/homesup',
           };
           const destination = routesByRole[roleName];
+          const permissions: string[] = response.user?.rolId?.permissions ?? [];
+          const permissionDestination = permissions.includes('system.manage') || permissions.some((permission) =>
+            ['users.manage', 'roles.manage', 'catalogs.manage', 'inventory.manage', 'reports.view', 'audit.view', 'sla.manage'].includes(permission))
+            ? '/home'
+            : permissions.includes('work.assign') || permissions.includes('requests.decide')
+                ? '/homesup'
+                : permissions.includes('work.view_assigned') || permissions.includes('work.update_status')
+                    ? '/hometec'
+                    : '/homesol';
 
-          if (!destination) {
-            this.loginError = 'Tu cuenta no tiene un rol válido para acceder al sistema.';
-            this.changeDetectorRef.markForCheck();
-            this.authService.logout().subscribe();
-            return;
-          }
-
-          this.router.navigateByUrl(destination, { replaceUrl: true });
+          this.router.navigateByUrl(destination ?? permissionDestination, { replaceUrl: true });
         },
         error: (error) => {
           this.loginError = error.error?.message ?? 'No fue posible iniciar sesión. Verifica tus credenciales.';

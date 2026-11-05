@@ -52,6 +52,7 @@ import { Reports } from '../reports/reports';
 })
 export class HomeSup {
     @ViewChild('assignmentDialog') assignmentDialog!: TemplateRef<unknown>;
+    @ViewChild('decisionDialog') decisionDialog!: TemplateRef<unknown>;
     @ViewChild(MatSidenav)
     sidenav!: MatSidenav;
     user: any;
@@ -67,7 +68,7 @@ export class HomeSup {
     private http = inject(HttpClient);
 
     // Configuración de Tabla
-    columnasVisibles: string[] = ['folio', 'tipo', 'descripcion', 'prioridad', 'estado', 'comentarios', 'acciones'];
+    columnasVisibles: string[] = ['folio', 'tipo', 'descripcion', 'prioridad', 'aprobacion', 'estado', 'comentarios', 'acciones'];
     columnasTickets: string[] = ['folio', 'titulo', 'descripcion', 'prioridad', 'estado', 'comentarios', 'acciones'];
     datos = new MatTableDataSource<any>([]);
     cargando = false;
@@ -85,6 +86,11 @@ export class HomeSup {
     tecnicoSeleccionado = '';
     comentariosEditando = '';
     guardandoAsignacion = false;
+    solicitudDecision: any;
+    decisionSeleccionada: 'aprobada' | 'rechazada' = 'aprobada';
+    motivoRechazo = '';
+    guardandoDecision = false;
+    private decisionDialogRef?: MatDialogRef<unknown>;
 
     private dialog = inject(MatDialog);
     private dialogRef?: MatDialogRef<unknown>;
@@ -200,7 +206,51 @@ export class HomeSup {
         });
     }
     editarSolicitud(solicitud: any) {
+        if ((solicitud.estado_aprobacion ?? 'pendiente') !== 'aprobada') {
+            window.alert('La solicitud debe estar aprobada antes de asignarla a un técnico.');
+            return;
+        }
         this.abrirEditor(solicitud, 'solicitud');
+    }
+
+    abrirDecision(solicitud: any, decision: 'aprobada' | 'rechazada') {
+        if ((solicitud.estado_aprobacion ?? 'pendiente') !== 'pendiente') return;
+        this.solicitudDecision = solicitud;
+        this.decisionSeleccionada = decision;
+        this.motivoRechazo = '';
+        this.decisionDialogRef = this.dialog.open(this.decisionDialog, {
+            width: '520px',
+            maxWidth: '95vw',
+            disableClose: true,
+        });
+    }
+
+    cerrarDecision() {
+        this.decisionDialogRef?.close();
+    }
+
+    guardarDecision() {
+        const id = this.solicitudDecision?._id ?? this.solicitudDecision?.id;
+        const motivo = this.motivoRechazo.trim();
+        if (!id || this.guardandoDecision) return;
+        if (this.decisionSeleccionada === 'rechazada' && !motivo) return;
+
+        this.guardandoDecision = true;
+        this.authService.decideSolicitud(id, this.decisionSeleccionada, motivo).pipe(
+            finalize(() => {
+                this.guardandoDecision = false;
+                this.changeDetectorRef.markForCheck();
+            }),
+        ).subscribe({
+            next: (response) => {
+                this.cerrarDecision();
+                window.alert(response.message ?? 'Decisión registrada correctamente.');
+                this.cargarDatos();
+            },
+            error: (error) => {
+                window.alert(error.error?.message ?? 'No fue posible registrar la decisión.');
+            },
+        });
     }
 
     eliminarTicket(ticket: any) {

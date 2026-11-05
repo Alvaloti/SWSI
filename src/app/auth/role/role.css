@@ -264,3 +264,9 @@ header .logo img {
         line-height: 18px;
     }
 }
+.permissions-fieldset { margin-top: 1rem; padding: 12px; border: 1px solid #c7d0d9; border-radius: 8px; max-height: 330px; overflow-y: auto; }
+.permissions-fieldset legend { color: #003871; font-weight: 700; }
+.permissions-fieldset p { margin: 0 0 10px; }
+.permission-option { display: flex; align-items: flex-start; gap: 9px; padding: 8px 4px; border-bottom: 1px solid #edf0f2; }
+.permission-option span { display: grid; gap: 2px; }
+.permission-option small { color: #667085; }

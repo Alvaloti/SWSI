@@ -42,6 +42,18 @@
             <td mat-cell *matCellDef="let elemento"> {{elemento.brand}} </td>
         </ng-container>
 
+        <ng-container matColumnDef="modelo">
+            <th mat-header-cell *matHeaderCellDef> Modelo </th>
+            <td mat-cell *matCellDef="let elemento"> {{ elemento.model }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="estado">
+            <th mat-header-cell *matHeaderCellDef> Estado </th>
+            <td mat-cell *matCellDef="let elemento">
+                <span class="status-pill">{{ elemento.status || 'Sin estado' }}</span>
+            </td>
+        </ng-container>
+
         <!-- Columna Rol -->
         <ng-container matColumnDef="asignado">
             <th mat-header-cell *matHeaderCellDef> Asignado a </th>
@@ -52,10 +64,20 @@
         <ng-container matColumnDef="acciones">
             <th mat-header-cell *matHeaderCellDef> Acciones </th>
             <td mat-cell *matCellDef="let elemento">
-                <button mat-icon-button (click)="editarItem(elemento)">
+                <button type="button" mat-icon-button color="primary" (click)="editarItem(elemento)"
+                    aria-label="Editar equipo" title="Editar equipo">
                     <mat-icon>edit</mat-icon>
                 </button>
-                <button mat-icon-button class="deleteButton" (click)="eliminarItem(elemento)">
+                <button type="button" mat-icon-button class="maintenance-button" (click)="abrirMantenimiento(elemento)"
+                    aria-label="Registrar mantenimiento" title="Registrar mantenimiento">
+                    <mat-icon>build</mat-icon>
+                </button>
+                <button type="button" mat-icon-button class="history-button" (click)="abrirHistorial(elemento)"
+                    aria-label="Consultar historial" title="Consultar historial">
+                    <mat-icon>history</mat-icon>
+                </button>
+                <button type="button" mat-icon-button class="deleteButton" (click)="eliminarItem(elemento)"
+                    aria-label="Eliminar equipo" title="Eliminar equipo">
                     <mat-icon>delete</mat-icon>
                 </button>
             </td>
@@ -133,4 +155,91 @@
             </button>
         </mat-dialog-actions>
     </form>
+</ng-template>
+
+<ng-template #maintenanceDialog>
+    <form [formGroup]="maintenanceForm" (ngSubmit)="guardarMantenimiento()" class="maintenance-form">
+        <h2 mat-dialog-title>Registrar mantenimiento</h2>
+        <mat-dialog-content>
+            <p class="equipment-reference">
+                {{ selectedItem?.type }} {{ selectedItem?.brand }} {{ selectedItem?.model }} · Serie {{ selectedItem?.serial_number }}
+            </p>
+            <div class="maintenance-grid">
+                <div class="form-group">
+                    <label for="maintenance_type">Tipo</label>
+                    <select id="maintenance_type" formControlName="maintenance_type">
+                        <option value="preventivo">Preventivo</option>
+                        <option value="correctivo">Correctivo</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="maintenance_date">Fecha</label>
+                    <input id="maintenance_date" type="date" formControlName="maintenance_date">
+                </div>
+                <div class="form-group full-width">
+                    <label for="maintenance_description">Descripción</label>
+                    <textarea id="maintenance_description" formControlName="description" rows="4"
+                        placeholder="Actividades realizadas o por realizar"></textarea>
+                    <small *ngIf="maintenanceForm.get('description')?.touched && maintenanceForm.get('description')?.hasError('required')">
+                        La descripción es obligatoria.
+                    </small>
+                </div>
+                <div class="form-group">
+                    <label for="maintenance_provider">Proveedor o responsable</label>
+                    <input id="maintenance_provider" type="text" formControlName="provider" placeholder="Interno o proveedor">
+                </div>
+                <div class="form-group">
+                    <label for="maintenance_cost">Costo</label>
+                    <input id="maintenance_cost" type="number" formControlName="cost" min="0" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="maintenance_status">Estado</label>
+                    <select id="maintenance_status" formControlName="status">
+                        <option value="programado">Programado</option>
+                        <option value="en progreso">En progreso</option>
+                        <option value="completado">Completado</option>
+                    </select>
+                </div>
+                <div class="form-group full-width">
+                    <label for="maintenance_result">Resultado</label>
+                    <textarea id="maintenance_result" formControlName="result" rows="3"
+                        placeholder="Resultado, piezas sustituidas u observaciones"></textarea>
+                </div>
+            </div>
+        </mat-dialog-content>
+        <mat-dialog-actions align="end">
+            <button type="button" mat-button (click)="cerrarFormulario()" [disabled]="savingMaintenance">Cancelar</button>
+            <button type="submit" mat-flat-button color="primary"
+                [disabled]="maintenanceForm.invalid || savingMaintenance">
+                {{ savingMaintenance ? 'Guardando...' : 'Registrar mantenimiento' }}
+            </button>
+        </mat-dialog-actions>
+    </form>
+</ng-template>
+
+<ng-template #historyDialog>
+    <h2 mat-dialog-title>Historial integral del equipo</h2>
+    <mat-dialog-content>
+        <p class="equipment-reference">
+            {{ selectedItem?.type }} {{ selectedItem?.brand }} {{ selectedItem?.model }} · Serie {{ selectedItem?.serial_number }}
+        </p>
+        <div class="loading-spinner" *ngIf="historyLoading"><mat-spinner diameter="42"></mat-spinner></div>
+        <p class="empty-history" *ngIf="!historyLoading && !timeline.length">No hay movimientos registrados.</p>
+        <ol class="equipment-timeline" *ngIf="!historyLoading && timeline.length">
+            <li *ngFor="let event of timeline">
+                <div class="timeline-icon"><mat-icon>{{ historyIcon(event.type) }}</mat-icon></div>
+                <div class="timeline-content">
+                    <div class="timeline-heading">
+                        <strong>{{ event.title }}</strong>
+                        <time>{{ event.date | date:'dd/MM/yyyy HH:mm' }}</time>
+                    </div>
+                    <p>{{ event.description }}</p>
+                    <small>Responsable: {{ actorName(event.actor) }}</small>
+                </div>
+            </li>
+        </ol>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button type="button" mat-flat-button color="primary" (click)="cerrarFormulario()">Cerrar</button>
+    </mat-dialog-actions>
 </ng-template>

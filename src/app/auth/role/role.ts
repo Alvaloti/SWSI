@@ -53,6 +53,7 @@ export class Role {
             name: new FormControl('', Validators.required),
             description: new FormControl('', Validators.required),
             active: new FormControl(true),
+            permissions: new FormControl<string[]>([], { nonNullable: true }),
         });
     }
 
@@ -70,9 +71,14 @@ export class Role {
     tamanoPagina = 10;
     paginaActual = 0;
     filtroBusqueda = '';
+    permissionOptions: Array<{ key: string; name: string; description: string }> = [];
 
     ngOnInit() {
         this.cargarDatos();
+        this.authService.getPermissions().subscribe({
+            next: (response) => this.permissionOptions = response.permissions || [],
+            error: (error) => console.error('No se pudo cargar el catálogo de permisos:', error),
+        });
         this.authService.getUser().subscribe({
             next: (response) => {
                 console.log('User data:', response);
@@ -124,9 +130,9 @@ export class Role {
 
     abrirFormulario(contenido: TemplateRef<unknown>) {
         this.editingId = undefined;
-        this.roleForm.reset({ name: '', description: '', active: true });
+        this.roleForm.reset({ name: '', description: '', active: true, permissions: [] });
         this.dialogRef = this.dialog.open(contenido, {
-            width: '480px',
+            width: '700px',
             maxWidth: '95vw',
             disableClose: true,
         });
@@ -158,9 +164,9 @@ export class Role {
 
     editarRole(role: any) {
         this.editingId = role._id ?? role.id;
-        this.roleForm.patchValue({ name: role.name, description: role.description, active: role.active ?? true });
+        this.roleForm.patchValue({ name: role.name, description: role.description, active: role.active ?? true, permissions: role.permissions || [] });
         this.dialogRef = this.dialog.open(this.roleDialog, {
-            width: '480px', maxWidth: '95vw', disableClose: true,
+            width: '700px', maxWidth: '95vw', disableClose: true,
         });
     }
 
@@ -184,5 +190,17 @@ export class Role {
         }
 
         this.crearRole();
+    }
+
+    hasPermission(key: string): boolean {
+        return this.roleForm.controls['permissions'].value.includes(key);
+    }
+
+    togglePermission(key: string, checked: boolean): void {
+        const permissions = this.roleForm.controls['permissions'].value as string[];
+        this.roleForm.controls['permissions'].setValue(checked
+            ? [...new Set([...permissions, key])]
+            : permissions.filter((permission) => permission !== key));
+        this.roleForm.controls['permissions'].markAsDirty();
     }
 }

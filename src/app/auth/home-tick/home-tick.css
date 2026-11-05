@@ -148,3 +148,18 @@ mat-divider {
 .espaciador-flexible {
   flex: 1 1 auto;
 }
+
+.close-ticket-button { color: #2e7d32; }
+.survey-result { display: inline-flex; align-items: center; gap: 2px; color: #a45f00; font-weight: 700; }
+.survey-result mat-icon { width: 18px; height: 18px; font-size: 18px; }
+.survey-form { display: grid; gap: 10px; }
+.survey-form select,
+.survey-form textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid #bdbdbd;
+    border-radius: 6px;
+    font: inherit;
+}
+.survey-form small { color: #666; text-align: right; }

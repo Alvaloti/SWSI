@@ -78,6 +78,20 @@
                     <td mat-cell *matCellDef="let elemento"> {{elemento.descripcion}} </td>
                 </ng-container>
 
+                <ng-container matColumnDef="aprobacion">
+                    <th mat-header-cell *matHeaderCellDef>Aprobación</th>
+                    <td mat-cell *matCellDef="let elemento">
+                        <span class="approval-badge"
+                            [class.approved]="elemento.estado_aprobacion === 'aprobada'"
+                            [class.rejected]="elemento.estado_aprobacion === 'rechazada'">
+                            {{ elemento.estado_aprobacion || 'pendiente' }}
+                        </span>
+                        <small class="rejection-reason" *ngIf="elemento.motivo_rechazo">
+                            {{ elemento.motivo_rechazo }}
+                        </small>
+                    </td>
+                </ng-container>
+
                 <!-- Columna Estatus -->
                 <ng-container matColumnDef="estado">
                     <th mat-header-cell *matHeaderCellDef> estado </th>

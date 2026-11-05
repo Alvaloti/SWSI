@@ -4,6 +4,18 @@
             <h2>Reportes</h2>
             <p>Consulta solicitudes, tickets y carga de trabajo de los técnicos.</p>
         </div>
+        <div class="export-actions">
+            <button type="button" mat-flat-button class="excel-button"
+                (click)="exportExcel()" [disabled]="loading || exporting || !total">
+                <mat-icon>table_view</mat-icon>
+                Exportar Excel
+            </button>
+            <button type="button" mat-flat-button class="pdf-button"
+                (click)="exportPdf()" [disabled]="loading || exporting || !total">
+                <mat-icon>picture_as_pdf</mat-icon>
+                {{ exporting ? 'Exportando...' : 'Exportar PDF' }}
+            </button>
+        </div>
     </header>
 
     <form class="report-filters" (ngSubmit)="generateReport()">
@@ -13,6 +25,7 @@
                 <option value="solicitudes">Solicitudes</option>
                 <option value="tickets">Tickets</option>
                 <option value="tecnicos">Técnicos</option>
+                <option value="inventario">Inventario</option>
             </select>
         </label>
         <label>
@@ -26,7 +39,7 @@
         <label class="search-field">
             Buscar
             <input name="search" type="search" [(ngModel)]="search"
-                [placeholder]="reportType === 'tecnicos' ? 'Nombre, usuario o correo' : 'Folio, asunto o descripción'">
+                [placeholder]="reportType === 'tecnicos' ? 'Nombre, usuario o correo' : reportType === 'inventario' ? 'Tipo, marca, modelo o serie' : 'Folio, asunto o descripción'">
         </label>
         <button type="submit" mat-flat-button class="generate-button" [disabled]="loading">
             <mat-icon>assessment</mat-icon>
@@ -35,25 +48,34 @@
     </form>
 
     <div class="summary-grid">
-        <article class="summary-card">
-            <mat-icon>assignment</mat-icon><span>Solicitudes</span><strong>{{ summary.solicitudes }}</strong>
-        </article>
-        <article class="summary-card">
-            <mat-icon>confirmation_number</mat-icon><span>Tickets</span><strong>{{ summary.tickets }}</strong>
-        </article>
-        <article class="summary-card warning">
-            <mat-icon>person_off</mat-icon><span>Sin asignar</span><strong>{{ summary.sin_asignar }}</strong>
-        </article>
-        <article class="summary-card success">
-            <mat-icon>task_alt</mat-icon><span>Resueltos o cerrados</span><strong>{{ summary.cerrados }}</strong>
+        <article class="summary-card" *ngFor="let card of summaryCards" [ngClass]="card.style">
+            <mat-icon>{{ card.icon }}</mat-icon><span>{{ card.label }}</span><strong>{{ card.value }}</strong>
         </article>
     </div>
 
-    <div class="status-summary" *ngIf="reportType !== 'tecnicos'">
+    <div class="status-summary" *ngIf="reportType === 'solicitudes' || reportType === 'tickets'">
         <span *ngFor="let item of (reportType === 'solicitudes' ? summary.estados_solicitudes : summary.estados_tickets)">
             {{ item.estado }}: <strong>{{ item.total }}</strong>
         </span>
     </div>
+
+    <section class="charts-grid" *ngIf="!loading && !errorMessage" aria-label="Gráficas estadísticas">
+        <article class="chart-card" *ngFor="let group of chartGroups" [ngClass]="group.style">
+            <h3>{{ group.title }}</h3>
+            <div class="chart-empty" *ngIf="!group.items.length">No hay información para graficar.</div>
+            <div class="bar-chart" role="img" [attr.aria-label]="group.title" *ngIf="group.items.length">
+                <div class="bar-row" *ngFor="let item of group.items">
+                    <span class="bar-label" [title]="item.estado">{{ item.estado }}</span>
+                    <div class="bar-track">
+                        <div class="bar-value" [style.width.%]="chartPercent(item, group.items)"></div>
+                    </div>
+                    <strong>{{ item.total }}</strong>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <p class="report-error" role="alert" *ngIf="exportError">{{ exportError }}</p>
 
     <div class="loading-container" *ngIf="loading"><mat-spinner diameter="48"></mat-spinner></div>
     <p class="report-error" role="alert" *ngIf="!loading && errorMessage">{{ errorMessage }}</p>
@@ -70,7 +92,9 @@
             </ng-container>
             <ng-container matColumnDef="estado">
                 <th mat-header-cell *matHeaderCellDef>Estado</th>
-                <td mat-cell *matCellDef="let row"><span class="status-pill">{{ row.estado }}</span></td>
+                <td mat-cell *matCellDef="let row">
+                    <span class="status-pill">{{ reportType === 'inventario' ? (row.status || 'Sin estado') : row.estado }}</span>
+                </td>
             </ng-container>
             <ng-container matColumnDef="prioridad">
                 <th mat-header-cell *matHeaderCellDef>Prioridad</th>
@@ -113,6 +137,30 @@
             <ng-container matColumnDef="activo">
                 <th mat-header-cell *matHeaderCellDef>Estado</th>
                 <td mat-cell *matCellDef="let row">{{ row.active === false ? 'Inactivo' : 'Activo' }}</td>
+            </ng-container>
+            <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef>ID</th>
+                <td mat-cell *matCellDef="let row">{{ row.id }}</td>
+            </ng-container>
+            <ng-container matColumnDef="tipoEquipo">
+                <th mat-header-cell *matHeaderCellDef>Tipo</th>
+                <td mat-cell *matCellDef="let row">{{ row.type }}</td>
+            </ng-container>
+            <ng-container matColumnDef="marca">
+                <th mat-header-cell *matHeaderCellDef>Marca</th>
+                <td mat-cell *matCellDef="let row">{{ row.brand }}</td>
+            </ng-container>
+            <ng-container matColumnDef="modelo">
+                <th mat-header-cell *matHeaderCellDef>Modelo</th>
+                <td mat-cell *matCellDef="let row">{{ row.model }}</td>
+            </ng-container>
+            <ng-container matColumnDef="serie">
+                <th mat-header-cell *matHeaderCellDef>Número de serie</th>
+                <td mat-cell *matCellDef="let row">{{ row.serial_number }}</td>
+            </ng-container>
+            <ng-container matColumnDef="asignadoA">
+                <th mat-header-cell *matHeaderCellDef>Asignado a</th>
+                <td mat-cell *matCellDef="let row">{{ personName(row.assigned_to) }}</td>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

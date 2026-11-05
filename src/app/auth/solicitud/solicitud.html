@@ -36,11 +36,7 @@
                 <label for="prioridad">Prioridad</label>
                 <select id="prioridad" formControlName="prioridad">
                     <option value="">Seleccionar Prioridad</option>
-                    <option value="muy-baja">Muy Baja</option>
-                    <option value="baja">Baja</option>
-                    <option value="media">Media</option>
-                    <option value="alta">Alta</option>
-                    <option value="muy-alta">Muy Alta</option>
+                    <option *ngFor="let priority of priorities" [value]="priority.key">{{ priority.name }}</option>
                 </select>
                 <small
                     *ngIf="solicitudForm.get('prioridad')?.hasError('required') && solicitudForm.get('prioridad')?.touched">

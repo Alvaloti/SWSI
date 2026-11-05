@@ -171,3 +171,18 @@ mat-divider {
 .espaciador-flexible {
   flex: 1 1 auto;
 }
+
+.solution-button { color: #2e7d32; }
+.escalate-button { color: #d96c00; }
+.ticket-action-form { display: grid; gap: 10px; }
+.ticket-action-form textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid #bdbdbd;
+    border-radius: 6px;
+    font: inherit;
+}
+.ticket-action-form small { color: #666; text-align: right; }
+.escalate-confirmation { background: #d96c00 !important; color: #fff !important; }
+.sla-breached { color: #b3261e; font-weight: 700; }

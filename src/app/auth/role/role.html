@@ -97,6 +97,16 @@
                 Rol activo
             </label>
 
+            <fieldset class="permissions-fieldset">
+                <legend>Permisos efectivos</legend>
+                <p>Selecciona las operaciones que podrá realizar este rol.</p>
+                <label class="permission-option" *ngFor="let permission of permissionOptions">
+                    <input type="checkbox" [checked]="hasPermission(permission.key)"
+                        (change)="togglePermission(permission.key, $any($event.target).checked)">
+                    <span><strong>{{ permission.name }}</strong><small>{{ permission.description }}</small></span>
+                </label>
+            </fieldset>
+
            </mat-dialog-content>
 
         <mat-dialog-actions align="end">

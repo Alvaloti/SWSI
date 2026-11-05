@@ -73,9 +73,20 @@
                     <td mat-cell *matCellDef="let registro">
                         <select [value]="registro.estado" (change)="cambiarEstado(registro, $event)"
                             aria-label="Estado del registro">
-                            <option *ngFor="let estado of estados" [value]="estado">{{ estado }}</option>
+                            <option *ngFor="let estado of estados" [value]="estado"
+                                [disabled]="estadoFinalRestringido(estado)">{{ estado }}</option>
                         </select>
                     </td>
+                </ng-container>
+                <ng-container matColumnDef="sla">
+                    <th mat-header-cell *matHeaderCellDef>SLA</th>
+                    <td mat-cell *matCellDef="let registro">
+                        <span [class.sla-breached]="slaLabel(registro) === 'Vencido'">{{ slaLabel(registro) }}</span>
+                    </td>
+                </ng-container>
+                <ng-container matColumnDef="solucion">
+                    <th mat-header-cell *matHeaderCellDef>Solución</th>
+                    <td mat-cell *matCellDef="let registro">{{ registro.solucion || 'Pendiente' }}</td>
                 </ng-container>
                 <ng-container matColumnDef="comentarios">
                     <th mat-header-cell *matHeaderCellDef>Comentarios</th>
@@ -86,6 +97,16 @@
                     <td mat-cell *matCellDef="let registro">
                         <button type="button" mat-icon-button color="primary" (click)="editarRegistro(registro)"
                             aria-label="Actualizar estado y comentarios"><mat-icon>edit</mat-icon></button>
+                        @if (vistaActiva === 'tickets' && registro.estado !== 'cerrado' && (registro.estado !== 'resuelto' || !registro.solucion)) {
+                        <button type="button" mat-icon-button class="solution-button"
+                            (click)="abrirAccionTicket(registro, 'solucion')" aria-label="Registrar solución"
+                            title="Registrar solución"><mat-icon>task_alt</mat-icon></button>
+                        @if (registro.estado !== 'resuelto') {
+                        <button type="button" mat-icon-button class="escalate-button"
+                            (click)="abrirAccionTicket(registro, 'escalamiento')" aria-label="Escalar ticket"
+                            title="Escalar ticket"><mat-icon>priority_high</mat-icon></button>
+                        }
+                        }
                     </td>
                 </ng-container>
 
@@ -106,3 +127,34 @@
         </div>
     </mat-sidenav-content>
 </mat-sidenav-container>
+
+<ng-template #ticketActionDialog>
+    <h2 mat-dialog-title>
+        {{ ticketAccion === 'solucion' ? 'Registrar solución' : 'Escalar ticket' }}
+        {{ ticketSeleccionado?.folio }}
+    </h2>
+    <mat-dialog-content>
+        <div class="ticket-action-form">
+            <p *ngIf="ticketAccion === 'solucion'">
+                Documenta las actividades realizadas y el resultado. El ticket quedará como resuelto para revisión del usuario.
+            </p>
+            <p *ngIf="ticketAccion === 'escalamiento'">
+                Explica por qué no puedes continuar. El ticket quedará sin técnico para que un supervisor lo reasigne.
+            </p>
+            <label for="detalleAccion">
+                {{ ticketAccion === 'solucion' ? 'Solución aplicada' : 'Motivo del escalamiento' }}
+            </label>
+            <textarea id="detalleAccion" [(ngModel)]="detalleAccion" rows="7"
+                [attr.maxlength]="ticketAccion === 'solucion' ? 4000 : 2000"
+                placeholder="Describe detalladamente la acción realizada" required></textarea>
+            <small>{{ detalleAccion.length }}/{{ ticketAccion === 'solucion' ? 4000 : 2000 }} caracteres</small>
+        </div>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+        <button type="button" mat-button (click)="cerrarAccionTicket()" [disabled]="guardandoAccion">Cancelar</button>
+        <button type="button" mat-flat-button [class.escalate-confirmation]="ticketAccion === 'escalamiento'"
+            (click)="guardarAccionTicket()" [disabled]="!detalleAccion.trim() || guardandoAccion">
+            {{ guardandoAccion ? 'Guardando...' : (ticketAccion === 'solucion' ? 'Registrar solución' : 'Confirmar escalamiento') }}
+        </button>
+    </mat-dialog-actions>
+</ng-template>
