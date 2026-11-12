@@ -6,6 +6,11 @@
 }
 
 /* El menú de notificaciones se renderiza en el overlay global de Angular Material. */
+.cdk-overlay-container .mat-mdc-menu-panel {
+    --mat-menu-container-color: #003871 !important;
+    background-color: #003871 !important;
+}
+
 .notification-menu.mat-mdc-menu-panel {
     --mat-menu-container-color: #003871;
     --mat-menu-item-label-text-color: #ffffff;
