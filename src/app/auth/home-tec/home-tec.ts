@@ -213,7 +213,12 @@ export class HomeTec {
     }
 
     estadoFinalRestringido(estado: string): boolean {
-        return this.vistaActiva === 'tickets' && ['resuelto', 'cerrado'].includes(estado);
+        return this.vistaActiva === 'tickets' && ['resuelto', 'cerrado'].includes(estado.toLowerCase());
+    }
+
+    ticketFinalizado(registro: any): boolean {
+        return this.vistaActiva === 'tickets'
+            && ['resuelto', 'cerrado'].includes(String(registro?.estado || '').toLowerCase());
     }
 
     slaLabel(registro: any): string {
@@ -257,8 +262,15 @@ export class HomeTec {
             }),
         ).subscribe({
             next: (response) => {
+                if (this.ticketAccion === 'solucion' && response.ticket) {
+                    this.datos.data = this.datos.data.map((registro) =>
+                        registro._id === response.ticket._id ? { ...registro, ...response.ticket } : registro,
+                    );
+                }
                 this.cerrarAccionTicket();
-                window.alert(response.message);
+                window.alert(this.ticketAccion === 'solucion'
+                    ? 'Solución registrada correctamente. El ticket cambió automáticamente al estado Resuelto.'
+                    : response.message);
                 this.cargarDatos();
             },
             error: (error) => window.alert(error.error?.message ?? 'No fue posible completar la acción.'),

@@ -72,9 +72,12 @@
                     <th mat-header-cell *matHeaderCellDef>Estado</th>
                     <td mat-cell *matCellDef="let registro">
                         <select [value]="registro.estado" (change)="cambiarEstado(registro, $event)"
-                            aria-label="Estado del registro">
+                            [disabled]="ticketFinalizado(registro)" aria-label="Estado del registro"
+                            [title]="ticketFinalizado(registro) ? 'El estado Resuelto se asigna al registrar la solución; el cierre corresponde al usuario solicitante.' : 'Cambiar estado'">
                             <option *ngFor="let estado of estados" [value]="estado"
-                                [disabled]="estadoFinalRestringido(estado)">{{ estado }}</option>
+                                [disabled]="estadoFinalRestringido(estado) && estado !== registro.estado">
+                                {{ estado }}{{ estadoFinalRestringido(estado) && estado !== registro.estado ? ' (mediante flujo de solución o cierre)' : '' }}
+                            </option>
                         </select>
                     </td>
                 </ng-container>
