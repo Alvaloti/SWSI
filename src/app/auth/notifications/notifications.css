@@ -3,6 +3,25 @@
     color: inherit;
 }
 
+/* El menú se renderiza en el overlay global de Angular Material, fuera del host. */
+::ng-deep .notification-menu.mat-mdc-menu-panel {
+    --mat-menu-container-color: #003871;
+    --mat-menu-item-label-text-color: #ffffff;
+    --mat-menu-item-icon-color: #ffffff;
+    --mat-menu-item-hover-state-layer-color: rgba(255, 255, 255, 0.12);
+    --mat-menu-item-focus-state-layer-color: rgba(255, 255, 255, 0.16);
+    background-color: #003871 !important;
+}
+
+::ng-deep .notification-menu .mat-mdc-menu-content {
+    background-color: #003871 !important;
+    color: #ffffff;
+}
+
+::ng-deep .notification-menu .mat-mdc-menu-item {
+    color: #ffffff !important;
+}
+
 .notification-trigger {
     --mat-button-text-label-text-color: currentColor;
     --mat-button-text-state-layer-color: currentColor;
