@@ -5,6 +5,13 @@ mat-toolbar {
     z-index: 2;
 }
 
+::ng-deep .notification-menu.mat-mdc-menu-panel,
+::ng-deep .notification-menu.mat-mdc-menu-surface,
+::ng-deep .notification-menu .mat-mdc-menu-content {
+    --mat-menu-container-color: #003871;
+    background-color: #003871 !important;
+}
+
 mat-sidenav {
     margin: 16px;
     width: 200px;
