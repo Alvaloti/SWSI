@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Output, TemplateRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, inject, Output, TemplateRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { finalize } from 'rxjs';
 import { AuthService } from '../../service/auth-service';
 import { USERNAME_PATTERN } from '../../shared/validation-patterns';
 
@@ -39,6 +40,7 @@ export class Profile {
 
     private readonly authService = inject(AuthService);
     private readonly dialog = inject(MatDialog);
+    private readonly changeDetectorRef = inject(ChangeDetectorRef);
     private dialogRef?: MatDialogRef<unknown>;
 
     openProfile(): void {
@@ -54,11 +56,21 @@ export class Profile {
             next: (response) => {
                 const areas = response.areas ?? response;
                 this.areas = Array.isArray(areas) ? areas.filter((area) => area.active !== false) : [];
+                this.changeDetectorRef.detectChanges();
             },
-            error: () => (this.errorMessage = 'No fue posible cargar las áreas.'),
+            error: () => {
+                this.areas = [];
+                this.errorMessage = 'No fue posible cargar las áreas.';
+                this.changeDetectorRef.detectChanges();
+            },
         });
 
-        this.authService.getUser().subscribe({
+        this.authService.getUser().pipe(
+            finalize(() => {
+                this.loading = false;
+                this.changeDetectorRef.detectChanges();
+            }),
+        ).subscribe({
             next: (response) => {
                 const user = response.user;
                 this.roleName = user?.rolId?.name ?? '';
@@ -71,10 +83,8 @@ export class Profile {
                     area: user?.area?._id ?? user?.area ?? '',
                     password: '',
                 });
-                this.loading = false;
             },
             error: (error) => {
-                this.loading = false;
                 this.errorMessage = error.error?.message ?? 'No fue posible cargar tu perfil.';
             },
         });
@@ -95,15 +105,18 @@ export class Profile {
         const profile: Record<string, unknown> = { ...this.profileForm.getRawValue() };
         if (!profile['password']) delete profile['password'];
 
-        this.authService.updateProfile(profile).subscribe({
-            next: (response) => {
+        this.authService.updateProfile(profile).pipe(
+            finalize(() => {
                 this.saving = false;
+                this.changeDetectorRef.detectChanges();
+            }),
+        ).subscribe({
+            next: (response) => {
                 this.profileUpdated.emit(response.user);
                 this.closeProfile();
                 window.alert(response.message ?? 'Perfil actualizado correctamente.');
             },
             error: (error) => {
-                this.saving = false;
                 this.errorMessage = error.error?.message ?? 'No fue posible actualizar tu perfil.';
             },
         });
