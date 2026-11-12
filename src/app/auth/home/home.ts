@@ -145,7 +145,6 @@ export class Home implements OnInit {
         logout() {
         this.authService.logout().subscribe({
             next: (response: { message: any }) => {
-                window.alert(response.message);
                 this.router.navigateByUrl('/login', { replaceUrl: true });
             },
             error: () => {
