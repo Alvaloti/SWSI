@@ -1,4 +1,4 @@
-import { Component, inject, Input, TemplateRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, Input, TemplateRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatFormField, MatLabel } from '@angular/material/select';
 import { MatProgressSpinner, MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -51,6 +51,7 @@ export class Users {
         private authService: AuthService,
         private router: Router,
         private breakpointObserver: BreakpointObserver,
+        private changeDetectorRef: ChangeDetectorRef,
     ) {
         this.registerForm = new FormGroup({
             username: new FormControl('', [Validators.required, Validators.pattern(USERNAME_PATTERN), Validators.maxLength(50)]),
@@ -236,6 +237,10 @@ export class Users {
         } catch (error) {
             this.importError = error instanceof Error ? error.message : 'No fue posible leer el archivo.';
             this.importRows = [];
+        } finally {
+            // file.text() termina fuera del ciclo de actualización de las vistas
+            // sin Zone.js; se refleja inmediatamente el resultado de la lectura.
+            this.changeDetectorRef.detectChanges();
         }
     }
 
@@ -248,10 +253,12 @@ export class Users {
                 this.importing = false;
                 this.importResult = response;
                 if (response.imported) this.cargarDatos();
+                this.changeDetectorRef.detectChanges();
             },
             error: (error) => {
                 this.importing = false;
                 this.importResult = error.error ?? { message: 'No fue posible importar los usuarios.', errors: [] };
+                this.changeDetectorRef.detectChanges();
             },
         });
     }
