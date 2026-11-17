@@ -87,6 +87,7 @@ export class Inventory {
     timeline: any[] = [];
     historyLoading = false;
     savingMaintenance = false;
+    savingItem = false;
 
     ngOnInit() {
         this.cargarDatos();
@@ -284,26 +285,30 @@ export class Inventory {
     }
 
     onSubmit() {
-        if (this.inventoryForm.invalid) {
+        if (this.inventoryForm.invalid || this.savingItem) {
             this.inventoryForm.markAllAsTouched();
             return;
         }
 
+        this.savingItem = true;
         const formData = this.inventoryForm.value;
-        console.log('Form Data:', formData);
         const request = this.editingId
             ? this.authService.updateItem(this.editingId, formData)
             : this.authService.createItem(formData);
 
-        request.subscribe({
+        request.pipe(
+            finalize(() => {
+                this.savingItem = false;
+                this.changeDetectorRef.detectChanges();
+            }),
+        ).subscribe({
             next: (response) => {
-                console.log('Registration successful:', response);
                 window.alert(response.message);
                 this.cerrarFormulario();
                 this.cargarDatos();
             },
             error: (error) => {
-                console.log('Registration failed:', error);
+                window.alert(error.error?.message ?? 'No fue posible guardar el equipo.');
             },
         });
     }

@@ -149,9 +149,9 @@
         </mat-dialog-content>
 
         <mat-dialog-actions align="end">
-            <button type="button" mat-button class="cancel-btn" (click)="cerrarFormulario()">Cancelar</button>
-            <button type="submit" mat-flat-button [disabled]="inventoryForm.invalid" class="submit-btn">
-                {{ editingId ? 'Guardar cambios' : 'Registrar equipo' }}
+            <button type="button" mat-button class="cancel-btn" (click)="cerrarFormulario()" [disabled]="savingItem">Cancelar</button>
+            <button type="submit" mat-flat-button [disabled]="inventoryForm.invalid || savingItem" class="submit-btn">
+                {{ savingItem ? 'Guardando...' : (editingId ? 'Guardar cambios' : 'Registrar equipo') }}
             </button>
         </mat-dialog-actions>
     </form>
